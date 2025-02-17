@@ -1,0 +1,23 @@
+res =
+
+    'filename,\\uosfstore.shef.ac.uk\shared\insigneo_brc1\GroupFiles\Study Data\Mobilise-D CVS\24492\v5\19095-1545-214-MP37056.OMX
+     deviceId,37056
+     deviceType,19792
+     deviceVersion,1
+     firmwareVer,23
+     comments,ID,MMP,01,23,37056
+     SI,0
+     T0,2024/01/24,00:00:00
+     T1,2024/01/31,00:00:00
+     A,100,8
+     G,100,2000
+     M,10
+     P,1
+     T,1
+     
+     metadata,mid=19095;sid=1545;vid=214;dp=6;s=MMP01_37056;                                                                                                                                                  
+     firstTimestamp,1706054400.159119
+     lastTimestamp,1706659199.843475
+     CONVERT: convert a specified binary data file to a CSV text file.
+     
+     '

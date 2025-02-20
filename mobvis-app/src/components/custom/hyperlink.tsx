@@ -1,13 +1,13 @@
 import Link from "next/link";
 
 interface Props {
-  text: string;
   url: string;
+  children: React.ReactNode;
 }
-export default function HyperLink({ text, url }: Props) {
+export default function HyperLink({ url, children }: Props) {
   return (
     <Link href={url} className="text-sky-500 underline">
-      {text}
+      {children}
     </Link>
   );
 }

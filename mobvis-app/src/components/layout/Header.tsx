@@ -19,20 +19,16 @@ interface Props {
 
 export default function Header({ navLinks }: Props) {
   return (
-    <header className="bg-primary py-4 px-6 m-3 rounded-lg flex items-center justify-between">
+    <header className="bg-background-dark py-4 px-6 m-3 rounded-lg flex items-center justify-between text-foreground-dark">
       <span className="flex gap-3">
-        <FontAwesomeIcon
-          icon={faChartSimple}
-          size="2x"
-          className="text-primary-foreground"
-        />
-        <h1 className="text-3xl font-black text-primary-foreground">mobVis</h1>
+        <FontAwesomeIcon icon={faChartSimple} size="2x" />
+        <h1 className="text-3xl font-black">mobVis</h1>
       </span>
       <div className="flex gap-8">
         {navLinks.map((link) => (
           <div
             key={link.label}
-            className="text-lg flex flex-row gap-3 items-center font-extrabold text-primary-foreground transition hover:text-[#D1D1D1]"
+            className="text-lg flex flex-row gap-3 items-center font-extrabold transition hover:text-[#D1D1D1]"
           >
             <Link href={link.href}>
               <FontAwesomeIcon icon={link.icon} className="" />

@@ -1,13 +1,13 @@
 import Header, { visitorLinks } from "@/components/layout/header";
+import LoginForm from "@/components/page-specific/login/login-form";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import HyperLink from "@/components/ui/hyperlink";
+} from "@/components/shadcn-components/card";
+import HyperLink from "@/components/custom/hyperlink";
 
 export default function Login() {
   return (
@@ -19,11 +19,12 @@ export default function Login() {
             <CardTitle className="text-lg">Login</CardTitle>
             <CardDescription>
               Need an account?{" "}
-              <HyperLink text="Create an account." url="/signup" />
+              <HyperLink url="/signup">Create an account.</HyperLink>
             </CardDescription>
           </CardHeader>
-          <CardContent></CardContent>
-          <CardFooter></CardFooter>
+          <CardContent>
+            <LoginForm />
+          </CardContent>
         </Card>
       </div>
     </div>

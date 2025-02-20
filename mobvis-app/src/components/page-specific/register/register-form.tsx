@@ -45,14 +45,16 @@ const formSchema = z
     const hasUppercase = password !== password.toLowerCase();
     const hasLowercase = password !== password.toUpperCase();
     const hasNumber = /\d/.test(password);
-    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const hasSymbol = /[!@#$%^&*()-_+=[{}]\|\\\:\;\"\'\<\,\>.\?\/\]/.test(
+      password
+    );
     if (
       !(has12Chars && hasUppercase && hasLowercase && hasNumber && hasSymbol)
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "Password must have at least 12 characters, 1 uppercase, 1 lowercase, 1 number, and 1 symbol",
+          "Password must have at least 12 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special symbol",
         path: ["password"],
       });
     }

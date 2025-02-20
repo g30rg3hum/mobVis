@@ -7,8 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/shadcn-components/card";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function Register() {
+export default async function Register() {
+  const session = await getServerSession();
+  if (session) {
+    // already logged in redirect to homepage.
+    redirect("/");
+  }
+
   return (
     <div>
       <div className="flex justify-center">

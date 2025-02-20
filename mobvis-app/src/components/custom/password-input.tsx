@@ -12,7 +12,7 @@ export default function PasswordInput(
   return (
     <div className="flex gap-2">
       <Input
-        type={showPassword ? "password" : "text"}
+        type={showPassword ? "text" : "password"}
         placeholder="Enter your password"
         {...props}
       ></Input>

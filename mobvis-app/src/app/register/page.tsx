@@ -1,4 +1,5 @@
-import LoginForm from "@/components/page-specific/login/login-form";
+import HyperLink from "@/components/custom/hyperlink";
+import RegisterForm from "@/components/page-specific/register/register-form";
 import {
   Card,
   CardContent,
@@ -6,22 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/shadcn-components/card";
-import HyperLink from "@/components/custom/hyperlink";
 
-export default function Login() {
+export default function Register() {
   return (
     <div>
       <div className="flex justify-center">
         <Card className="w-[500px] mt-20">
           <CardHeader>
-            <CardTitle className="text-lg">Login</CardTitle>
+            <CardTitle className="text-lg">Create an account</CardTitle>
             <CardDescription>
-              Need an account?{" "}
-              <HyperLink url="/register">Create an account.</HyperLink>
+              Already have an account?{" "}
+              <HyperLink url="/login">Log in.</HyperLink>
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm />
+            <RegisterForm />
           </CardContent>
         </Card>
       </div>

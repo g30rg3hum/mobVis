@@ -1,4 +1,4 @@
-import Header, { visitorLinks } from "@/components/layout/Header";
+import Header, { visitorLinks } from "@/components/layout/header";
 
 export default function Home() {
   return (

@@ -13,13 +13,13 @@ export const visitorLinks: NavLink[] = [
   { href: "/login", label: "Login", icon: faRightToBracket },
 ];
 
-interface HeaderProps {
+interface Props {
   navLinks: NavLink[];
 }
 
-export default function Header({ navLinks }: HeaderProps) {
+export default function Header({ navLinks }: Props) {
   return (
-    <header className="bg-primary p-4 m-3 rounded-lg flex items-center justify-between">
+    <header className="bg-primary py-4 px-6 m-3 rounded-lg flex items-center justify-between">
       <span className="flex gap-3">
         <FontAwesomeIcon
           icon={faChartSimple}
@@ -32,7 +32,7 @@ export default function Header({ navLinks }: HeaderProps) {
         {navLinks.map((link) => (
           <div
             key={link.label}
-            className="text-xl flex flex-row gap-3 items-center font-extrabold text-primary-foreground transition hover:text-[#D1D1D1]"
+            className="text-lg flex flex-row gap-3 items-center font-extrabold text-primary-foreground transition hover:text-[#D1D1D1]"
           >
             <Link href={link.href}>
               <FontAwesomeIcon icon={link.icon} className="" />

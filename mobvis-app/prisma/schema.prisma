@@ -15,6 +15,7 @@ datasource db {
 
 // models
 model User { // clinician
-  email String @id @unique
+  id Int @id @default(autoincrement()) 
+  email String @unique
   password String
 }

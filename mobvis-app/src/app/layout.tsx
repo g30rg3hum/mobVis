@@ -4,6 +4,12 @@ import "./globals.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+
+import { getServerSession } from "next-auth";
+import SessionProvider from "@/components/custom/session-provider";
+import Header from "@/components/layout/header";
+import { ReactNode } from "react";
+
 config.autoAddCss = false;
 
 const geistSans = Geist({
@@ -22,17 +28,21 @@ export const metadata: Metadata = {
     "Visualisation tool for gait analysis of patients with multiple sclerosis.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
+  const session = await getServerSession();
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F3F3F3]`}
       >
-        {children}
+        <Header />
+        {/* This is for getting the session in a client component */}
+        <SessionProvider session={session}>{children}</SessionProvider>
       </body>
     </html>
   );

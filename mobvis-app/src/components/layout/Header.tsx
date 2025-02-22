@@ -2,7 +2,6 @@ import {
   faChartSimple,
   faHospitalUser,
   faHouse,
-  faRightFromBracket,
   faRightToBracket,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "@/types/header";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
+import LogoutBtn from "./logout-btn";
 
 // define preset set of navigation links
 const visitorLinks: NavLink[] = [
@@ -20,7 +20,6 @@ const visitorLinks: NavLink[] = [
 const loggedInLinks: NavLink[] = [
   { href: "/population-insights", label: "Population Insights", icon: faUsers },
   { href: "/my-patients", label: "My Patients", icon: faHospitalUser },
-  { href: "#", label: "Logout", icon: faRightFromBracket },
 ];
 
 export default async function Header() {
@@ -41,14 +40,19 @@ export default async function Header() {
             className="text-lg flex flex-row gap-3 items-center font-extrabold transition hover:text-[#D1D1D1]"
           >
             <Link href={link.href}>
-              <FontAwesomeIcon icon={link.icon} className="" />
+              <FontAwesomeIcon icon={link.icon} />
             </Link>
             <Link href={link.href}>
               <span className="">{link.label}</span>
             </Link>
           </div>
         ))}
-        {session && <span className="text-md">{session.user?.email}</span>}
+        {session && (
+          <>
+            <LogoutBtn />
+            <span className="text-md mt-[2px]">{session.user?.email}</span>
+          </>
+        )}
       </div>
     </header>
   );

@@ -45,9 +45,7 @@ const formSchema = z
     const hasUppercase = password !== password.toLowerCase();
     const hasLowercase = password !== password.toUpperCase();
     const hasNumber = /\d/.test(password);
-    const hasSymbol = /[!@#$%^&*()-_+=[{}]\|\\\:\;\"\'\<\,\>.\?\/\]/.test(
-      password
-    );
+    const hasSymbol = /[!@#$%^&*()\-_+={}\[\]:;"'<,>.?/|\\]/.test(password);
     if (
       !(has12Chars && hasUppercase && hasLowercase && hasNumber && hasSymbol)
     ) {
@@ -59,7 +57,7 @@ const formSchema = z
       });
     }
   });
-type formValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
 export default function RegisterForm() {
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -73,7 +71,7 @@ export default function RegisterForm() {
     },
   });
 
-  async function onSubmit(values: formValues) {
+  async function onSubmit(values: FormValues) {
     // if reached here then passed all FE validations.
     const { email, password } = values;
 
@@ -147,7 +145,11 @@ export default function RegisterForm() {
         <div className="text-center space-y-2">
           {submissionError && <ErrorMsg>{submissionError}</ErrorMsg>}
           {successMsg && <SuccessMsg>{successMsg}</SuccessMsg>}
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting}
+          >
             Register
           </Button>
         </div>

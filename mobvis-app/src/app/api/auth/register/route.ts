@@ -8,16 +8,18 @@ export async function POST(request: Request) {
   try {
     // at this point, values have been validated.
     const { email, password } = await request.json();
+    const sanitizedEmail = email.toLowerCase();
 
     // // need to check if email already exists in the db.
-    const userExists = (await prisma.user.count({ where: { email } })) > 0;
+    const userExists =
+      (await prisma.user.count({ where: { email: sanitizedEmail } })) > 0;
     if (!userExists) {
       // create the user.
       // hash the password first.
       const hashedPassword = await bcrypt.hash(password, 10);
       await prisma.user.create({
         data: {
-          email: email,
+          email: sanitizedEmail,
           password: hashedPassword,
         },
       });

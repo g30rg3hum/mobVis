@@ -7,8 +7,15 @@ import {
   CardTitle,
 } from "@/components/shadcn-components/card";
 import HyperLink from "@/components/custom/hyperlink";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function Login() {
+export default async function Login() {
+  const session = await getServerSession();
+  if (session) {
+    redirect("/");
+  }
+
   return (
     <div>
       <div className="flex justify-center">

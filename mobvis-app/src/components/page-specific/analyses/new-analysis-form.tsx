@@ -40,9 +40,11 @@ const formSchema = z.object({
   }),
   public: z.boolean(),
   // TODO: change the file size limit.
-  csvFile: z.instanceof(File).refine((file: File) => file.size < 5000000, {
-    message: "File size must be less than 5MB",
-  }),
+  csvFile: z
+    .instanceof(File, { message: mandatoryErrorMsg })
+    .refine((file: File) => file.size < 5000000, {
+      message: "File size must be less than 5MB",
+    }),
   convertToMs: z.boolean(),
 });
 

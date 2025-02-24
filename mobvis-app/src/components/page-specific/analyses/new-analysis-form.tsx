@@ -47,13 +47,20 @@ const formSchema = z.object({
   convertToMs: z.boolean(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+export type FormValues = z.infer<typeof formSchema>;
 
-function onSubmit(values: FormValues) {
-  console.log(values);
+interface Props {
+  submissionHandler?: (values: FormValues) => void;
 }
+export default function NewAnalysisForm({ submissionHandler }: Props) {
+  const onSubmit = (values: FormValues) => {
+    if (submissionHandler) {
+      submissionHandler(values);
+    } else {
+      console.log(values);
+    }
+  };
 
-export default function NewAnalysisForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {

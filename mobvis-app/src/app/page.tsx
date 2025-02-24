@@ -1,3 +1,5 @@
+"use client";
+
 import NewAnalysisForm from "@/components/page-specific/analyses/new-analysis-form";
 
 export default function Home() {

@@ -21,8 +21,8 @@ import ErrorMsg from "@/components/custom/error-msg";
 import Error from "next/error";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { mandatoryErrorMsg } from "@/lib/utils";
 
-const mandatoryErrorMsg = "Please fill in this field";
 const formSchema = z.object({
   email: z
     .string()

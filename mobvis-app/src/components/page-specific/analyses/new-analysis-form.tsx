@@ -3,7 +3,6 @@
 import HyperLink from "@/components/custom/hyperlink";
 import MutedMsg from "@/components/custom/muted-msg";
 import { Button } from "@/components/shadcn-components/button";
-import { Checkbox } from "@/components/shadcn-components/checkbox";
 import {
   Form,
   FormControl,
@@ -172,7 +171,11 @@ export default function NewAnalysisForm() {
               <FormItem>
                 <div className="flex gap-2 items-center mt-4">
                   <FormControl>
-                    <Checkbox checked={value} onCheckedChange={onChange} />
+                    <input
+                      type="checkbox"
+                      value={value.toString()}
+                      onChange={onChange}
+                    />
                   </FormControl>
                   <FormLabel>Public?</FormLabel>
                 </div>
@@ -221,7 +224,11 @@ export default function NewAnalysisForm() {
               <FormItem>
                 <div className="flex gap-2 items-center mt-4">
                   <FormControl>
-                    <Checkbox checked={value} onCheckedChange={onChange} />
+                    <input
+                      type="checkbox"
+                      value={value.toString()}
+                      onChange={onChange}
+                    />
                   </FormControl>
                   <FormLabel>
                     Convert acceleration units from g to m/s²

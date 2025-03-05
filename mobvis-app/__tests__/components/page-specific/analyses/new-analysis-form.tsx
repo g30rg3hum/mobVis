@@ -21,6 +21,9 @@ async function fillForm(values: NewAnalysisFormValues) {
   const sensorHeightInput = screen.getByLabelText(/sensor height/i);
   await userEvent.type(sensorHeightInput, values.sensorHeight.toString());
 
+  const patientHeightInput = screen.getByLabelText(/patient height/i);
+  await userEvent.type(patientHeightInput, values.patientHeight.toString());
+
   if (values.public) {
     const publicCheckbox = screen.getByLabelText(/public/i);
     await userEvent.click(publicCheckbox);
@@ -51,16 +54,20 @@ describe("NewAnalysisForm", () => {
     expect(msgs).toHaveLength(3);
   });
 
-  it("validates that sampling rate and sensor height must be positive", async () => {
+  it("validates that sampling rate and sensor and patient height must be positive", async () => {
     const samplingRateInput = screen.getByLabelText(/sampling rate/i);
     await userEvent.type(samplingRateInput, "-1");
-    // enter valid sensor height
+
     const sensorHeightInput = screen.getByLabelText(/sensor height/i);
     await userEvent.type(sensorHeightInput, "-1");
     await submitForm();
 
+    const patientHeightInput = screen.getByLabelText(/patient height/i);
+    await userEvent.type(patientHeightInput, "-1");
+    await submitForm();
+
     const errors = screen.getAllByText(/greater than 0/i);
-    expect(errors).toHaveLength(2);
+    expect(errors).toHaveLength(3);
   });
 
   it("validates that sampling rate should be an integer", async () => {
@@ -78,6 +85,7 @@ describe("NewAnalysisForm", () => {
       description: "This is the best analysis",
       samplingRate: 100,
       sensorHeight: 1.69,
+      patientHeight: 1.8,
       setting: "laboratory",
       public: true,
       csvFile: new File([""], "test.csv", { type: "text/csv" }),

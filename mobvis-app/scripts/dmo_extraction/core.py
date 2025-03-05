@@ -1,18 +1,26 @@
+from tempfile import SpooledTemporaryFile
+
 import pandas as pd
+import numpy as np
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 1000)
 from pathlib import Path
 from mobgap.consts import GRAV_MS2
 from mobgap.data import GaitDatasetFromData
-from mobgap.pipeline import MobilisedPipelineImpaired, MobilisedPipelineHealthy
-from mobgap.data import get_all_lab_example_data_paths
+from mobgap.pipeline import MobilisedPipelineImpaired
+# from mobgap.data import get_all_lab_example_data_paths
 
 def is_valid_measurement_condition(measurement_condition: str):
   if (measurement_condition not in ["laboratory", "free_living"]):
     raise ValueError("measurement_condition must be either 'laboratory' or 'free_living'")
 
-def load_csv(path: Path, convertAccFromGToMs: bool = False) -> pd.DataFrame:
-  data = pd.read_csv(path)
+def load_csv(file: Path | SpooledTemporaryFile, convertAccFromGToMs: bool = False) -> pd.DataFrame:
+  data = pd.read_csv(file)
+
   if (convertAccFromGToMs):
     data[["acc_x", "acc_y", "acc_z"]] = (data[["acc_x", "acc_y", "acc_z"]] * GRAV_MS2)
+
   return data
 
 def create_dataset_from_dataframe(data: pd.DataFrame, sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz = int) -> GaitDatasetFromData:
@@ -49,12 +57,12 @@ def create_dataset_from_dataframe(data: pd.DataFrame, sensor_height_m: float, he
 
 # TODO: once created entities, can pass in as argument rather than individual attributes.
 # CSV must have columns: samples, acc_x, acc_y_ acc_z, gyr_x_ gyr_y, gyr_z (according to the explained mobgap coord. system)
-def extract_dmos(csv_path: Path, sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz: int, convertAccFromGToMs: bool = False) -> MobilisedPipelineImpaired:
+def extract_dmos(file: Path | SpooledTemporaryFile, sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz: int, convertAccFromGToMs: bool = False) -> MobilisedPipelineImpaired:
   # check that measurement condition is one of two types
   is_valid_measurement_condition(measurement_condition)
 
   # load data, convert to m/s^2 if needed
-  data = load_csv(csv_path, convertAccFromGToMs)
+  data = load_csv(file, convertAccFromGToMs)
   print("data loaded successfully!")
 
   # create dataset from dataframe
@@ -67,6 +75,33 @@ def extract_dmos(csv_path: Path, sensor_height_m: float, height_m: float, measur
   print("ran pipeline successfully!")
   
   return pipeline # pipeline object with attributes for gait parameters.
+
+# calculate the max, min, average and variance
+def calculate_aggregates(param_name: str, values: list) -> list:
+  return [param_name, max(values), min(values), np.mean(values), np.var(values)]
+
+def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
+
+  # for each parameter, calculating average, max, min, variance
+
+  # get the lists of values for each parameter.
+  no_strides_list = per_wb_params["n_strides"].tolist()
+  duration_s_list = per_wb_params["duration_s"].tolist()
+  cadence_spm_list = per_wb_params["cadence_spm"].tolist()
+  stride_length_m_list = per_wb_params["stride_length_m"].tolist()
+  walking_speed_mps_list = per_wb_params["walking_speed_mps"].tolist()
+
+  data = [
+    calculate_aggregates("no_strides", no_strides_list),
+    calculate_aggregates("duration_s", duration_s_list),
+    calculate_aggregates("cadence_spm", cadence_spm_list),
+    calculate_aggregates("stride_length_m", stride_length_m_list),
+    calculate_aggregates("walking_speed_mps", walking_speed_mps_list)
+  ]
+
+  dataframe = pd.DataFrame(data, columns=["param", "max", "min", "avg", "var"])
+
+  return dataframe
 
 if __name__ == "__main__":
   # print the whole dataframe
@@ -82,5 +117,12 @@ if __name__ == "__main__":
 
   extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/sample_data/TimeMeasure1_Test11_Trial1 (1).csv"), 0.975, 1.68, "laboratory", 100, True)
   print(extracted_dmos.per_wb_parameters_)
+  # print(extracted_dmos.per_wb_parameters_.columns.values)
+
+  print("---------")
+
+  aggregates = calculate_aggregate_parameters(extracted_dmos.per_wb_parameters_)
+  print(aggregates)
+  # print(aggregates.T)
 
   # print("test")

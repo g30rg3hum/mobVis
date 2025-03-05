@@ -1,7 +1,6 @@
 # misc
 .ipynb_checkpoints/
 scripts/__pycache__/
-sample_data/
 notes/
 
 # env

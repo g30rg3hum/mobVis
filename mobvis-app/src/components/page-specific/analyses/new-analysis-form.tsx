@@ -34,6 +34,7 @@ const formSchema = z.object({
     .int({ message: "Please enter an integer" })
     .positive(),
   sensorHeight: z.coerce.number().positive(),
+  patientHeight: z.coerce.number().positive(),
   setting: z.string().refine((val) => settingOptions.includes(val), {
     message: "Setting is not from the list",
   }),
@@ -69,6 +70,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
       description: "",
       samplingRate: 0,
       sensorHeight: 0,
+      patientHeight: 0,
       setting: "laboratory",
       public: false,
       csvFile: undefined,
@@ -117,7 +119,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
               control={form.control}
               name="samplingRate"
               render={({ field }) => (
-                <FormItem className="w-1/2">
+                <FormItem className="w-1/3">
                   <FormLabel>Sampling rate (hz) *</FormLabel>
                   <FormControl>
                     <Input
@@ -134,11 +136,28 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
               control={form.control}
               name="sensorHeight"
               render={({ field }) => (
-                <FormItem className="w-1/2">
+                <FormItem className="w-1/3">
                   <FormLabel>Sensor height (m) *</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter sensor height in m"
+                      type="number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="patientHeight"
+              render={({ field }) => (
+                <FormItem className="w-1/3">
+                  <FormLabel>Patient height (m) *</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter patient height in m"
                       type="number"
                       {...field}
                     />

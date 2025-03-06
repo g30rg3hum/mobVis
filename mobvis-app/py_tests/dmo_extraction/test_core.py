@@ -4,7 +4,7 @@ import pytest
 import scipy
 import numpy as np
 # append path to access core functions.
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../scripts/dmo_extraction")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../scripts/dmo_extraction")))
 from core import *
 from mobgap.data import GaitDatasetFromData
 
@@ -21,7 +21,7 @@ class TestIsValidMeasurementCondition:
 class TestLoadCsv:
   def test_reads_csv_and_converts_correctly(self):
     # this file is in g
-    file_path = Path(__file__).parent.parent / "sample_data" / "TimeMeasure1_Test11_Trial1.csv"
+    file_path = Path(__file__).parent.parent.parent / "sample_data" / "TimeMeasure1_Test11_Trial1.csv"
     convertAccFromGToMs = True
     data = load_csv(file_path, convertAccFromGToMs)
 

@@ -1,15 +1,15 @@
 import sys
 import os
 sys.path.append(os.path.abspath("../../dmo_extraction"));
-from core import extract_dmos
+from core import *
 
 from typing import Annotated
 
-from fastapi import FastAPI, UploadFile, Form
+from fastapi import FastAPI, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+# adding the middleware to connect between NextJS and FastAPI routes.
 app = FastAPI()
-
 app.add_middleware(
   CORSMiddleware,
   # NextJS runs on here.
@@ -19,45 +19,31 @@ app.add_middleware(
   allow_headers=["*"]
 )
 
+# data extraction POST route.
 @app.post("/dmo_extraction")
-def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], public: Annotated[bool, Form()], convertToMs: Annotated[bool, Form()], file: UploadFile):
+def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], public: Annotated[bool, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], file: UploadFile):
   # validation has been handled in the FE.
   # TODO: perhaps also do backend validation here.
+  try:
+    results = extract_dmos(file.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
+    file.file.close()
 
-  # run all of this information through mobgap.
+    # already have per_wb and per_stride parameters
+    per_wb_parameters = results.per_wb_parameters_
+    per_wb_parameters = per_wb_parameters.drop(columns=["rule_name", "rule_obj"]).replace(np.nan, -1)
 
-  # try:
-  results = extract_dmos(file.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
+    per_stride_parameters = results.per_stride_parameters_
+    per_stride_parameters = per_stride_parameters.drop(columns=["original_gs_id"]).replace(np.nan, -1)
 
-  per_wb_parameters = results.per_wb_parameters_
-  per_stride_parameters = results.per_stride_parameters_
+    # calculate agg params from per wb params
+    aggregate_parameters = calculate_aggregate_parameters(per_wb_parameters).replace(np.nan, -1)
+    
+    response = {
+      "per_wb_parameters": per_wb_parameters.to_dict(orient="records"),
+      "per_stride_parameters": per_stride_parameters.to_dict(orient="records"),
+      "aggregate_parameters": aggregate_parameters.to_dict(orient="records")
+    }
 
-  # need to calculate the aggregated parameters.
-  # maybe take a few of the relevant fields from the ones existing.
-
-  # for now: store everything into JSON and send it over to the front end.
-  # will save into the database if time allows.
-
-  
-
-
-  # except Exception as e:
-  
-  
-
-  # aggregated parameters
-  # per walking bout parameters
-  # per stride parameters
-
-  
-
-  # make sure to close the file.
-  file.file.close()
-
-  print(results.per_wb_parameters_)
-
-  return "yes"
-
-  
-
-  # return name, description, samplingRate, sensorHeight, patientHeight, setting, public, convertToMs, file.filename
+    return response
+  except Exception as e:
+    raise HTTPException(status_code=400, detail=str(e))

@@ -21,12 +21,12 @@ app.add_middleware(
 
 # data extraction POST route.
 @app.post("/dmo_extraction")
-def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], public: Annotated[bool, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], file: UploadFile):
+def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], public: Annotated[bool, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], csvFile: UploadFile):
   # validation has been handled in the FE.
   # TODO: perhaps also do backend validation here.
   try:
-    results = extract_dmos(file.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
-    file.file.close()
+    results = extract_dmos(csvFile.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
+    csvFile.file.close()
 
     # already have per_wb and per_stride parameters
     per_wb_parameters = results.per_wb_parameters_

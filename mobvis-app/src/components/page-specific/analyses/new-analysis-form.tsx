@@ -50,6 +50,25 @@ const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>;
 
+async function submitForm(values: FormValues) {
+  // sending FormData rather than just json.
+  // create the form data first.
+  const formData = new FormData();
+  for (const key in values) {
+    const value = values[key as keyof FormValues];
+    const isStringOrFile = typeof value === "string" || value instanceof File;
+    formData.append(key, isStringOrFile ? value : value.toString());
+  }
+
+  // send the api call.
+  const response = await fetch("/api/dmo_extraction", {
+    method: "POST",
+    body: formData,
+  }).then((res) => res.json());
+
+  console.log(response);
+}
+
 interface Props {
   submissionHandler?: (values: FormValues) => void;
 }
@@ -59,7 +78,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
       submissionHandler(values);
     } else {
       // actual implementation.
-      console.log(values);
+      submitForm(values);
     }
   };
 

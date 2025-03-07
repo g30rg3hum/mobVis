@@ -10,7 +10,7 @@ client = TestClient(app)
 class TestDmoExtraction():
   def test_valid_request_parameters_returns_response_data(self):
     file_path = Path(__file__).parent.parent.parent / "sample_data" / "TimeMeasure1_Test11_Trial1.csv"
-    files = {"file": open(file_path, "rb")}
+    files = {"csvFile": open(file_path, "rb")}
     data = {
       "name": "Test extraction",
       "description": "Test description",
@@ -29,7 +29,7 @@ class TestDmoExtraction():
 
   def test_invalid_request_parameters_returns_error_msg(self):
     file_path = Path(__file__).parent.parent.parent / "sample_data" / "TimeMeasure1_Test11_Trial1.csv"
-    files = {"file": open(file_path, "rb")}
+    files = {"csvFile": open(file_path, "rb")}
     data = {
       "name": "Test extraction",
       "description": "Test description",

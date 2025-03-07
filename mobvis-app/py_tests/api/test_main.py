@@ -1,8 +1,8 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../scripts/fastapi/api")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../api")))
 from pathlib import Path
-from main import app
+from index import app
 from fastapi.testclient import TestClient
 
 client = TestClient(app)

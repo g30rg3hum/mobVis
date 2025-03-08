@@ -66,7 +66,7 @@ async function submitForm(values: FormValues) {
     body: formData,
   }).then((res) => res.json());
 
-  console.log(response);
+  localStorage.setItem("data", JSON.stringify(response));
 }
 
 interface Props {

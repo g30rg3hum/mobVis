@@ -14,7 +14,7 @@
     "fastapi-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
     "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
     "postinstall": "prisma generate",
-    "fastapi-start": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app",
+    "fastapi-start": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

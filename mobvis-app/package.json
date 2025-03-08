@@ -14,7 +14,7 @@
     "py-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
     "dev": "concurrently \"npm run next-dev\" \"npm run py-dev\"",
     "postinstall": "prisma generate",
-    "py-start": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --watch"
+    "py-start": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

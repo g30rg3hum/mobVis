@@ -27,7 +27,6 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
   # TODO: perhaps also do backend validation here.
   try:
     results = extract_dmos(csvFile.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
-    csvFile.file.close()
 
     # already have per_wb and per_stride parameters
     per_wb_parameters = results.per_wb_parameters_
@@ -45,6 +44,10 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
       "aggregate_parameters": aggregate_parameters.to_dict(orient="records")
     }
 
+    csvFile.file.close()
+
     return response
   except Exception as e:
+    csvFile.file.close()
     raise HTTPException(status_code=400, detail=str(e))
+  

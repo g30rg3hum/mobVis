@@ -1,5 +1,4 @@
 import {
-  faChartSimple,
   faHospitalUser,
   faHouse,
   faRightToBracket,
@@ -10,6 +9,7 @@ import { NavLink } from "@/types/header";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import LogoutBtn from "./logout-btn";
+import Logo from "./logo";
 
 // define preset set of navigation links
 const visitorLinks: NavLink[] = [
@@ -29,10 +29,7 @@ export default async function Header() {
 
   return (
     <header className="bg-background-dark py-4 px-6 m-3 rounded-lg flex items-center justify-between text-foreground-dark">
-      <span className="flex gap-3">
-        <FontAwesomeIcon icon={faChartSimple} size="2x" />
-        <h1 className="text-3xl font-black">mobVis</h1>
-      </span>
+      <Logo size="2x" textSize="3xl" />
       <div className="flex gap-8">
         {navLinks.map((link) => (
           <div

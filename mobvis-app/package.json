@@ -6,15 +6,15 @@
     "next-dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "next-start": "next start",
-    "start": "concurrently \"npm run next-start\" \"npm run fastapi-start\"",
+    "start": "concurrently \"npm run next-start\" \"npm run py-start\"",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:py": "pytest",
-    "fastapi-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
-    "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
+    "py-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
+    "dev": "concurrently \"npm run next-dev\" \"npm run py-dev\"",
     "postinstall": "prisma generate",
-    "fastapi-start": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --watch"
+    "py-start": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --watch"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

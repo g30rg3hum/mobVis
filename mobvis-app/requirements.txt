@@ -2,4 +2,4 @@ fastapi
 uvicorn
 pandas
 numpy
-# mobgap
+mobgap=0.10.0

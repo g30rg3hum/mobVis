@@ -1,5 +1,1 @@
-fastapi
-uvicorn
-pandas
-numpy
 mobgap

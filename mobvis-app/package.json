@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "next-dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:py": "pytest",
     "fastapi-dev": "pip3 install -r requirements.txt && python3 -m uvicorn api.index:app --reload",
-    "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\""
+    "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

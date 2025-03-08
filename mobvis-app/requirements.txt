@@ -1,2 +1,5 @@
-python==3.10.16
-mobgap
+fastapi
+uvicorn
+pandas
+numpy
+# mobgap

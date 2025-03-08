@@ -7,8 +7,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/components/custom/session-provider";
-import Header from "@/components/layout/header";
 import { ReactNode } from "react";
+import Header from "@/components/layout/header";
 
 config.autoAddCss = false;
 

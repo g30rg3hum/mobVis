@@ -21,7 +21,7 @@ class TestDmoExtraction():
       "setting": "laboratory",
       "convertToMs": True,
     }
-    response = client.post("/dmo_extraction", data=data, files=files)
+    response = client.post("/api/py/dmo_extraction", data=data, files=files)
     assert response.status_code == 200
     assert "per_wb_parameters" in response.json()
     assert "per_stride_parameters" in response.json()
@@ -40,7 +40,7 @@ class TestDmoExtraction():
       "setting": "invalid_setting",
       "convertToMs": True,
     }
-    response = client.post("/dmo_extraction", data=data, files=files)
+    response = client.post("/api/py/dmo_extraction", data=data, files=files)
     assert response.status_code == 400
     assert bool(response.json()["detail"]) # must be defined.
     

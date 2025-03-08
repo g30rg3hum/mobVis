@@ -10,7 +10,7 @@ from fastapi import FastAPI, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 # adding the middleware to connect between NextJS and FastAPI routes.
-app = FastAPI()
+app = FastAPI(docs_url="/api/py/docs", openapi_url="/api/py/openapi.json")
 app.add_middleware(
   CORSMiddleware,
   # NextJS runs on here.
@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 # data extraction POST route.
-@app.post("/dmo_extraction")
+@app.post("/api/py/dmo_extraction")
 def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], public: Annotated[bool, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], csvFile: UploadFile):
   # validation has been handled in the FE.
   # TODO: perhaps also do backend validation here.

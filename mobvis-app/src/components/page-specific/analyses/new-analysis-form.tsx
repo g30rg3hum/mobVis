@@ -61,7 +61,7 @@ async function submitForm(values: FormValues) {
   }
 
   // send the api call.
-  const response = await fetch("/api/dmo_extraction", {
+  const response = await fetch("/api/py/dmo_extraction", {
     method: "POST",
     body: formData,
   }).then((res) => res.json());

@@ -8,7 +8,6 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/components/custom/session-provider";
 import { ReactNode } from "react";
-import Header from "@/components/layout/header";
 
 config.autoAddCss = false;
 
@@ -40,7 +39,6 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F3F3F3]`}
       >
-        <Header />
         {/* This is for getting the session in a client component */}
         <SessionProvider session={session}>{children}</SessionProvider>
       </body>

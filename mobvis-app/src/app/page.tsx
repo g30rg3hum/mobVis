@@ -6,11 +6,11 @@ import NewAnalysisForm from "@/components/page-specific/analyses/new-analysis-fo
 export default function Home() {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <div className="mt-2 w-[600px] bg-background-dark rounded-t-lg text-white p-4">
+      <div className="mt-2 w-[600px] bg-background-dark rounded-t-lg text-white p-4 border-t border-l border-r border-white">
         <Logo size="3x" textSize="4xl" />
       </div>
 
-      <div className="w-[600px] border border-black rounded-b-lg p-5 bg-white">
+      <div className="w-[600px] border border-white rounded-b-lg p-5 bg-white">
         <NewAnalysisForm />
       </div>
     </div>

@@ -20,6 +20,7 @@ app.add_middleware(
   allow_headers=["*"]
 )
 
+general_error_message = "No gait parameters could be extracted. Please check inputs such as: sampling rate, input CSV data format (presence of 'samples' column?), conversion to m/s² checkbox (if needed?)."
 # data extraction POST route.
 @app.post("/api/py/dmo_extraction")
 def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], public: Annotated[bool, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], csvFile: UploadFile):
@@ -27,6 +28,10 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
   # TODO: perhaps also do backend validation here.
   try:
     results = extract_dmos(csvFile.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
+
+    # check if actual results are empty
+    if (results.per_wb_parameters_.empty):
+      raise ValueError(general_error_message)
 
     # already have per_wb and per_stride parameters
     per_wb_parameters = results.per_wb_parameters_
@@ -43,8 +48,6 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
       "per_stride_parameters": per_stride_parameters.to_dict(orient="records"),
       "aggregate_parameters": aggregate_parameters.to_dict(orient="records")
     }
-
-    csvFile.file.close()
 
     return response
   except Exception as e:

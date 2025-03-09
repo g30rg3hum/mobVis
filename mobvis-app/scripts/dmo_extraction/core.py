@@ -11,12 +11,20 @@ from mobgap.data import GaitDatasetFromData
 from mobgap.pipeline import MobilisedPipelineImpaired
 # from mobgap.data import get_all_lab_example_data_paths
 
+required_csv_columns = ["samples", "acc_x", "acc_y", "acc_z", "gyr_x", "gyr_y", "gyr_z"]
+cols_error_message = f"Please input a CSV file with all of these columns: {required_csv_columns}."
+setting_error_message = "measurement_condition must be either 'laboratory' or 'free_living'"
+
 def is_valid_measurement_condition(measurement_condition: str):
   if (measurement_condition not in ["laboratory", "free_living"]):
-    raise ValueError("measurement_condition must be either 'laboratory' or 'free_living'")
+    raise ValueError(setting_error_message)
 
 def load_csv(file: Path | SpooledTemporaryFile, convertAccFromGToMs: bool = False) -> pd.DataFrame:
   data = pd.read_csv(file)
+
+  # check if the csv data file has the right columns
+  if (set(required_csv_columns).issubset(data.columns) == False):
+    raise ValueError(cols_error_message)
 
   if (convertAccFromGToMs):
     data[["acc_x", "acc_y", "acc_z"]] = (data[["acc_x", "acc_y", "acc_z"]] * GRAV_MS2)
@@ -103,7 +111,7 @@ def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
 
   return dataframe
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
   # print the whole dataframe
   # pd.set_option('display.max_columns', None)
   # pd.set_option('display.max_rows', None)
@@ -115,14 +123,14 @@ if __name__ == "__main__":
   # extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/sample_data/MobD CVS_MS data example 2/imu_data.csv"), 1.13, 1.77, "free_living", 100, True)
   # print(extracted_dmos.per_wb_parameters_)
 
-  extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/sample_data/TimeMeasure1_Test11_Trial1 (1).csv"), 0.975, 1.68, "laboratory", 100, True)
-  print(extracted_dmos.per_wb_parameters_)
+  # extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/sample_data/TimeMeasure1_Test11_Trial1 (1).csv"), 0.975, 1.68, "laboratory", 100, True)
+  # print(extracted_dmos.per_wb_parameters_)
   # print(extracted_dmos.per_wb_parameters_.columns.values)
 
-  print("---------")
+  # print("---------")
 
-  aggregates = calculate_aggregate_parameters(extracted_dmos.per_wb_parameters_)
-  print(aggregates)
+  # aggregates = calculate_aggregate_parameters(extracted_dmos.per_wb_parameters_)
+  # print(aggregates)
   # print(aggregates.T)
 
   # print("test")

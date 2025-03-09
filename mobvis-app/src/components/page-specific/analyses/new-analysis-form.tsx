@@ -20,8 +20,16 @@ import {
   SelectTrigger,
 } from "@/components/shadcn-components/select";
 import { Textarea } from "@/components/shadcn-components/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { mandatoryErrorMsg } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -50,29 +58,54 @@ const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>;
 
-async function submitForm(values: FormValues) {
-  // sending FormData rather than just json.
-  // create the form data first.
-  const formData = new FormData();
-  for (const key in values) {
-    const value = values[key as keyof FormValues];
-    const isStringOrFile = typeof value === "string" || value instanceof File;
-    formData.append(key, isStringOrFile ? value : value.toString());
-  }
-
-  // send the api call.
-  const response = await fetch("/api/py/dmo_extraction", {
-    method: "POST",
-    body: formData,
-  }).then((res) => res.json());
-
-  localStorage.setItem("data", JSON.stringify(response));
-}
-
 interface Props {
   submissionHandler?: (values: FormValues) => void;
 }
 export default function NewAnalysisForm({ submissionHandler }: Props) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [possibleError, setPossibleError] = useState<string | null>(null);
+
+  async function submitForm(values: FormValues) {
+    // sending FormData rather than just json.
+    // create the form data first.
+    const formData = new FormData();
+    for (const key in values) {
+      const value = values[key as keyof FormValues];
+      const isStringOrFile = typeof value === "string" || value instanceof File;
+      formData.append(key, isStringOrFile ? value : value.toString());
+    }
+
+    // send the api call.
+    const response = await fetch("/api/py/dmo_extraction", {
+      method: "POST",
+      body: formData,
+    }).then((res) => {
+      if (res.ok) {
+        setSuccess(true);
+        setDialogMessage(
+          "Gait parameters have been successfully extracted from your input data. Results have been saved locally."
+        );
+      } else {
+        setSuccess(false);
+        setDialogMessage(
+          "There was an error trying to extract gait parameters from your input data. Please ensure that your inputs are sensible."
+        );
+      }
+      return res.json();
+    });
+
+    if (success) {
+      localStorage.setItem("data", JSON.stringify(response));
+    } else {
+      setPossibleError(response["detail"]);
+    }
+
+    setIsDialogOpen(true);
+  }
+
+  // to enable customisation of submission handler from outside.
   const onSubmit = (values: FormValues) => {
     if (submissionHandler) {
       submissionHandler(values);
@@ -296,6 +329,28 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
         >
           Create
         </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {success ? "Successful! ✅" : "Something went wrong! ❌"}
+              </DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+              <span> {dialogMessage}</span>
+              {possibleError && (
+                <>
+                  <br />
+                  <br />
+                  <span>
+                    The following might the problem:{" "}
+                    <span className="text-red-500">{possibleError}</span>
+                  </span>
+                </>
+              )}
+            </DialogDescription>
+          </DialogContent>
+        </Dialog>
       </form>
     </Form>
   );

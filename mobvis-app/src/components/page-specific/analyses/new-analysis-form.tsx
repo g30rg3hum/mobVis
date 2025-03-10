@@ -99,7 +99,19 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
     });
 
     if (success) {
-      localStorage.setItem("data", JSON.stringify(response));
+      localStorage.setItem("inputs", JSON.stringify(values));
+      localStorage.setItem(
+        "per_wb_parameters",
+        JSON.stringify(response.per_wb_parameters)
+      );
+      localStorage.setItem(
+        "per_stride_parameters",
+        JSON.stringify(response.per_stride_parameters)
+      );
+      localStorage.setItem(
+        "aggregate_parameters",
+        JSON.stringify(response.aggregate_parameters)
+      );
     } else {
       setPossibleError(response["detail"]);
     }

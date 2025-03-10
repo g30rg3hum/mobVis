@@ -37,7 +37,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-zinc-800 to-zinc-950`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-zinc-800 to-zinc-950 min-h-screen`}
       >
         {/* This is for getting the session in a client component */}
         <SessionProvider session={session}>{children}</SessionProvider>

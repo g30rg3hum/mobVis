@@ -44,6 +44,7 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
     aggregate_parameters = calculate_aggregate_parameters(per_wb_parameters).replace(np.nan, -1)
     
     response = {
+      "total_walking_duration": results.aggregated_parameters_.loc["all_wbs","total_walking_duration_h"],
       "per_wb_parameters": per_wb_parameters.to_dict(orient="records"),
       "per_stride_parameters": per_stride_parameters.to_dict(orient="records"),
       "aggregate_parameters": aggregate_parameters.to_dict(orient="records")

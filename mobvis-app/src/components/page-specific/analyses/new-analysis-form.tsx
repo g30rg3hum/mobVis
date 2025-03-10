@@ -330,7 +330,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
           className="w-full disabled:bg-black"
           disabled={isSubmitting}
         >
-          Create
+          Extract & Save
         </Button>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>

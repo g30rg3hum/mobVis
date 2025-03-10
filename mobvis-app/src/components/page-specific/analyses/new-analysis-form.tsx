@@ -66,8 +66,10 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
   const [success, setSuccess] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [possibleError, setPossibleError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function submitForm(values: FormValues) {
+    setIsSubmitting(true);
     // sending FormData rather than just json.
     // create the form data first.
     const formData = new FormData();
@@ -103,6 +105,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
     }
 
     setIsDialogOpen(true);
+    setIsSubmitting(false);
   }
 
   // to enable customisation of submission handler from outside.
@@ -324,8 +327,8 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
         </div>
         <Button
           type="submit"
-          className="w-full"
-          disabled={form.formState.isSubmitting}
+          className="w-full disabled:bg-black"
+          disabled={isSubmitting}
         >
           Create
         </Button>

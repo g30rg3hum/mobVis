@@ -25,7 +25,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/shadcn-components/dialog";
 import { mandatoryErrorMsg } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription } from "@radix-ui/react-dialog";
@@ -100,6 +100,10 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
 
     if (success) {
       localStorage.setItem("inputs", JSON.stringify(values));
+      localStorage.setItem(
+        "total_walking_duration",
+        response.total_walking_duration
+      );
       localStorage.setItem(
         "per_wb_parameters",
         JSON.stringify(response.per_wb_parameters)

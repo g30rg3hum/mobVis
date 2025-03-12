@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 
 async function submitForm() {
-  await userEvent.click(screen.getByText(/create/i));
+  await userEvent.click(screen.getByText(/save/i));
 }
 
 async function fillForm(values: NewAnalysisFormValues) {

@@ -42,8 +42,8 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
 
     per_stride_parameters = results.per_stride_parameters_
     per_stride_parameters = per_stride_parameters.drop(columns=["original_gs_id"]).replace(np.nan, -1)
-    per_stride_parameters["wb_id"] = per_stride_parameters.index.get_level_values("wb_id")
-    print(per_stride_parameters)
+    # s_id contains the corresponding wb as well: wbid_sid
+    per_stride_parameters["s_id"] = per_stride_parameters.index.get_level_values("s_id")
 
     # calculate agg params from per wb params
     aggregate_parameters = calculate_aggregate_parameters(per_wb_parameters).replace(np.nan, -1)

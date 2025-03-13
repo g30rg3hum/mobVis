@@ -30,7 +30,9 @@ import { perWbDataFields, refinedParamNames } from "@/lib/fields";
 import {
   createDataset,
   getAndParseStorageItem,
+  getWbProperty,
   roundToNDpIfNeeded,
+  sortWbsByProperty,
 } from "@/lib/utils";
 import { Inputs, PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useEffect, useState } from "react";
@@ -68,7 +70,7 @@ export default function WbAnalysis() {
           </p>
         </div>
         <div className="flex justify-center mb-10">
-          <div className="flex flex-col gap-5 w-[850px]">
+          <div className="flex flex-col gap-5 w-[1150px]">
             <Card>
               <CardHeader>
                 <VizCardTitle>
@@ -122,140 +124,145 @@ export default function WbAnalysis() {
                 </Table>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Progression of a gait parameter over time (scatter/step plot)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "Plot of a focus gait parameter against walking bouts. The walking bouts are ordered chronologically to look for any temporal relationships. The plot can be displayed as a connected scatter plot or step plot using the checkbox."
-                  }
-                  exampleAnalysis="do later walking bouts involve slower gait speeds?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-10">
-                <div className="flex gap-5 items-center">
-                  <Select
-                    onValueChange={setV1FocusParam}
-                    defaultValue={v1FocusParam}
-                  >
-                    <div className="flex flex-col gap-1">
-                      <Label>Focus parameter</Label>
-                      <SelectTrigger className="w-[240px]">
-                        <SelectValue placeholder="Select focus parameter" />
-                      </SelectTrigger>
+            <div className="flex gap-5">
+              <Card className="w-1/2 flex flex-col justify-center">
+                <CardHeader>
+                  <VizCardTitle>
+                    Progression of a gait parameter over time (scatter/step
+                    plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    mainDescription={
+                      "Plot of a focus gait parameter against walking bouts. The walking bouts are ordered chronologically to look for any temporal relationships. The plot can be displayed as a connected scatter plot or step plot using the checkbox."
+                    }
+                    exampleAnalysis="do later walking bouts involve slower gait speeds?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <div className="flex gap-5 items-center">
+                    <Select
+                      onValueChange={setV1FocusParam}
+                      defaultValue={v1FocusParam}
+                    >
+                      <div className="flex flex-col gap-1">
+                        <Label>Focus parameter</Label>
+                        <SelectTrigger className="w-[240px]">
+                          <SelectValue placeholder="Select focus parameter" />
+                        </SelectTrigger>
+                      </div>
+                      <SelectContent>
+                        <SelectGroup>
+                          {perWbDataFields.map((param) => (
+                            <SelectItem value={param} key={param}>
+                              {refinedParamNames.get(param)}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <input
+                        type="checkbox"
+                        value={v1Step.toString()}
+                        onChange={(el) => setV1Step(el.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      <Label>Step?</Label>
                     </div>
-                    <SelectContent>
-                      <SelectGroup>
-                        {perWbDataFields.map((param) => (
-                          <SelectItem value={param} key={param}>
-                            {refinedParamNames.get(param)}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <input
-                      type="checkbox"
-                      value={v1Step.toString()}
-                      onChange={(el) => setV1Step(el.target.checked)}
-                      className="w-4 h-4"
-                    />
-                    <Label>Step?</Label>
                   </div>
-                </div>
-                <ScatterPlot
-                  height={500}
-                  width={500}
-                  margin={{ left: 100, right: 10, bottom: 50, top: 10 }}
-                  data={
-                    createDataset(
-                      perWbParameters.map((wb) => wb.wb_id),
-                      perWbParameters.map(
-                        (wb) => wb[v1FocusParam as keyof PerWbParameter]
-                      )
-                    ) as [number, number][]
-                  }
-                  xLabel="Walking bout ID"
-                  yLabel={refinedParamNames.get(v1FocusParam) as string}
-                  type={v1Step ? "step" : "connected"}
-                  integralX
-                  className="self-center"
-                />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Progression of a gait parameter (over time/ascending duration)
-                  (bar chart)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "Same as the scatter plot on the right except represented in bar chart form. The 'bar' form may offer a clearer and more straight-forward representation and comparison of value. There is also an additional checkbox to sort in increasing order of duration to see if there is a trend between WB duration and the focus parameter."
-                  }
-                  exampleAnalysis="do the bars of each chronological walking decrease steadily for gait speed and if so, by how much each time?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-10">
-                <div className="flex gap-5 items-center">
-                  <Select
-                    onValueChange={setV2FocusParam}
-                    defaultValue={v2FocusParam}
-                  >
-                    <div className="flex flex-col gap-1">
-                      <Label>Focus parameter</Label>
-                      <SelectTrigger className="w-[240px]">
-                        <SelectValue placeholder="Select focus parameter" />
-                      </SelectTrigger>
-                    </div>
-                    <SelectContent>
-                      <SelectGroup>
-                        {perWbDataFields.map((param) => (
-                          <SelectItem value={param} key={param}>
-                            {refinedParamNames.get(param)}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <div className="flex items-center justify-center gap-2 mt-4">
-                    <input
-                      type="checkbox"
-                      value={ascDuration.toString()}
-                      onChange={(el) => setAscDuration(el.target.checked)}
-                      className="w-4 h-4"
-                    />
-                    <Label>Sort by ascending duration</Label>
-                  </div>
-                </div>
-
-                <BarChart
-                  height={500}
-                  width={500}
-                  margin={{ left: 100, right: 10, bottom: 50, top: 10 }}
-                  data={
-                    createDataset(
-                      perWbParameters
-                        .sort((wb1, wb2) =>
-                          ascDuration
-                            ? wb1.duration_s - wb2.duration_s
-                            : wb1.wb_id - wb2.wb_id
+                  <ScatterPlot
+                    height={400}
+                    width={400}
+                    margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
+                    data={
+                      createDataset(
+                        perWbParameters.map((wb) => wb.wb_id),
+                        perWbParameters.map(
+                          (wb) => wb[v1FocusParam as keyof PerWbParameter]
                         )
-                        .map((wb) => wb.wb_id),
-                      perWbParameters.map(
-                        (wb) => wb[v2FocusParam as keyof PerWbParameter]
-                      )
-                    ) as [string, number][]
-                  }
-                  xLabel="Walking bout ID"
-                  yLabel={refinedParamNames.get(v2FocusParam) as string}
-                  className="self-center"
-                />
-              </CardContent>
-            </Card>
+                      ) as [number, number][]
+                    }
+                    xLabel="Walking bout ID"
+                    yLabel={refinedParamNames.get(v1FocusParam) as string}
+                    type={v1Step ? "step" : "connected"}
+                    integralX
+                    className="self-center"
+                  />
+                </CardContent>
+              </Card>
+              <Card className="w-1/2 flex flex-col justify-center">
+                <CardHeader>
+                  <VizCardTitle>
+                    Progression of a gait parameter (over time/ascending
+                    duration) (bar chart)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    mainDescription={
+                      "Same as the scatter plot on the right except represented in bar chart form. The 'bar' form may offer a clearer and more straight-forward representation and comparison of value. There is also an additional checkbox to sort in increasing order of duration to see if there is a trend between WB duration and the focus parameter."
+                    }
+                    exampleAnalysis="do the bars of each chronological walking decrease steadily for gait speed and if so, by how much each time?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <div className="flex gap-5 items-center">
+                    <Select
+                      onValueChange={setV2FocusParam}
+                      defaultValue={v2FocusParam}
+                    >
+                      <div className="flex flex-col gap-1">
+                        <Label>Focus parameter</Label>
+                        <SelectTrigger className="w-[240px]">
+                          <SelectValue placeholder="Select focus parameter" />
+                        </SelectTrigger>
+                      </div>
+                      <SelectContent>
+                        <SelectGroup>
+                          {perWbDataFields.map((param) => (
+                            <SelectItem value={param} key={param}>
+                              {refinedParamNames.get(param)}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <input
+                        type="checkbox"
+                        value={ascDuration.toString()}
+                        onChange={(el) => setAscDuration(el.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      <Label>Sort by ascending duration</Label>
+                    </div>
+                  </div>
+
+                  <BarChart
+                    height={400}
+                    width={400}
+                    margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
+                    data={
+                      createDataset(
+                        getWbProperty(
+                          ascDuration
+                            ? sortWbsByProperty(perWbParameters, "duration_s")
+                            : perWbParameters,
+                          "wb_id"
+                        ),
+                        getWbProperty(
+                          ascDuration
+                            ? sortWbsByProperty(perWbParameters, "duration_s")
+                            : perWbParameters,
+                          v2FocusParam as keyof PerWbParameter
+                        )
+                      ) as [string, number][]
+                    }
+                    xLabel="Walking bout ID"
+                    yLabel={refinedParamNames.get(v2FocusParam) as string}
+                    className="self-center"
+                  />
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>

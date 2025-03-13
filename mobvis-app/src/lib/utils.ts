@@ -1,3 +1,4 @@
+import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -35,4 +36,18 @@ export function createDataset(
     dataset.push([xValues[i], yValues[i]]);
   }
   return dataset;
+}
+
+export function sortWbsByProperty(
+  wbs: PerWbParameters,
+  property: keyof PerWbParameter
+) {
+  return wbs.toSorted((wb1, wb2) => wb1[property] - wb2[property]);
+}
+
+export function getWbProperty(
+  wbs: PerWbParameters,
+  property: keyof PerWbParameter
+) {
+  return wbs.map((wb) => wb[property]);
 }

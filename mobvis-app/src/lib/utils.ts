@@ -23,10 +23,10 @@ export function roundToNDpIfNeeded(num: number, n: number) {
 }
 
 export function createDataset(
-  xValues: number[],
+  xValues: number[] | string[],
   yValues: number[]
-): [number, number][] {
-  const dataset: [number, number][] = [];
+): [number | string, number][] {
+  const dataset: [number | string, number][] = [];
   if (xValues.length !== yValues.length) {
     throw new Error("xValues and yValues should be the same length");
   }

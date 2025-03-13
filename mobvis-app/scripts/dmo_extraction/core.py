@@ -1,4 +1,5 @@
 from tempfile import SpooledTemporaryFile
+from typing import Union
 
 import pandas as pd
 import numpy as np
@@ -19,7 +20,7 @@ def is_valid_measurement_condition(measurement_condition: str):
   if (measurement_condition not in ["laboratory", "free_living"]):
     raise ValueError(setting_error_message)
 
-def load_csv(file: Path | SpooledTemporaryFile, convertAccFromGToMs: bool = False) -> pd.DataFrame:
+def load_csv(file: Union[Path,SpooledTemporaryFile], convertAccFromGToMs: bool = False) -> pd.DataFrame:
   data = pd.read_csv(file)
 
   # check if the csv data file has the right columns
@@ -65,7 +66,7 @@ def create_dataset_from_dataframe(data: pd.DataFrame, sensor_height_m: float, he
 
 # TODO: once created entities, can pass in as argument rather than individual attributes.
 # CSV must have columns: samples, acc_x, acc_y_ acc_z, gyr_x_ gyr_y, gyr_z (according to the explained mobgap coord. system)
-def extract_dmos(file: Path | SpooledTemporaryFile, sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz: int, convertAccFromGToMs: bool = False) -> MobilisedPipelineImpaired:
+def extract_dmos(file: Union[Path,  SpooledTemporaryFile], sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz: int, convertAccFromGToMs: bool = False) -> MobilisedPipelineImpaired:
   # check that measurement condition is one of two types
   is_valid_measurement_condition(measurement_condition)
 

@@ -67,7 +67,7 @@ describe("AggregateAnalysis", () => {
 
     expect(within(table).getByText(/number of strides/i)).toBeInTheDocument();
     const nStrides = sampleAggregateParameters.find(
-      (param) => param.param === "no_strides"
+      (param) => param.param === "n_strides"
     )!;
     expect(
       within(table).getByText(roundToNDpIfNeeded(nStrides.avg, 5))

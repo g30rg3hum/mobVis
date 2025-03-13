@@ -19,7 +19,7 @@ export const sampleInputs: Inputs = {
 
 export const sampleAggregateParameters: AggregateParameters = [
   {
-    param: "no_strides",
+    param: "n_strides",
     max: 27,
     min: 8,
     avg: 16.8,

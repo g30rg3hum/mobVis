@@ -93,14 +93,14 @@ def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
   # for each parameter, calculating average, max, min, variance
 
   # get the lists of values for each parameter.
-  no_strides_list = per_wb_params["n_strides"].tolist()
+  n_strides_list = per_wb_params["n_strides"].tolist()
   duration_s_list = per_wb_params["duration_s"].tolist()
   cadence_spm_list = per_wb_params["cadence_spm"].tolist()
   stride_length_m_list = per_wb_params["stride_length_m"].tolist()
   walking_speed_mps_list = per_wb_params["walking_speed_mps"].tolist()
 
   data = [
-    calculate_aggregates("no_strides", no_strides_list),
+    calculate_aggregates("n_strides", n_strides_list),
     calculate_aggregates("duration_s", duration_s_list),
     calculate_aggregates("cadence_spm", cadence_spm_list),
     calculate_aggregates("stride_length_m", stride_length_m_list),

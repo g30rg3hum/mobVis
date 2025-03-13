@@ -5,6 +5,15 @@ import {
   CardContent,
   CardHeader,
 } from "@/components/shadcn-components/card";
+import { Label } from "@/components/shadcn-components/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/shadcn-components/select";
 import {
   Table,
   TableBody,
@@ -16,8 +25,9 @@ import {
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
+import { perWbDataFields, refinedParamNames } from "@/lib/fields";
 import {
-  createDataSet,
+  createDataset,
   getAndParseStorageItem,
   roundToNDpIfNeeded,
 } from "@/lib/utils";
@@ -25,9 +35,14 @@ import { Inputs, PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useEffect, useState } from "react";
 
 export default function WbAnalysis() {
+  // data states
   const [inputs, setInputs] = useState<Inputs | null>(null);
   const [perWbParameters, setPerWbParameters] =
     useState<PerWbParameters | null>(null);
+
+  // states for visualisations
+  const [v1FocusParam, setV1FocusParam] = useState<string>("walking_speed_mps");
+  const [v1Step, setV1Step] = useState<boolean>(false);
 
   useEffect(() => {
     setInputs(getAndParseStorageItem("inputs"));
@@ -70,8 +85,8 @@ export default function WbAnalysis() {
                       <TableHead>Number of strides</TableHead>
                       <TableHead>WB Duration (s)</TableHead>
                       <TableHead>Stride duration (s)</TableHead>
-                      <TableHead>Cadence</TableHead>
-                      <TableHead>Stride length</TableHead>
+                      <TableHead>Cadence (steps/min)</TableHead>
+                      <TableHead>Stride length (m)</TableHead>
                       <TableHead>Walking speed (m/s)</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -106,29 +121,62 @@ export default function WbAnalysis() {
             <Card>
               <CardHeader>
                 <VizCardTitle>
-                  Progression of a gait parameter (overtime /ascending duration)
-                  (scatter plot)
+                  Progression of a gait parameter overtime (scatter/step plot)
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "Scatter plot of a focus gait parameter against walking bouts. The walking bouts can be ordered chronologically to look for any temporal relationships or in order of ascending duration to see if increasing duration has any effect on the gait parameter’s values."
+                    "Plot of a focus gait parameter against walking bouts. The walking bouts are ordered chronologically to look for any temporal relationships. The plot can be displayed as a connected scatter plot or step plot using the checkbox."
                   }
                   exampleAnalysis="do later walking bouts involve slower gait speeds?"
                 />
               </CardHeader>
-              <CardContent className="flex justify-center">
+              <CardContent className="flex flex-col justify-center gap-10">
+                <div className="flex gap-5 items-center">
+                  <Select
+                    onValueChange={setV1FocusParam}
+                    defaultValue={v1FocusParam}
+                  >
+                    <div className="flex flex-col gap-1">
+                      <Label>Focus parameter</Label>
+                      <SelectTrigger className="w-[240px]">
+                        <SelectValue placeholder="Select focus parameter" />
+                      </SelectTrigger>
+                    </div>
+                    <SelectContent>
+                      <SelectGroup>
+                        {perWbDataFields.map((param) => (
+                          <SelectItem value={param} key={param}>
+                            {refinedParamNames.get(param)}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <input
+                      type="checkbox"
+                      value={v1Step.toString()}
+                      onChange={(el) => setV1Step(el.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    <Label>Step?</Label>
+                  </div>
+                </div>
                 <ScatterPlot
                   height={500}
                   width={500}
                   margin={{ left: 100, right: 10, bottom: 50, top: 10 }}
-                  data={createDataSet(
+                  data={createDataset(
                     perWbParameters.map((wb) => wb.wb_id),
-                    perWbParameters.map((wb) => wb.walking_speed_mps)
+                    perWbParameters.map(
+                      (wb) => wb[v1FocusParam as keyof PerWbParameter]
+                    )
                   )}
                   xLabel="Walking bout ID"
-                  yLabel="Gait parameter"
-                  type="step"
-                  integralX={true}
+                  yLabel={refinedParamNames.get(v1FocusParam) as string}
+                  type={v1Step ? "step" : "connected"}
+                  integralX
+                  className="self-center"
                 />
               </CardContent>
             </Card>

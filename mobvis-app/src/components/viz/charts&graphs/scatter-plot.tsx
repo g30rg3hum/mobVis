@@ -13,6 +13,7 @@ interface Props {
   yLabel: string;
   type: "connected" | "step";
   integralX: boolean;
+  className: string;
 }
 export default function ScatterPlot({
   width,
@@ -23,6 +24,7 @@ export default function ScatterPlot({
   yLabel,
   type = "connected",
   integralX = false,
+  className,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
@@ -53,20 +55,18 @@ export default function ScatterPlot({
       .scaleLinear()
       .domain([0, maxX + maxX * 0.1])
       .range([0, width]);
-    // need to shift down by the height.
+
+    const xAxis = d3.axisBottom(x);
+
     if (integralX) {
-      plot
-        .append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(
-          d3.axisBottom(x).tickValues(integralTicks).tickFormat(d3.format("d"))
-        );
-    } else {
-      plot
-        .append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+      xAxis.tickValues(integralTicks).tickFormat(d3.format("d"));
     }
+
+    // push it all the way down
+    plot
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
 
     // add the Y axis
     const maxY = Math.max(...yValues);
@@ -127,5 +127,7 @@ export default function ScatterPlot({
       );
   }
 
-  return <svg width={width} height={height} ref={ref}></svg>;
+  return (
+    <svg width={width} height={height} ref={ref} className={className}></svg>
+  );
 }

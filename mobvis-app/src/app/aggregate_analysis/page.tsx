@@ -17,10 +17,10 @@ import {
 import StatCard from "@/components/viz/stat-card";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
+import { refinedParamNames } from "@/lib/fields";
 import {
   convertHoursToMinutesAndTrunc,
   getAndParseStorageItem,
-  refinedParamNames,
   roundToNDpIfNeeded,
 } from "@/lib/utils";
 import {

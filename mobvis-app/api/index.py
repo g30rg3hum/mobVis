@@ -59,6 +59,10 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
 
     return response
   except Exception as e:
+    # handle common interpolation error involving invalid sampling rate.
+    if ("x_new is below the interpolation range's minimum value" in str(e)):
+      e = ValueError("The sampling rate may be too high.")
+
     csvFile.file.close()
     raise HTTPException(status_code=400, detail=str(e))
   

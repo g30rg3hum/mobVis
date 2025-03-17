@@ -23,6 +23,7 @@ import {
   TableRow,
 } from "@/components/shadcn-components/table";
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
+import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
@@ -70,7 +71,7 @@ export default function WbAnalysis() {
           </p>
         </div>
         <div className="flex justify-center mb-10">
-          <div className="flex flex-col gap-5 w-[1150px]">
+          <div className="flex flex-col gap-5 w-[1300px]">
             <Card>
               <CardHeader>
                 <VizCardTitle>
@@ -125,7 +126,7 @@ export default function WbAnalysis() {
               </CardContent>
             </Card>
             <div className="flex gap-5">
-              <Card className="w-1/2 flex flex-col justify-center">
+              <Card className="w-1/2">
                 <CardHeader>
                   <VizCardTitle>
                     Progression of a gait parameter over time (scatter/step
@@ -166,13 +167,14 @@ export default function WbAnalysis() {
                         value={v1Step.toString()}
                         onChange={(el) => setV1Step(el.target.checked)}
                         className="w-4 h-4"
+                        id="v1StepCheckbox"
                       />
-                      <Label>Step?</Label>
+                      <Label htmlFor="v1StepCheckbox">Step?</Label>
                     </div>
                   </div>
                   <ScatterPlot
-                    height={400}
-                    width={400}
+                    height={500}
+                    width={500}
                     margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
                     data={
                       createDataset(
@@ -231,14 +233,17 @@ export default function WbAnalysis() {
                         value={ascDuration.toString()}
                         onChange={(el) => setAscDuration(el.target.checked)}
                         className="w-4 h-4"
+                        id="v2AscDurationCheckbox"
                       />
-                      <Label>Sort by ascending duration</Label>
+                      <Label htmlFor="v2AscDurationCheckbox">
+                        Sort by ascending duration
+                      </Label>
                     </div>
                   </div>
 
                   <BarChart
                     height={400}
-                    width={400}
+                    width={500}
                     margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
                     data={
                       createDataset(
@@ -263,6 +268,29 @@ export default function WbAnalysis() {
                 </CardContent>
               </Card>
             </div>
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Relatioship between all gait parameters
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription={
+                    "A parallel coordinates plot with an axis for each gait parameter. Each walking bout is a data line through these axes. The patterns of how these data lines cross and converge through these axes can reveal relationships between the gait parameters."
+                  }
+                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-10">
+                <ParallelCoordinatesPlot
+                  height={400}
+                  width={1000}
+                  margin={{ left: 60, right: 60, bottom: 50, top: 50 }}
+                  data={perWbParameters}
+                  axes={perWbDataFields}
+                  className="border border-red-500 self-center"
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

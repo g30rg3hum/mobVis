@@ -1,5 +1,6 @@
 "use client";
 
+import { leastSquaresRegression } from "@/lib/linearRegression";
 import { Margin } from "@/types/viz";
 import * as d3 from "d3";
 import { useEffect, useRef } from "react";
@@ -11,8 +12,8 @@ interface Props {
   data: [number, number][];
   xLabel: string;
   yLabel: string;
-  type: "connected" | "step";
-  integralX: boolean;
+  type: "connected" | "step" | "correlation";
+  integralX?: boolean;
   className: string;
 }
 export default function ScatterPlot({
@@ -50,11 +51,9 @@ export default function ScatterPlot({
 
     // add the X axis
     const maxX = Math.max(...xValues);
+    const endX = maxX + maxX * 0.1;
     const integralTicks = d3.range(0, maxX + 1, 1);
-    const x = d3
-      .scaleLinear()
-      .domain([0, maxX + maxX * 0.1])
-      .range([0, width]);
+    const x = d3.scaleLinear().domain([0, endX]).range([0, width]);
 
     const xAxis = d3.axisBottom(x);
 
@@ -106,25 +105,56 @@ export default function ScatterPlot({
       .attr("r", 4)
       .style("fill", "#9B29FF");
 
-    plot
-      .append("path")
-      .datum(data)
-      .attr("stroke", "#9B29FF")
-      .attr("stroke-width", 2)
-      .attr("fill", "none")
-      .attr(
-        "d",
-        type === "connected"
-          ? d3
-              .line()
-              .x((d) => x(d[0]))
-              .y((d) => y(d[1]))
-          : d3
-              .line()
-              .x((d) => x(d[0]))
-              .y((d) => y(d[1]))
-              .curve(d3.curveStep)
-      );
+    function connectPointsLine(): d3.Line<[number, number]> {
+      if (type === "connected") {
+        return d3
+          .line()
+          .x((d) => x(d[0]))
+          .y((d) => y(d[1]));
+      } else if (type === "step") {
+        return d3
+          .line()
+          .x((d) => x(d[0]))
+          .y((d) => y(d[1]))
+          .curve(d3.curveStep);
+      }
+      return d3.line();
+    }
+
+    if (type === "connected" || type === "step") {
+      plot
+        .append("path")
+        .datum(data)
+        .attr("stroke", "#9B29FF")
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+        .attr("d", connectPointsLine());
+    }
+
+    if (type === "correlation") {
+      // calculate least squares regression
+      const result = leastSquaresRegression(xValues, yValues);
+
+      const lineOfBestFit = (x: number): number =>
+        result.slope * x + result.yIntercept;
+      const lineOfBestFitPoints: [number, number][] = [
+        [0, lineOfBestFit(0)],
+        [endX, lineOfBestFit(endX)],
+      ];
+      plot
+        .append("path")
+        .datum(lineOfBestFitPoints)
+        .attr("stroke", "#9B29FF")
+        .attr("stroke-width", 2)
+        .style("fill", "none")
+        .attr(
+          "d",
+          d3
+            .line()
+            .x((d) => x(d[0]))
+            .y((d) => y(d[1]))
+        );
+    }
   }
 
   return (

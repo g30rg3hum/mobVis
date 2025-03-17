@@ -51,6 +51,9 @@ export default function WbAnalysis() {
   const [v2FocusParam, setV2FocusParam] = useState<string>("walking_speed_mps");
   const [ascDuration, setAscDuration] = useState<boolean>(false);
 
+  const [v3ParamX, setV3ParamX] = useState<string>("stride_length_m");
+  const [v3ParamY, setV3ParamY] = useState<string>("walking_speed_mps");
+
   useEffect(() => {
     setInputs(getAndParseStorageItem("inputs"));
     setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
@@ -271,7 +274,7 @@ export default function WbAnalysis() {
             <Card>
               <CardHeader>
                 <VizCardTitle>
-                  Relatioship between all gait parameters
+                  Relationship between all gait parameters
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
@@ -287,7 +290,82 @@ export default function WbAnalysis() {
                   margin={{ left: 60, right: 60, bottom: 50, top: 50 }}
                   data={perWbParameters}
                   axes={perWbDataFields}
-                  className="border border-red-500 self-center"
+                  className="self-center"
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Relationship between two gait parameters
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription={
+                    "A regular scatter plot where you can select the gait parameters for the x and y axes respectively. This offers a more isolated and clearer view of correlation between two specific gait parameters."
+                  }
+                  exampleAnalysis="does longer stride length correlate to faster gait speeds?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-10">
+                <div className="flex gap-5 items-center">
+                  <Select onValueChange={setV3ParamX} defaultValue={v3ParamX}>
+                    <div className="flex flex-col gap-1">
+                      <Label>X-axis parameter</Label>
+                      <SelectTrigger className="w-[240px]">
+                        <SelectValue placeholder="Select x-axis parameter" />
+                      </SelectTrigger>
+                    </div>
+                    <SelectContent>
+                      <SelectGroup>
+                        {perWbDataFields
+                          .filter((param) => param !== v3ParamY)
+                          .map((param) => (
+                            <SelectItem value={param} key={param}>
+                              {refinedParamNames.get(param)}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <Select onValueChange={setV3ParamY} defaultValue={v3ParamY}>
+                    <div className="flex flex-col gap-1">
+                      <Label>Y-axis parameter</Label>
+                      <SelectTrigger className="w-[240px]">
+                        <SelectValue placeholder="Select y-axis parameter" />
+                      </SelectTrigger>
+                    </div>
+                    <SelectContent>
+                      <SelectGroup>
+                        {perWbDataFields
+                          .filter((param) => param !== v3ParamX)
+                          .map((param) => (
+                            <SelectItem value={param} key={param}>
+                              {refinedParamNames.get(param)}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <ScatterPlot
+                  height={500}
+                  width={1000}
+                  margin={{ left: 100, right: 50, bottom: 65, top: 20 }}
+                  data={
+                    createDataset(
+                      perWbParameters.map(
+                        (wb) => wb[v3ParamX as keyof PerWbParameter]
+                      ),
+                      perWbParameters.map(
+                        (wb) => wb[v3ParamY as keyof PerWbParameter]
+                      )
+                    ) as [number, number][]
+                  }
+                  xLabel={refinedParamNames.get(v3ParamX) as string}
+                  yLabel={refinedParamNames.get(v3ParamY) as string}
+                  type="correlation"
+                  className="self-center"
                 />
               </CardContent>
             </Card>

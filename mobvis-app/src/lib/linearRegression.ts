@@ -1,5 +1,3 @@
-// TODO: test these functions
-
 interface leastSquaresRegressionResults {
   slope: number;
   yIntercept: number;

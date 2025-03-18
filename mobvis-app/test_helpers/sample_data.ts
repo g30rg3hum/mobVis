@@ -81,7 +81,7 @@ export const samplePerWbParameters: PerWbParameters = [
   {
     start: 9715,
     end: 10630,
-    n_strides: 12,
+    n_strides: 13,
     duration_s: 9.15,
     stride_duration_s: 0.985,
     cadence_spm: 100.65648442824671,

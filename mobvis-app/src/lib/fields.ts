@@ -15,3 +15,27 @@ export const perWbDataFields = [
   "walking_speed_mps",
   "stride_duration_s",
 ];
+
+export const refinedInputFieldNames = new Map([
+  ["name", "Name"],
+  ["description", "Description"],
+  ["samplingRate", "Sampling rate (Hz)"],
+  ["sensorHeight", "Sensor height (m)"],
+  ["patientHeight", "Patient height (m)"],
+  ["setting", "Setting"],
+  ["public", "Public"],
+  ["csvFile", "CSV file"],
+  ["convertToMs", "Convert to CSV to milliseconds"],
+]);
+
+export const inputFields = [
+  "name",
+  "description",
+  "samplingRate",
+  "sensorHeight",
+  "patientHeight",
+  "setting",
+  "public",
+  "csvFile",
+  "convertToMs",
+];

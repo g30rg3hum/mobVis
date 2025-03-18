@@ -1,11 +1,11 @@
 import {
   AggregateParameters,
-  Inputs,
+  InputsForm,
   PerStrideParameters,
   PerWbParameters,
 } from "@/types/parameters";
 
-export const sampleInputs: Inputs = {
+export const sampleInputs: InputsForm = {
   name: "George's gait",
   description: "This is the best gait assessment",
   patientHeight: 1.68,

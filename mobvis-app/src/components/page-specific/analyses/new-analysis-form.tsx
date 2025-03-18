@@ -99,7 +99,10 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
     });
 
     if (success) {
-      localStorage.setItem("inputs", JSON.stringify(values));
+      localStorage.setItem(
+        "inputs",
+        JSON.stringify({ ...values, csvFile: values.csvFile.name })
+      );
       localStorage.setItem(
         "total_walking_duration",
         response.total_walking_duration

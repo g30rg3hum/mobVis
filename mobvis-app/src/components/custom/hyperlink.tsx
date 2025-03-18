@@ -4,10 +4,11 @@ import { ReactNode } from "react";
 interface Props {
   url: string;
   children: ReactNode;
+  onClick?: () => void;
 }
-export default function HyperLink({ url, children }: Props) {
+export default function HyperLink({ url, children, onClick }: Props) {
   return (
-    <Link href={url} className="text-sky-500 underline">
+    <Link href={url} className="text-sky-500 underline" onClick={onClick}>
       {children}
     </Link>
   );

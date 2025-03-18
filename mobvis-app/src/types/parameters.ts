@@ -1,6 +1,6 @@
 export type Record = { [key: string]: number };
 
-export type Inputs = {
+export type InputsForm = {
   name: string;
   description: string;
   patientHeight: number;
@@ -11,6 +11,8 @@ export type Inputs = {
   convertToMs: boolean;
   public: boolean;
 };
+
+export type InputsJson = Omit<InputsForm, "csvFile"> & { csvFile: string };
 
 export type AggregateParameter = {
   param: string;

@@ -5,6 +5,13 @@ import {
   CardContent,
   CardHeader,
 } from "@/components/shadcn-components/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/shadcn-components/dialog";
 import { Label } from "@/components/shadcn-components/label";
 import {
   Select,
@@ -28,7 +35,11 @@ import RadarChart from "@/components/viz/charts&graphs/radar-chart";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
-import { perWbDataFields, refinedParamNames } from "@/lib/fields";
+import {
+  perWbDataFields,
+  refinedInputFieldNames,
+  refinedParamNames,
+} from "@/lib/fields";
 import {
   createDataset,
   getAndParseStorageItem,
@@ -36,12 +47,18 @@ import {
   roundToNDpIfNeeded,
   sortWbsByProperty,
 } from "@/lib/utils";
-import { Inputs, PerWbParameter, PerWbParameters } from "@/types/parameters";
+import {
+  InputsJson,
+  PerWbParameter,
+  PerWbParameters,
+} from "@/types/parameters";
 import { useEffect, useState } from "react";
 
 export default function WbAnalysis() {
+  const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
+
   // data states
-  const [inputs, setInputs] = useState<Inputs | null>(null);
+  const [inputs, setInputs] = useState<InputsJson | null>(null);
   const [perWbParameters, setPerWbParameters] =
     useState<PerWbParameters | null>(null);
 
@@ -70,9 +87,32 @@ export default function WbAnalysis() {
           <p>
             Visualisations for per walking bout gait parameters extracted from{" "}
             <span className="font-semibold">{inputs.name}</span>.{" "}
-            <HyperLink url="">Click here</HyperLink> to see the inputs
-            you&apos;ve submitted.
+            <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>
+              Click here
+            </HyperLink>{" "}
+            to see the inputs you&apos;ve submitted.
           </p>
+          <Dialog open={isInputDialogOpen} onOpenChange={setIsInputDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Current inputs</DialogTitle>
+                <DialogDescription>
+                  These are the form inputs you submitted for this gait
+                  analysis.
+                </DialogDescription>
+              </DialogHeader>
+              <ul className="space-y-3">
+                {Object.keys(inputs).map((input) => (
+                  <li key={input}>
+                    <span className="font-medium">
+                      {refinedInputFieldNames.get(input)}:{" "}
+                    </span>
+                    {inputs[input as keyof InputsJson].toString()}
+                  </li>
+                ))}
+              </ul>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="flex justify-center mb-10">
           <div className="flex flex-col gap-5 w-[1300px]">

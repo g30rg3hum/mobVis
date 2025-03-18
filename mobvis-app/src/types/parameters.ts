@@ -1,3 +1,5 @@
+export type Record = { [key: string]: number };
+
 export type Inputs = {
   name: string;
   description: string;

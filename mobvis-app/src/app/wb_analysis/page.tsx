@@ -24,6 +24,7 @@ import {
 } from "@/components/shadcn-components/table";
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
 import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
+import RadarChart from "@/components/viz/charts&graphs/radar-chart";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
@@ -365,6 +366,30 @@ export default function WbAnalysis() {
                   xLabel={refinedParamNames.get(v3ParamX) as string}
                   yLabel={refinedParamNames.get(v3ParamY) as string}
                   type="correlation"
+                  className="self-center"
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <VizCardTitle>Comparison between walking bouts</VizCardTitle>
+                <VizCardDescription
+                  mainDescription={
+                    "A radar chart with axes for each gait parameter, plotting against identified walking bouts from this current gait analysis that you select to add from the dropdown. Representing the walking bouts as shapes provide straightforward insights about how the walking bouts compare across each dimension (gait parameter). You can plot for up to three walking bouts, to avoid the chart getting too cluttered."
+                  }
+                  exampleAnalysis="for which parameters does a given walking bout have higher values for, compared against another walking bout?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-10">
+                <RadarChart
+                  height={500}
+                  width={1000}
+                  radius={300}
+                  margin={{ left: 50, right: 50, bottom: 100, top: 100 }}
+                  data={perWbParameters}
+                  recordsToPlot={[0]}
+                  axes={perWbDataFields}
                   className="self-center"
                 />
               </CardContent>

@@ -2,8 +2,7 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Margin } from "@/types/viz";
-
-type Record = { [key: string]: number };
+import { Record } from "@/types/parameters";
 
 interface Props {
   width: number;
@@ -60,11 +59,10 @@ export default function ParallelCoordinatesPlot({
 
     // draw axes
     plot
-      .selectAll("g.axis")
+      .selectAll("axis")
       .data(axes)
       .enter()
       .append("g")
-      .attr("class", "axis")
       // translate according to defined scalePoint
       .attr("transform", (axis) => "translate(" + x(axis) + ")")
       // for each axis draw the y axis.

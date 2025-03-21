@@ -1,18 +1,18 @@
 import {
   AggregateParameters,
-  InputsForm,
+  InputsJson,
   PerStrideParameters,
   PerWbParameters,
 } from "@/types/parameters";
 
-export const sampleInputs: InputsForm = {
+export const sampleInputs: InputsJson = {
   name: "George's gait",
   description: "This is the best gait assessment",
   patientHeight: 1.68,
   sensorHeight: 1.5,
   samplingRate: 100,
   setting: "laboratory",
-  csvFile: new File([""], "test.csv"),
+  csvFile: "test.csv",
   convertToMs: true,
   public: false,
 };

@@ -375,7 +375,7 @@ export default function WbAnalysis() {
                   </VizCardTitle>
                   <VizCardDescription
                     mainDescription={
-                      "Same as the scatter plot on the right except represented in bar chart form. The 'bar' form may offer a clearer and more straight-forward representation and comparison of value. There is also an additional checkbox to sort in increasing order of duration to see if there is a trend between WB duration and the focus parameter."
+                      "Similar to the scatter plot on the left except represented in bar chart form. The fuller 'bar' form may offer a clearer and more straight-forward representation and comparison of value. There is also an additional checkbox setting to sort in increasing order of duration to see if there is a trend between WB duration and the focus parameter."
                     }
                     exampleAnalysis="do the bars of each chronological walking decrease steadily for gait speed and if so, by how much each time?"
                   />

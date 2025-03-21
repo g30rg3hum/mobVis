@@ -63,6 +63,10 @@ export default function WbAnalysis() {
   const [inputs, setInputs] = useState<InputsJson | null>(null);
   const [perWbParameters, setPerWbParameters] =
     useState<PerWbParameters | null>(null);
+  useEffect(() => {
+    setInputs(getAndParseStorageItem("inputs"));
+    setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
+  }, []);
 
   // states for visualisations
   const [tableFocusSort, setTableFocusSort] = useState<PerWbDataField>("wb_id");
@@ -81,6 +85,7 @@ export default function WbAnalysis() {
     useState<boolean>(false);
 
   function sortOneParam(string: PerWbDataField) {
+    setDragged(false);
     setTableFocusSort(string);
     //flip the sort order if same param is clicked
     setTableSortIdAsc(string === "wb_id" && !tableSortIdAsc);
@@ -127,12 +132,45 @@ export default function WbAnalysis() {
   const [v3ParamX, setV3ParamX] = useState<string>("stride_length_m");
   const [v3ParamY, setV3ParamY] = useState<string>("walking_speed_mps");
 
-  useEffect(() => {
-    setInputs(getAndParseStorageItem("inputs"));
-    setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
-  }, []);
+  // dragging functionality
+  const [dragged, setDragged] = useState<boolean>(false);
+  const handleDragStart = (
+    e: React.DragEvent<HTMLTableRowElement>,
+    index: string
+  ) => {
+    e.dataTransfer?.setData("index", index);
+  };
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
+    e.preventDefault();
+  };
+  const handleDrop = (
+    e: React.DragEvent<HTMLTableRowElement>,
+    index: number
+  ) => {
+    const draggedIndex = Number(e.dataTransfer?.getData("index"));
+    console.log(draggedIndex, index);
+    let removed;
+    const newPerWbParameters = [...perWbParameters!].filter((_, i) => {
+      if (i !== draggedIndex) {
+        return true;
+      } else {
+        removed = perWbParameters![i];
+      }
+    });
+    newPerWbParameters.splice(index, 0, removed!);
+    setDragged(true);
+    setPerWbParameters(newPerWbParameters);
+  };
 
   if (inputs && perWbParameters) {
+    const displayedWbs = dragged
+      ? perWbParameters
+      : sortWbsByProperty(
+          perWbParameters,
+          tableFocusSort as keyof PerWbParameter,
+          getSortParamState(tableFocusSort)
+        );
+
     return (
       <div>
         <div className="p-10 text-white">
@@ -225,12 +263,17 @@ export default function WbAnalysis() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortWbsByProperty(
-                      perWbParameters,
-                      tableFocusSort as keyof PerWbParameter,
-                      getSortParamState(tableFocusSort)
-                    ).map((param: PerWbParameter) => (
-                      <TableRow key={param.wb_id} data-testid={`table-wb-row`}>
+                    {displayedWbs.map((param: PerWbParameter, index) => (
+                      <TableRow
+                        key={param.wb_id}
+                        data-testid={`table-wb-row`}
+                        draggable
+                        onDragStart={(e) =>
+                          handleDragStart(e, index.toString())
+                        }
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, index)}
+                      >
                         <TableCell>{param.wb_id}</TableCell>
                         <TableCell>
                           {roundToNDpIfNeeded(param.n_strides, 5)}

@@ -1,5 +1,6 @@
 "use client";
 import HyperLink from "@/components/custom/hyperlink";
+import SortIcon from "@/components/page-specific/analyses/sort-icon";
 import {
   Card,
   CardContent,
@@ -49,6 +50,7 @@ import {
 } from "@/lib/utils";
 import {
   InputsJson,
+  PerWbDataField,
   PerWbParameter,
   PerWbParameters,
 } from "@/types/parameters";
@@ -63,6 +65,59 @@ export default function WbAnalysis() {
     useState<PerWbParameters | null>(null);
 
   // states for visualisations
+  const [tableFocusSort, setTableFocusSort] = useState<PerWbDataField>("wb_id");
+  const [tableSortIdAsc, setTableSortIdAsc] = useState<boolean>(true);
+  const [tableSortNStridesAsc, setTableSortNStridesAsc] =
+    useState<boolean>(false);
+  const [tableSortDurationAsc, setTableSortDurationAsc] =
+    useState<boolean>(false);
+  const [tableSortStrideDurationAsc, setTableSortStrideDurationAsc] =
+    useState<boolean>(false);
+  const [tableSortCadenceAsc, setTableSortCadenceAsc] =
+    useState<boolean>(false);
+  const [tableSortStrideLengthAsc, setTableSortStrideLengthAsc] =
+    useState<boolean>(false);
+  const [tableSortWalkingSpeedAsc, setTableSortWalkingSpeedAsc] =
+    useState<boolean>(false);
+
+  function sortOneParam(string: PerWbDataField) {
+    setTableFocusSort(string);
+    //flip the sort order if same param is clicked
+    setTableSortIdAsc(string === "wb_id" && !tableSortIdAsc);
+    setTableSortNStridesAsc(string === "n_strides" && !tableSortNStridesAsc);
+    setTableSortStrideDurationAsc(
+      string === "stride_duration_s" && !tableSortStrideDurationAsc
+    );
+    setTableSortDurationAsc(string === "duration_s" && !tableSortDurationAsc);
+    setTableSortCadenceAsc(string === "cadence_spm" && !tableSortCadenceAsc);
+    setTableSortStrideLengthAsc(
+      string === "stride_length_m" && !tableSortStrideLengthAsc
+    );
+    setTableSortWalkingSpeedAsc(
+      string === "walking_speed_mps" && !tableSortWalkingSpeedAsc
+    );
+  }
+  function getSortParamState(param: PerWbDataField) {
+    switch (param) {
+      case "wb_id":
+        return tableSortIdAsc;
+      case "n_strides":
+        return tableSortNStridesAsc;
+      case "duration_s":
+        return tableSortDurationAsc;
+      case "stride_duration_s":
+        return tableSortStrideDurationAsc;
+      case "cadence_spm":
+        return tableSortCadenceAsc;
+      case "stride_length_m":
+        return tableSortStrideLengthAsc;
+      case "walking_speed_mps":
+        return tableSortWalkingSpeedAsc;
+      default:
+        return false;
+    }
+  }
+
   const [v1FocusParam, setV1FocusParam] = useState<string>("walking_speed_mps");
   const [v1Step, setV1Step] = useState<boolean>(false);
 
@@ -93,9 +148,11 @@ export default function WbAnalysis() {
             to see the inputs you&apos;ve submitted.
           </p>
           <Dialog open={isInputDialogOpen} onOpenChange={setIsInputDialogOpen}>
-            <DialogContent>
+            <DialogContent data-testid="inputs-dialog">
               <DialogHeader>
-                <DialogTitle>Current inputs</DialogTitle>
+                <DialogTitle className="font-semibold">
+                  <span className="mr-2">🔣</span>Current inputs
+                </DialogTitle>
                 <DialogDescription>
                   These are the form inputs you submitted for this gait
                   analysis.
@@ -119,31 +176,61 @@ export default function WbAnalysis() {
             <Card>
               <CardHeader>
                 <VizCardTitle>
-                  Table of all parameters of each walking bout
+                  Table of all gait parameters under each walking bout
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "Tabular view of the exact figures of each gait parameter for each identified walking bout"
+                    "Tabular view of the exact figures of each gait parameter for each identified walking bout in the CSV data you uploaded."
                   }
                   exampleAnalysis="what is the precise walking speed that the patient was walking at in the initial walking bout?"
                 />
               </CardHeader>
               <CardContent>
-                <Table>
+                <Table data-testid="per-wb-params-table">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>WB ID</TableHead>
-                      <TableHead>Number of strides</TableHead>
-                      <TableHead>WB Duration (s)</TableHead>
-                      <TableHead>Stride duration (s)</TableHead>
-                      <TableHead>Cadence (steps/min)</TableHead>
-                      <TableHead>Stride length (m)</TableHead>
-                      <TableHead>Walking speed (m/s)</TableHead>
+                      <TableHead>
+                        WB ID <SortIcon onClick={() => sortOneParam("wb_id")} />
+                      </TableHead>
+                      <TableHead>
+                        Number of strides{" "}
+                        <SortIcon onClick={() => sortOneParam("n_strides")} />
+                      </TableHead>
+                      <TableHead>
+                        WB Duration (s){" "}
+                        <SortIcon onClick={() => sortOneParam("duration_s")} />
+                      </TableHead>
+                      <TableHead>
+                        Stride duration (s){" "}
+                        <SortIcon
+                          onClick={() => sortOneParam("stride_duration_s")}
+                        />
+                      </TableHead>
+                      <TableHead>
+                        Cadence (steps/min){" "}
+                        <SortIcon onClick={() => sortOneParam("cadence_spm")} />
+                      </TableHead>
+                      <TableHead>
+                        Stride length (m){" "}
+                        <SortIcon
+                          onClick={() => sortOneParam("stride_length_m")}
+                        />
+                      </TableHead>
+                      <TableHead>
+                        Walking speed (m/s){" "}
+                        <SortIcon
+                          onClick={() => sortOneParam("walking_speed_mps")}
+                        />
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {perWbParameters.map((param: PerWbParameter) => (
-                      <TableRow key={param.wb_id}>
+                    {sortWbsByProperty(
+                      perWbParameters,
+                      tableFocusSort as keyof PerWbParameter,
+                      getSortParamState(tableFocusSort)
+                    ).map((param: PerWbParameter) => (
+                      <TableRow key={param.wb_id} data-testid={`table-wb-row`}>
                         <TableCell>{param.wb_id}</TableCell>
                         <TableCell>
                           {roundToNDpIfNeeded(param.n_strides, 5)}

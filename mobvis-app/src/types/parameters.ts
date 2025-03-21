@@ -1,3 +1,5 @@
+import { perWbDataFields } from "@/lib/fields";
+
 export type Record = { [key: string]: number };
 
 export type InputsForm = {
@@ -35,6 +37,8 @@ export type PerWbParameter = {
   walking_speed_mps: number;
   cadence_spm: number;
 };
+
+export type PerWbDataField = (typeof perWbDataFields)[number];
 
 export type PerWbParameters = Array<PerWbParameter>;
 

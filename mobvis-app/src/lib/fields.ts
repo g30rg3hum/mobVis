@@ -8,6 +8,7 @@ export const refinedParamNames = new Map([
 ]);
 
 export const perWbDataFields = [
+  "wb_id",
   "n_strides",
   "duration_s",
   "cadence_spm",

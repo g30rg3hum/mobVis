@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   sampleInputs,
@@ -38,20 +38,39 @@ describe("WbAnalysis", () => {
     localStorage.clear();
   });
 
-  it("should show entered input when link is clicked on", async () => {
+  it("should show entered inputs when link is clicked on", async () => {
     const link = screen.getByText("Click here");
     await userEvent.click(link);
-    expect(screen.getAllByText(sampleInputs.name)).toHaveLength(2);
-    expect(screen.getByText(sampleInputs.description)).toBeInTheDocument();
-    expect(screen.getByText(sampleInputs.patientHeight)).toBeInTheDocument();
-    expect(screen.getByText(sampleInputs.sensorHeight)).toBeInTheDocument();
-    expect(screen.getByText(sampleInputs.setting)).toBeInTheDocument();
-    expect(screen.getByText(sampleInputs.csvFile)).toBeInTheDocument();
+    const dialog = screen.getByTestId("inputs-dialog");
+    expect(within(dialog).getByText(sampleInputs.name)).toBeInTheDocument();
     expect(
-      screen.getByText(sampleInputs.convertToMs.toString())
+      within(dialog).getByText(sampleInputs.description)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(sampleInputs.public.toString())
+      within(dialog).getByText(sampleInputs.patientHeight)
     ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(sampleInputs.sensorHeight)
+    ).toBeInTheDocument();
+    expect(within(dialog).getByText(sampleInputs.setting)).toBeInTheDocument();
+    expect(within(dialog).getByText(sampleInputs.csvFile)).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(sampleInputs.convertToMs.toString())
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(sampleInputs.public.toString())
+    ).toBeInTheDocument();
+  });
+
+  it("sorting function works (just test for wb_id)", async () => {
+    const sortButton = screen.getAllByTestId("sort-icon")[0];
+    await userEvent.click(sortButton);
+
+    const table = screen.getByTestId("per-wb-params-table");
+    const rows = within(table).getAllByTestId("table-wb-row");
+    const firstRow = rows[0];
+    const lastRow = rows[rows.length - 1];
+    expect(within(firstRow).getByText("4")).toBeInTheDocument();
+    expect(within(lastRow).getByText("0")).toBeInTheDocument();
   });
 });

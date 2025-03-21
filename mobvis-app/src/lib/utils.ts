@@ -40,9 +40,14 @@ export function createDataset(
 
 export function sortWbsByProperty(
   wbs: PerWbParameters,
-  property: keyof PerWbParameter
+  property: keyof PerWbParameter,
+  asc: boolean = true // false if desc
 ) {
-  return wbs.toSorted((wb1, wb2) => wb1[property] - wb2[property]);
+  if (asc) {
+    return wbs.toSorted((wb1, wb2) => wb1[property] - wb2[property]);
+  } else {
+    return wbs.toSorted((wb1, wb2) => wb2[property] - wb1[property]);
+  }
 }
 
 export function getWbProperty(

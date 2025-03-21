@@ -66,10 +66,12 @@ export default function WbAnalysis() {
   useEffect(() => {
     setInputs(getAndParseStorageItem("inputs"));
     setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
+    setTablePerWbParameters(getAndParseStorageItem("per_wb_parameters"));
   }, []);
 
   // states for visualisations
-  const [tableFocusSort, setTableFocusSort] = useState<PerWbDataField>("wb_id");
+  const [tablePerWbParameters, setTablePerWbParameters] =
+    useState<PerWbParameters | null>(null);
   const [tableSortIdAsc, setTableSortIdAsc] = useState<boolean>(true);
   const [tableSortNStridesAsc, setTableSortNStridesAsc] =
     useState<boolean>(false);
@@ -85,8 +87,6 @@ export default function WbAnalysis() {
     useState<boolean>(false);
 
   function sortOneParam(string: PerWbDataField) {
-    setDragged(false);
-    setTableFocusSort(string);
     //flip the sort order if same param is clicked
     setTableSortIdAsc(string === "wb_id" && !tableSortIdAsc);
     setTableSortNStridesAsc(string === "n_strides" && !tableSortNStridesAsc);
@@ -100,6 +100,14 @@ export default function WbAnalysis() {
     );
     setTableSortWalkingSpeedAsc(
       string === "walking_speed_mps" && !tableSortWalkingSpeedAsc
+    );
+
+    setTablePerWbParameters(
+      sortWbsByProperty(
+        tablePerWbParameters!,
+        string as keyof PerWbParameter,
+        getSortParamState(string)
+      )
     );
   }
   function getSortParamState(param: PerWbDataField) {
@@ -133,7 +141,6 @@ export default function WbAnalysis() {
   const [v3ParamY, setV3ParamY] = useState<string>("walking_speed_mps");
 
   // dragging functionality
-  const [dragged, setDragged] = useState<boolean>(false);
   const handleDragStart = (
     e: React.DragEvent<HTMLTableRowElement>,
     index: string
@@ -148,29 +155,19 @@ export default function WbAnalysis() {
     index: number
   ) => {
     const draggedIndex = Number(e.dataTransfer?.getData("index"));
-    console.log(draggedIndex, index);
     let removed;
-    const newPerWbParameters = [...perWbParameters!].filter((_, i) => {
+    const newPerWbParameters = [...tablePerWbParameters!].filter((_, i) => {
       if (i !== draggedIndex) {
         return true;
       } else {
-        removed = perWbParameters![i];
+        removed = tablePerWbParameters![i];
       }
     });
     newPerWbParameters.splice(index, 0, removed!);
-    setDragged(true);
-    setPerWbParameters(newPerWbParameters);
+    setTablePerWbParameters(newPerWbParameters);
   };
 
   if (inputs && perWbParameters) {
-    const displayedWbs = dragged
-      ? perWbParameters
-      : sortWbsByProperty(
-          perWbParameters,
-          tableFocusSort as keyof PerWbParameter,
-          getSortParamState(tableFocusSort)
-        );
-
     return (
       <div>
         <div className="p-10 text-white">
@@ -263,38 +260,40 @@ export default function WbAnalysis() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {displayedWbs.map((param: PerWbParameter, index) => (
-                      <TableRow
-                        key={param.wb_id}
-                        data-testid={`table-wb-row`}
-                        draggable
-                        onDragStart={(e) =>
-                          handleDragStart(e, index.toString())
-                        }
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleDrop(e, index)}
-                      >
-                        <TableCell>{param.wb_id}</TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.n_strides, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.duration_s, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.stride_duration_s, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.cadence_spm, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.stride_length_m, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.walking_speed_mps, 5)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {tablePerWbParameters!.map(
+                      (param: PerWbParameter, index) => (
+                        <TableRow
+                          key={param.wb_id}
+                          data-testid={`table-wb-row`}
+                          draggable
+                          onDragStart={(e) =>
+                            handleDragStart(e, index.toString())
+                          }
+                          onDragOver={handleDragOver}
+                          onDrop={(e) => handleDrop(e, index)}
+                        >
+                          <TableCell>{param.wb_id}</TableCell>
+                          <TableCell>
+                            {roundToNDpIfNeeded(param.n_strides, 5)}
+                          </TableCell>
+                          <TableCell>
+                            {roundToNDpIfNeeded(param.duration_s, 5)}
+                          </TableCell>
+                          <TableCell>
+                            {roundToNDpIfNeeded(param.stride_duration_s, 5)}
+                          </TableCell>
+                          <TableCell>
+                            {roundToNDpIfNeeded(param.cadence_spm, 5)}
+                          </TableCell>
+                          <TableCell>
+                            {roundToNDpIfNeeded(param.stride_length_m, 5)}
+                          </TableCell>
+                          <TableCell>
+                            {roundToNDpIfNeeded(param.walking_speed_mps, 5)}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -308,7 +307,7 @@ export default function WbAnalysis() {
                   </VizCardTitle>
                   <VizCardDescription
                     mainDescription={
-                      "Plot of a focus gait parameter against walking bouts. The walking bouts are ordered chronologically to look for any temporal relationships. The plot can be displayed as a connected scatter plot or step plot using the checkbox."
+                      "Plot of a focus gait parameter against walking bouts. The walking bouts are ordered chronologically to look for any temporal relationships. More specfiically, how does the focus gait parameter evolve over time? The plot can be displayed as a connected scatter plot or step plot using the checkbox."
                     }
                     exampleAnalysis="do later walking bouts involve slower gait speeds?"
                   />
@@ -327,11 +326,13 @@ export default function WbAnalysis() {
                       </div>
                       <SelectContent>
                         <SelectGroup>
-                          {perWbDataFields.map((param) => (
-                            <SelectItem value={param} key={param}>
-                              {refinedParamNames.get(param)}
-                            </SelectItem>
-                          ))}
+                          {perWbDataFields
+                            .filter((param) => param !== "wb_id")
+                            .map((param) => (
+                              <SelectItem value={param} key={param}>
+                                {refinedParamNames.get(param)}
+                              </SelectItem>
+                            ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

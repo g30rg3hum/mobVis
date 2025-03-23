@@ -45,9 +45,9 @@ export function sortWbsByProperty(
 ) {
   let sorted;
   if (asc) {
-    sorted = wbs.toSorted((wb1, wb2) => wb2[property] - wb1[property]);
-  } else {
     sorted = wbs.toSorted((wb1, wb2) => wb1[property] - wb2[property]);
+  } else {
+    sorted = wbs.toSorted((wb1, wb2) => wb2[property] - wb1[property]);
   }
   return sorted;
 }

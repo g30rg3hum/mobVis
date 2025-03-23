@@ -12,14 +12,6 @@ describe("WbAnalysis", () => {
     global.localStorage = new LocalStorageMock();
     // set the local storage items required
     localStorage.setItem("inputs", JSON.stringify(sampleInputs));
-    // localStorage.setItem(
-    //   "aggregate_parameters",
-    //   JSON.stringify(sampleAggregateParameters)
-    // );
-    // localStorage.setItem(
-    //   "total_walking_duration",
-    //   sampleTotalWalkingDuration.toString()
-    // );
     localStorage.setItem(
       "per_wb_parameters",
       JSON.stringify(samplePerWbParameters)
@@ -70,7 +62,7 @@ describe("WbAnalysis", () => {
     const rows = within(table).getAllByTestId("table-wb-row");
     const firstRow = rows[0];
     const lastRow = rows[rows.length - 1];
-    expect(within(firstRow).getByText("4")).toBeInTheDocument();
-    expect(within(lastRow).getByText("0")).toBeInTheDocument();
+    expect(within(firstRow).getByText("0")).toBeInTheDocument();
+    expect(within(lastRow).getByText("4")).toBeInTheDocument();
   });
 });

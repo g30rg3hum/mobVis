@@ -143,9 +143,9 @@ export default function WbAnalysis() {
   // dragging functionality
   const handleDragStart = (
     e: React.DragEvent<HTMLTableRowElement>,
-    index: string
+    index: number
   ) => {
-    e.dataTransfer?.setData("index", index);
+    e.dataTransfer?.setData("index", index.toString());
   };
   const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
     e.preventDefault();
@@ -266,9 +266,7 @@ export default function WbAnalysis() {
                           key={param.wb_id}
                           data-testid={`table-wb-row`}
                           draggable
-                          onDragStart={(e) =>
-                            handleDragStart(e, index.toString())
-                          }
+                          onDragStart={(e) => handleDragStart(e, index)}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, index)}
                         >
@@ -450,9 +448,9 @@ export default function WbAnalysis() {
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "A parallel coordinates plot with an axis for each gait parameter. Each walking bout is a data line through these axes. The patterns of how these data lines cross and converge through these axes can reveal relationships between the gait parameters."
+                    "A parallel coordinates plot with an axis for each gait parameter. Each walking bout is a data line through these axes. The patterns of how these data lines cross, converge and cluster through these axes may reveal relationships between the gait parameters."
                   }
-                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation?"
+                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a correlation between the gait parameters?"
                 />
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-10">
@@ -460,9 +458,11 @@ export default function WbAnalysis() {
                   height={400}
                   width={1000}
                   margin={{ left: 60, right: 60, bottom: 50, top: 50 }}
-                  data={perWbParameters}
-                  axes={perWbDataFields}
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  data={perWbParameters.map(({ wb_id, ...rest }) => rest)}
+                  axes={perWbDataFields.filter((param) => param !== "wb_id")}
                   className="self-center"
+                  axesLabelMap={refinedParamNames}
                 />
               </CardContent>
             </Card>

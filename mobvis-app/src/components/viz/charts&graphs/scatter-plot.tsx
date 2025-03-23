@@ -1,6 +1,7 @@
 "use client";
 
 import { leastSquaresRegression } from "@/lib/linearRegression";
+import { roundToNDpIfNeeded } from "@/lib/utils";
 import { Margin } from "@/types/viz";
 import * as d3 from "d3";
 import { useEffect, useRef } from "react";
@@ -141,11 +142,11 @@ export default function ScatterPlot({
         [0, lineOfBestFit(0)],
         [endX, lineOfBestFit(endX)],
       ];
-      plot
+      const plottedLOB = plot
         .append("path")
         .datum(lineOfBestFitPoints)
         .attr("stroke", "#9B29FF")
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 3)
         .style("fill", "none")
         .attr(
           "d",
@@ -154,6 +155,29 @@ export default function ScatterPlot({
             .x((d) => x(d[0]))
             .y((d) => y(d[1]))
         );
+
+      // create the tooltip for correlation coefficient
+      const tooltip = d3
+        .select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("visibility", "visible")
+        .html(
+          `<b>Pearson correlation coefficient:</b> ${roundToNDpIfNeeded(
+            result.pearsonCorrelation,
+            5
+          )}`
+        )
+        .style("font-size", 50);
+
+      plottedLOB
+        .on("mouseover", (event) =>
+          tooltip
+            .style("visibility", "visible")
+            .style("left", event.pageX + "px")
+            .style("top", event.pageY + 20 + "px")
+        )
+        .on("mouseout", () => tooltip.style("visibility", "hidden"));
     }
   }
 

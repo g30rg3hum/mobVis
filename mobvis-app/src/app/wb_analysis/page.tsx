@@ -1,6 +1,7 @@
 "use client";
 import HyperLink from "@/components/custom/hyperlink";
-import SortIcon from "@/components/page-specific/analyses/sort-icon";
+import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
+import TableOfPerWbParameters from "@/components/page-specific/wb_analysis/table-of-per-wb-parameters";
 import { Button } from "@/components/shadcn-components/button";
 import {
   Card,
@@ -10,11 +11,9 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/shadcn-components/dialog";
-import { Input } from "@/components/shadcn-components/input";
 import { Label } from "@/components/shadcn-components/label";
 import {
   Select,
@@ -24,14 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn-components/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/shadcn-components/table";
+
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
 import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
 import RadarChart, {
@@ -40,22 +32,15 @@ import RadarChart, {
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
-import {
-  perWbDataFields,
-  refinedInputFieldNames,
-  refinedParamNames,
-} from "@/lib/fields";
+import { perWbDataFields, refinedParamNames } from "@/lib/fields";
 import {
   createDataset,
-  divideThenRoundUpToInt,
   getAndParseStorageItem,
   getWbProperty,
-  roundToNDpIfNeeded,
   sortWbsByProperty,
 } from "@/lib/utils";
 import {
   InputsJson,
-  PerWbDataField,
   PerWbParameter,
   PerWbParameters,
 } from "@/types/parameters";
@@ -64,81 +49,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 export default function WbAnalysis() {
-  // data states
+  // retrieving and getting data to visualise
   const [inputs, setInputs] = useState<InputsJson | null>(null);
   const [perWbParameters, setPerWbParameters] =
     useState<PerWbParameters | null>(null);
   useEffect(() => {
     setInputs(getAndParseStorageItem("inputs"));
     setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
-    setTablePerWbParameters(getAndParseStorageItem("per_wb_parameters"));
   }, []);
+
+  // inputs dialog state.
   const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
 
-  // states for visualisations
-  const [tablePerWbParameters, setTablePerWbParameters] =
-    useState<PerWbParameters | null>(null);
-  const [tableSortIdAsc, setTableSortIdAsc] = useState<boolean>(true);
-  const [tableSortNStridesAsc, setTableSortNStridesAsc] =
-    useState<boolean>(false);
-  const [tableSortDurationAsc, setTableSortDurationAsc] =
-    useState<boolean>(false);
-  const [tableSortStrideDurationAsc, setTableSortStrideDurationAsc] =
-    useState<boolean>(false);
-  const [tableSortCadenceAsc, setTableSortCadenceAsc] =
-    useState<boolean>(false);
-  const [tableSortStrideLengthAsc, setTableSortStrideLengthAsc] =
-    useState<boolean>(false);
-  const [tableSortWalkingSpeedAsc, setTableSortWalkingSpeedAsc] =
-    useState<boolean>(false);
-
-  function sortOneParam(string: PerWbDataField) {
-    // flip the sort order if same param is clicked
-    setTableSortIdAsc(string === "wb_id" && !tableSortIdAsc);
-    setTableSortNStridesAsc(string === "n_strides" && !tableSortNStridesAsc);
-    setTableSortStrideDurationAsc(
-      string === "stride_duration_s" && !tableSortStrideDurationAsc
-    );
-    setTableSortDurationAsc(string === "duration_s" && !tableSortDurationAsc);
-    setTableSortCadenceAsc(string === "cadence_spm" && !tableSortCadenceAsc);
-    setTableSortStrideLengthAsc(
-      string === "stride_length_m" && !tableSortStrideLengthAsc
-    );
-    setTableSortWalkingSpeedAsc(
-      string === "walking_speed_mps" && !tableSortWalkingSpeedAsc
-    );
-
-    setTablePerWbParameters(
-      sortWbsByProperty(
-        tablePerWbParameters!,
-        string as keyof PerWbParameter,
-        getSortParamState(string)
-      )
-    );
-  }
-  function getSortParamState(param: PerWbDataField) {
-    switch (param) {
-      case "wb_id":
-        return tableSortIdAsc;
-      case "n_strides":
-        return tableSortNStridesAsc;
-      case "duration_s":
-        return tableSortDurationAsc;
-      case "stride_duration_s":
-        return tableSortStrideDurationAsc;
-      case "cadence_spm":
-        return tableSortCadenceAsc;
-      case "stride_length_m":
-        return tableSortStrideLengthAsc;
-      case "walking_speed_mps":
-        return tableSortWalkingSpeedAsc;
-      default:
-        return false;
-    }
-  }
-  // table "pagination"
-  const [currentTableGroup, setCurrentTableGroup] = useState<number>(0);
-  const [groupTableRecords, setGroupTableRecords] = useState<number>(5);
+  // STATES FOR TABLE AND VISUALISATIONS
+  // -------------------------------------
 
   const [v1FocusParam, setV1FocusParam] = useState<string>("walking_speed_mps");
   const [v1Step, setV1Step] = useState<boolean>(false);
@@ -158,38 +82,6 @@ export default function WbAnalysis() {
     undefined
   );
 
-  // table dragging functionality
-  const handleDragStart = (
-    e: React.DragEvent<HTMLTableRowElement>,
-    wb_id: number
-  ) => {
-    e.dataTransfer?.setData("wb_id", wb_id.toString());
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (
-    e: React.DragEvent<HTMLTableRowElement>,
-    wb_id: number
-  ) => {
-    // swap positions
-    const draggedWbId = Number(e.dataTransfer?.getData("wb_id"));
-
-    const draggedWb = tablePerWbParameters!.find(
-      (wb) => wb.wb_id === draggedWbId
-    );
-    const swapWb = tablePerWbParameters!.find((wb) => wb.wb_id === wb_id);
-    const draggedWbIndex = tablePerWbParameters!.indexOf(draggedWb!);
-    const swapWbIndex = tablePerWbParameters!.indexOf(swapWb!);
-    const newPerWbParameters = [...tablePerWbParameters!];
-    newPerWbParameters[draggedWbIndex] = swapWb!;
-    newPerWbParameters[swapWbIndex] = draggedWb!;
-
-    setTablePerWbParameters(newPerWbParameters);
-  };
-
   if (inputs && perWbParameters) {
     return (
       <div>
@@ -205,29 +97,11 @@ export default function WbAnalysis() {
             </HyperLink>{" "}
             to see the inputs you&apos;ve submitted.
           </p>
-          <Dialog open={isInputDialogOpen} onOpenChange={setIsInputDialogOpen}>
-            <DialogContent data-testid="inputs-dialog">
-              <DialogHeader>
-                <DialogTitle className="font-semibold">
-                  <span className="mr-2">🔣</span>Current inputs
-                </DialogTitle>
-                <DialogDescription>
-                  These are the form inputs you submitted for this gait
-                  analysis.
-                </DialogDescription>
-              </DialogHeader>
-              <ul className="space-y-3">
-                {Object.keys(inputs).map((input) => (
-                  <li key={input}>
-                    <span className="font-medium">
-                      {refinedInputFieldNames.get(input)}:{" "}
-                    </span>
-                    {inputs[input as keyof InputsJson].toString()}
-                  </li>
-                ))}
-              </ul>
-            </DialogContent>
-          </Dialog>
+          <InputsDialog
+            inputs={inputs}
+            isInputDialogOpen={isInputDialogOpen}
+            setIsInputDialogOpen={setIsInputDialogOpen}
+          />
         </div>
         <div className="flex justify-center mb-10">
           <div className="flex flex-col gap-5 w-[1300px]">
@@ -244,121 +118,7 @@ export default function WbAnalysis() {
                 />
               </CardHeader>
               <CardContent className="space-y-5">
-                <div className="flex flex-col gap-1">
-                  <Label>Number of records in each group</Label>
-                  <Input
-                    type="number"
-                    step="1"
-                    className="w-[60px]"
-                    defaultValue={5}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      if (value > 0) {
-                        setGroupTableRecords(value);
-                        // reset the current group
-                        setCurrentTableGroup(0);
-                      }
-                    }}
-                    data-testid="group-records-input"
-                  />
-                </div>
-                <Table data-testid="per-wb-params-table">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>
-                        WB ID <SortIcon onClick={() => sortOneParam("wb_id")} />
-                      </TableHead>
-                      <TableHead>
-                        Number of strides{" "}
-                        <SortIcon onClick={() => sortOneParam("n_strides")} />
-                      </TableHead>
-                      <TableHead>
-                        WB Duration (s){" "}
-                        <SortIcon onClick={() => sortOneParam("duration_s")} />
-                      </TableHead>
-                      <TableHead>
-                        Stride duration (s){" "}
-                        <SortIcon
-                          onClick={() => sortOneParam("stride_duration_s")}
-                        />
-                      </TableHead>
-                      <TableHead>
-                        Cadence (steps/min){" "}
-                        <SortIcon onClick={() => sortOneParam("cadence_spm")} />
-                      </TableHead>
-                      <TableHead>
-                        Stride length (m){" "}
-                        <SortIcon
-                          onClick={() => sortOneParam("stride_length_m")}
-                        />
-                      </TableHead>
-                      <TableHead>
-                        Walking speed (m/s){" "}
-                        <SortIcon
-                          onClick={() => sortOneParam("walking_speed_mps")}
-                        />
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {tablePerWbParameters!
-                      .slice(
-                        currentTableGroup * groupTableRecords,
-                        currentTableGroup * groupTableRecords +
-                          groupTableRecords
-                      )
-                      .map((param: PerWbParameter) => (
-                        <TableRow
-                          key={param.wb_id}
-                          data-testid={`table-wb-row`}
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, param.wb_id)}
-                          onDragOver={handleDragOver}
-                          onDrop={(e) => handleDrop(e, param.wb_id)}
-                        >
-                          <TableCell>{param.wb_id}</TableCell>
-                          <TableCell>
-                            {roundToNDpIfNeeded(param.n_strides, 5)}
-                          </TableCell>
-                          <TableCell>
-                            {roundToNDpIfNeeded(param.duration_s, 5)}
-                          </TableCell>
-                          <TableCell>
-                            {roundToNDpIfNeeded(param.stride_duration_s, 5)}
-                          </TableCell>
-                          <TableCell>
-                            {roundToNDpIfNeeded(param.cadence_spm, 5)}
-                          </TableCell>
-                          <TableCell>
-                            {roundToNDpIfNeeded(param.stride_length_m, 5)}
-                          </TableCell>
-                          <TableCell>
-                            {roundToNDpIfNeeded(param.walking_speed_mps, 5)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-                <div className="space-x-2">
-                  {[
-                    ...Array(
-                      divideThenRoundUpToInt(
-                        perWbParameters.length,
-                        groupTableRecords
-                      )
-                    ).keys(),
-                  ].map((num) => (
-                    <Button
-                      key={num}
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setCurrentTableGroup(num)}
-                      data-testid="table-pagination-button"
-                    >
-                      {num}
-                    </Button>
-                  ))}
-                </div>
+                <TableOfPerWbParameters allPerWbParameters={perWbParameters} />
               </CardContent>
             </Card>
             <div className="flex gap-5">

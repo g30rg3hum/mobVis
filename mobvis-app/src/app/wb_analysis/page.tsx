@@ -1,8 +1,12 @@
 "use client";
 import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
+import AllParamsRelationshipPcp from "@/components/page-specific/wb_analysis/all-params-relationship-pcp";
+import ComparisonWbsRadar from "@/components/page-specific/wb_analysis/comparison-wbs-radar";
+import ParamProgressionBarChart from "@/components/page-specific/wb_analysis/param-progression-bar-chart";
+import ParamProgressionScatterPlot from "@/components/page-specific/wb_analysis/param-progression-scatter-plot";
 import TableOfPerWbParameters from "@/components/page-specific/wb_analysis/table-of-per-wb-parameters";
-import { Button } from "@/components/shadcn-components/button";
+import TwoParamsRelationshipScatter from "@/components/page-specific/wb_analysis/two-params-relationship-scatter";
 import {
   Card,
   CardContent,
@@ -14,38 +18,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/shadcn-components/dialog";
-import { Label } from "@/components/shadcn-components/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/shadcn-components/select";
-
-import BarChart from "@/components/viz/charts&graphs/bar-chart";
-import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
-import RadarChart, {
-  colours,
-} from "@/components/viz/charts&graphs/radar-chart";
-import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
-import { perWbDataFields, refinedParamNames } from "@/lib/fields";
-import {
-  createDataset,
-  getAndParseStorageItem,
-  getWbProperty,
-  sortWbsByProperty,
-} from "@/lib/utils";
-import {
-  InputsJson,
-  PerWbParameter,
-  PerWbParameters,
-} from "@/types/parameters";
-import { faStar, faX } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getAndParseStorageItem } from "@/lib/utils";
+import { InputsJson, PerWbParameters } from "@/types/parameters";
 import { useEffect, useState } from "react";
 
 export default function WbAnalysis() {
@@ -60,23 +36,6 @@ export default function WbAnalysis() {
 
   // inputs dialog state.
   const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
-
-  // STATES FOR TABLE AND VISUALISATIONS
-  // -------------------------------------
-
-  const [v1FocusParam, setV1FocusParam] = useState<string>("walking_speed_mps");
-  const [v1Step, setV1Step] = useState<boolean>(false);
-
-  const [v2FocusParam, setV2FocusParam] = useState<string>("walking_speed_mps");
-  const [ascDuration, setAscDuration] = useState<boolean>(false);
-
-  const [v3ParamX, setV3ParamX] = useState<string>("stride_length_m");
-  const [v3ParamY, setV3ParamY] = useState<string>("walking_speed_mps");
-
-  const [v5Wbs, setV5Wbs] = useState<number[]>([0]);
-  const [v5SelectedWb, setV5SelectedWb] = useState<number | undefined>(
-    undefined
-  );
 
   const [modalMessage, setModalMessage] = useState<string | undefined>(
     undefined
@@ -121,6 +80,7 @@ export default function WbAnalysis() {
                 <TableOfPerWbParameters allPerWbParameters={perWbParameters} />
               </CardContent>
             </Card>
+
             <div className="flex gap-5">
               <Card className="w-1/2">
                 <CardHeader>
@@ -136,61 +96,13 @@ export default function WbAnalysis() {
                   />
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center gap-10">
-                  <div className="flex gap-5 items-center">
-                    <Select
-                      onValueChange={setV1FocusParam}
-                      defaultValue={v1FocusParam}
-                    >
-                      <div className="flex flex-col gap-1">
-                        <Label>Focus parameter</Label>
-                        <SelectTrigger className="w-[240px]">
-                          <SelectValue placeholder="Select focus parameter" />
-                        </SelectTrigger>
-                      </div>
-                      <SelectContent>
-                        <SelectGroup>
-                          {perWbDataFields
-                            .filter((param) => param !== "wb_id")
-                            .map((param) => (
-                              <SelectItem value={param} key={param}>
-                                {refinedParamNames.get(param)}
-                              </SelectItem>
-                            ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <div className="flex items-center justify-center gap-2 mt-4">
-                      <input
-                        type="checkbox"
-                        value={v1Step.toString()}
-                        onChange={(el) => setV1Step(el.target.checked)}
-                        className="w-4 h-4"
-                        id="v1StepCheckbox"
-                      />
-                      <Label htmlFor="v1StepCheckbox">Step?</Label>
-                    </div>
-                  </div>
-                  <ScatterPlot
-                    height={500}
-                    width={500}
-                    margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
-                    data={
-                      createDataset(
-                        perWbParameters.map((wb) => wb.wb_id),
-                        perWbParameters.map(
-                          (wb) => wb[v1FocusParam as keyof PerWbParameter]
-                        )
-                      ) as [number, number][]
-                    }
-                    xLabel="Walking bout ID"
-                    yLabel={refinedParamNames.get(v1FocusParam) as string}
-                    type={v1Step ? "step" : "connected"}
-                    integralX
-                    className="self-center"
+                  <ParamProgressionScatterPlot
+                    allPerWbParameters={perWbParameters}
                   />
                 </CardContent>
               </Card>
-              <Card className="w-1/2 flex flex-col justify-center">
+
+              <Card className="w-1/2 flex flex-col justify-between">
                 <CardHeader>
                   <VizCardTitle>
                     Progression of a gait parameter (over time/ascending
@@ -204,68 +116,13 @@ export default function WbAnalysis() {
                   />
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center gap-10">
-                  <div className="flex gap-5 items-center">
-                    <Select
-                      onValueChange={setV2FocusParam}
-                      defaultValue={v2FocusParam}
-                    >
-                      <div className="flex flex-col gap-1">
-                        <Label>Focus parameter</Label>
-                        <SelectTrigger className="w-[240px]">
-                          <SelectValue placeholder="Select focus parameter" />
-                        </SelectTrigger>
-                      </div>
-                      <SelectContent>
-                        <SelectGroup>
-                          {perWbDataFields.map((param) => (
-                            <SelectItem value={param} key={param}>
-                              {refinedParamNames.get(param)}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <div className="flex items-center justify-center gap-2 mt-4">
-                      <input
-                        type="checkbox"
-                        value={ascDuration.toString()}
-                        onChange={(el) => setAscDuration(el.target.checked)}
-                        className="w-4 h-4"
-                        id="v2AscDurationCheckbox"
-                      />
-                      <Label htmlFor="v2AscDurationCheckbox">
-                        Sort by ascending duration
-                      </Label>
-                    </div>
-                  </div>
-
-                  <BarChart
-                    height={400}
-                    width={500}
-                    margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
-                    data={
-                      createDataset(
-                        getWbProperty(
-                          ascDuration
-                            ? sortWbsByProperty(perWbParameters, "duration_s")
-                            : perWbParameters,
-                          "wb_id"
-                        ),
-                        getWbProperty(
-                          ascDuration
-                            ? sortWbsByProperty(perWbParameters, "duration_s")
-                            : perWbParameters,
-                          v2FocusParam as keyof PerWbParameter
-                        )
-                      ) as [string, number][]
-                    }
-                    xLabel="Walking bout ID"
-                    yLabel={refinedParamNames.get(v2FocusParam) as string}
-                    className="self-center"
+                  <ParamProgressionBarChart
+                    allPerWbParameters={perWbParameters}
                   />
                 </CardContent>
               </Card>
             </div>
+
             <Card>
               <CardHeader>
                 <VizCardTitle>
@@ -279,15 +136,8 @@ export default function WbAnalysis() {
                 />
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-10">
-                <ParallelCoordinatesPlot
-                  height={400}
-                  width={1000}
-                  margin={{ left: 60, right: 60, bottom: 50, top: 50 }}
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  data={perWbParameters.map(({ wb_id, ...rest }) => rest)}
-                  axes={perWbDataFields.filter((param) => param !== "wb_id")}
-                  className="self-center"
-                  axesLabelMap={refinedParamNames}
+                <AllParamsRelationshipPcp
+                  allPerWbParameters={perWbParameters}
                 />
               </CardContent>
             </Card>
@@ -305,64 +155,8 @@ export default function WbAnalysis() {
                 />
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-10">
-                <div className="flex gap-5 items-center">
-                  <Select onValueChange={setV3ParamX} defaultValue={v3ParamX}>
-                    <div className="flex flex-col gap-1">
-                      <Label>X-axis parameter</Label>
-                      <SelectTrigger className="w-[240px]">
-                        <SelectValue placeholder="Select x-axis parameter" />
-                      </SelectTrigger>
-                    </div>
-                    <SelectContent>
-                      <SelectGroup>
-                        {perWbDataFields
-                          .filter((param) => param !== v3ParamY)
-                          .map((param) => (
-                            <SelectItem value={param} key={param}>
-                              {refinedParamNames.get(param)}
-                            </SelectItem>
-                          ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <Select onValueChange={setV3ParamY} defaultValue={v3ParamY}>
-                    <div className="flex flex-col gap-1">
-                      <Label>Y-axis parameter</Label>
-                      <SelectTrigger className="w-[240px]">
-                        <SelectValue placeholder="Select y-axis parameter" />
-                      </SelectTrigger>
-                    </div>
-                    <SelectContent>
-                      <SelectGroup>
-                        {perWbDataFields
-                          .filter((param) => param !== v3ParamX)
-                          .map((param) => (
-                            <SelectItem value={param} key={param}>
-                              {refinedParamNames.get(param)}
-                            </SelectItem>
-                          ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <ScatterPlot
-                  height={500}
-                  width={1000}
-                  margin={{ left: 100, right: 50, bottom: 65, top: 20 }}
-                  data={
-                    createDataset(
-                      perWbParameters.map(
-                        (wb) => wb[v3ParamX as keyof PerWbParameter]
-                      ),
-                      perWbParameters.map(
-                        (wb) => wb[v3ParamY as keyof PerWbParameter]
-                      )
-                    ) as [number, number][]
-                  }
-                  xLabel={refinedParamNames.get(v3ParamX) as string}
-                  yLabel={refinedParamNames.get(v3ParamY) as string}
-                  type="correlation"
-                  className="self-center"
+                <TwoParamsRelationshipScatter
+                  allPerWbParameters={perWbParameters}
                 />
               </CardContent>
             </Card>
@@ -378,83 +172,13 @@ export default function WbAnalysis() {
                 />
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-10">
-                <div className="space-y-2">
-                  <div className="flex gap-3 items-center">
-                    <Select
-                      onValueChange={(val: string) =>
-                        setV5SelectedWb(Number(val))
-                      }
-                      defaultValue={v5SelectedWb?.toString()}
-                    >
-                      <div className="flex flex-col gap-1">
-                        <Label>Walking bout</Label>
-                        <SelectTrigger className="w-[240px]">
-                          <SelectValue placeholder="Select a walking bout to plot" />
-                        </SelectTrigger>
-                      </div>
-                      <SelectContent>
-                        <SelectGroup>
-                          {perWbParameters
-                            .map((param) => param.wb_id)
-                            .filter((id) => !v5Wbs.includes(id))
-                            .map((id) => (
-                              <SelectItem value={id.toString()} key={id}>
-                                {id}
-                              </SelectItem>
-                            ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      variant="default"
-                      type="button"
-                      onClick={() => {
-                        console.log(v5Wbs);
-                        if (v5Wbs.length === 3) {
-                          setModalMessage(
-                            "You can only plot up to 3 walking bouts."
-                          );
-                          return;
-                        }
-                        if (v5SelectedWb !== undefined)
-                          setV5Wbs((prev) => [...prev, v5SelectedWb]);
-                      }}
-                      className="self-end"
-                    >
-                      Add
-                    </Button>
-                  </div>
-                  <div className="absolute">
-                    <ul>
-                      {v5Wbs.map((wb, i) => (
-                        <li key={wb} className="flex items-center gap-2">
-                          <p>{wb}</p>
-                          <FontAwesomeIcon icon={faStar} color={colours[i]} />
-                          <FontAwesomeIcon
-                            icon={faX}
-                            className="ml-1 cursor-pointer"
-                            onClick={() =>
-                              setV5Wbs(v5Wbs.filter((id) => id !== wb))
-                            }
-                          />
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <RadarChart
-                  height={500}
-                  width={1000}
-                  radius={300}
-                  margin={{ left: 50, right: 50, bottom: 100, top: 100 }}
-                  data={perWbParameters}
-                  recordsToPlot={v5Wbs}
-                  axes={perWbDataFields.filter((col) => col !== "wb_id")}
-                  className="self-center"
+                <ComparisonWbsRadar
+                  allPerWbParameters={perWbParameters}
+                  setModalMessage={setModalMessage}
                 />
               </CardContent>
             </Card>
+
             <Dialog
               open={modalMessage !== undefined}
               onOpenChange={() => setModalMessage(undefined)}

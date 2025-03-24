@@ -65,4 +65,27 @@ describe("WbAnalysis", () => {
     expect(within(firstRow).getByText("0")).toBeInTheDocument();
     expect(within(lastRow).getByText("4")).toBeInTheDocument();
   });
+
+  it("groups walking bouts correctly", async () => {
+    const groupRecordsInput = screen.getByTestId("group-records-input");
+    await userEvent.clear(groupRecordsInput);
+    await userEvent.type(groupRecordsInput, "2");
+
+    const tablePaginationButtons = screen.getAllByTestId(
+      "table-pagination-button"
+    );
+    // there are 5 records so there should be 3 "pages"
+    expect(tablePaginationButtons).toHaveLength(3);
+
+    // click on the second button
+    await userEvent.click(tablePaginationButtons[1]);
+
+    // get all the rows.
+    const table = screen.getByTestId("per-wb-params-table");
+    const rows = within(table).getAllByTestId("table-wb-row");
+
+    // expect the second row tobe record with ID 3
+    const secondRow = rows[1];
+    expect(within(secondRow).getByText("3")).toBeInTheDocument();
+  });
 });

@@ -23,6 +23,10 @@ export function roundToNDpIfNeeded(num: number, n: number) {
   return Number(roundTo5Dp);
 }
 
+export function divideThenRoundUpToInt(num: number, denom: number) {
+  return Math.ceil(num / denom);
+}
+
 export function createDataset(
   xValues: number[] | string[],
   yValues: number[]

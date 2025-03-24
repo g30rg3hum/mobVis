@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/shadcn-components/dialog";
+import { Input } from "@/components/shadcn-components/input";
 import { Label } from "@/components/shadcn-components/label";
 import {
   Select,
@@ -46,6 +47,7 @@ import {
 } from "@/lib/fields";
 import {
   createDataset,
+  divideThenRoundUpToInt,
   getAndParseStorageItem,
   getWbProperty,
   roundToNDpIfNeeded,
@@ -62,8 +64,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 export default function WbAnalysis() {
-  const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
-
   // data states
   const [inputs, setInputs] = useState<InputsJson | null>(null);
   const [perWbParameters, setPerWbParameters] =
@@ -73,6 +73,7 @@ export default function WbAnalysis() {
     setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
     setTablePerWbParameters(getAndParseStorageItem("per_wb_parameters"));
   }, []);
+  const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
 
   // states for visualisations
   const [tablePerWbParameters, setTablePerWbParameters] =
@@ -92,7 +93,7 @@ export default function WbAnalysis() {
     useState<boolean>(false);
 
   function sortOneParam(string: PerWbDataField) {
-    //flip the sort order if same param is clicked
+    // flip the sort order if same param is clicked
     setTableSortIdAsc(string === "wb_id" && !tableSortIdAsc);
     setTableSortNStridesAsc(string === "n_strides" && !tableSortNStridesAsc);
     setTableSortStrideDurationAsc(
@@ -135,6 +136,9 @@ export default function WbAnalysis() {
         return false;
     }
   }
+  // table "pagination"
+  const [currentTableGroup, setCurrentTableGroup] = useState<number>(0);
+  const [groupTableRecords, setGroupTableRecords] = useState<number>(5);
 
   const [v1FocusParam, setV1FocusParam] = useState<string>("walking_speed_mps");
   const [v1Step, setV1Step] = useState<boolean>(false);
@@ -154,30 +158,35 @@ export default function WbAnalysis() {
     undefined
   );
 
-  // dragging functionality
+  // table dragging functionality
   const handleDragStart = (
     e: React.DragEvent<HTMLTableRowElement>,
-    index: number
+    wb_id: number
   ) => {
-    e.dataTransfer?.setData("index", index.toString());
+    e.dataTransfer?.setData("wb_id", wb_id.toString());
   };
+
   const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
     e.preventDefault();
   };
+
   const handleDrop = (
     e: React.DragEvent<HTMLTableRowElement>,
-    index: number
+    wb_id: number
   ) => {
-    const draggedIndex = Number(e.dataTransfer?.getData("index"));
-    let removed;
-    const newPerWbParameters = [...tablePerWbParameters!].filter((_, i) => {
-      if (i !== draggedIndex) {
-        return true;
-      } else {
-        removed = tablePerWbParameters![i];
-      }
-    });
-    newPerWbParameters.splice(index, 0, removed!);
+    // swap positions
+    const draggedWbId = Number(e.dataTransfer?.getData("wb_id"));
+
+    const draggedWb = tablePerWbParameters!.find(
+      (wb) => wb.wb_id === draggedWbId
+    );
+    const swapWb = tablePerWbParameters!.find((wb) => wb.wb_id === wb_id);
+    const draggedWbIndex = tablePerWbParameters!.indexOf(draggedWb!);
+    const swapWbIndex = tablePerWbParameters!.indexOf(swapWb!);
+    const newPerWbParameters = [...tablePerWbParameters!];
+    newPerWbParameters[draggedWbIndex] = swapWb!;
+    newPerWbParameters[swapWbIndex] = draggedWb!;
+
     setTablePerWbParameters(newPerWbParameters);
   };
 
@@ -229,12 +238,30 @@ export default function WbAnalysis() {
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "Tabular view of the exact figures of each gait parameter for each identified walking bout in the CSV data you uploaded."
+                    "Tabular view of the exact figures of each gait parameter for each identified walking bout in the CSV data you uploaded. Use this table to assist your decision in picking what walking bouts to visualise for, in the visualisations below. There is also a field in which you can set the number to group the records into."
                   }
                   exampleAnalysis="what is the precise walking speed that the patient was walking at in the initial walking bout?"
                 />
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-5">
+                <div className="flex flex-col gap-1">
+                  <Label>Number of records in each group</Label>
+                  <Input
+                    type="number"
+                    step="1"
+                    className="w-[60px]"
+                    defaultValue={5}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value > 0) {
+                        setGroupTableRecords(value);
+                        // reset the current group
+                        setCurrentTableGroup(0);
+                      }
+                    }}
+                    data-testid="group-records-input"
+                  />
+                </div>
                 <Table data-testid="per-wb-params-table">
                   <TableHeader>
                     <TableRow>
@@ -274,15 +301,20 @@ export default function WbAnalysis() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {tablePerWbParameters!.map(
-                      (param: PerWbParameter, index) => (
+                    {tablePerWbParameters!
+                      .slice(
+                        currentTableGroup * groupTableRecords,
+                        currentTableGroup * groupTableRecords +
+                          groupTableRecords
+                      )
+                      .map((param: PerWbParameter) => (
                         <TableRow
                           key={param.wb_id}
                           data-testid={`table-wb-row`}
                           draggable
-                          onDragStart={(e) => handleDragStart(e, index)}
+                          onDragStart={(e) => handleDragStart(e, param.wb_id)}
                           onDragOver={handleDragOver}
-                          onDrop={(e) => handleDrop(e, index)}
+                          onDrop={(e) => handleDrop(e, param.wb_id)}
                         >
                           <TableCell>{param.wb_id}</TableCell>
                           <TableCell>
@@ -304,10 +336,29 @@ export default function WbAnalysis() {
                             {roundToNDpIfNeeded(param.walking_speed_mps, 5)}
                           </TableCell>
                         </TableRow>
-                      )
-                    )}
+                      ))}
                   </TableBody>
                 </Table>
+                <div className="space-x-2">
+                  {[
+                    ...Array(
+                      divideThenRoundUpToInt(
+                        perWbParameters.length,
+                        groupTableRecords
+                      )
+                    ).keys(),
+                  ].map((num) => (
+                    <Button
+                      key={num}
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setCurrentTableGroup(num)}
+                      data-testid="table-pagination-button"
+                    >
+                      {num}
+                    </Button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
             <div className="flex gap-5">

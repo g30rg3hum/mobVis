@@ -5,6 +5,8 @@ import { Margin } from "@/types/viz";
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 
+export const colours = ["#9B29FF", "#08f0fc", "#ff243d"];
+
 interface Props {
   width: number;
   height: number;
@@ -113,7 +115,8 @@ export default function RadarChart({
       });
 
     // plot the shapes for selected records
-    recordsToPlot.forEach((index) => {
+    recordsToPlot.forEach((index, order) => {
+      const colour = colours[order % colours.length];
       const record = data[index];
 
       // compute the coordinates for each point on the axis
@@ -139,9 +142,9 @@ export default function RadarChart({
       plot
         .append("path")
         .datum(coordinates)
-        .attr("stroke", "#9B29FF")
+        .attr("stroke", colour)
         .attr("stroke-width", 2)
-        .attr("fill", "#9B29FF")
+        .attr("fill", colour)
         .attr("opacity", 0.4)
         .attr("d", d3.line());
 
@@ -154,7 +157,7 @@ export default function RadarChart({
         .attr("cx", (d) => d[0])
         .attr("cy", (d) => d[1])
         .attr("r", 3)
-        .style("fill", "#9B29FF");
+        .style("fill", colour);
     });
   }
 

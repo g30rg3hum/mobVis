@@ -13,6 +13,13 @@ interface Props {
   data: Record[];
   // a subset of the fields from data to plot for as dimensions.
   axes: string[];
+  axesLabelMap?: Map<string, string>;
+}
+
+interface Axis {
+  name: string;
+  position: number;
+  scale: d3.ScaleLinear<number, number>;
 }
 
 export default function ParallelCoordinatesPlot({
@@ -22,6 +29,7 @@ export default function ParallelCoordinatesPlot({
   className,
   data,
   axes,
+  axesLabelMap,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
@@ -57,23 +65,33 @@ export default function ParallelCoordinatesPlot({
 
     const x = d3.scalePoint().domain(axes).range([0, width]);
 
+    const allAxes: Axis[] = axes.map((axis) => ({
+      name: axis,
+      position: x(axis)!,
+      scale: y[axis],
+    }));
+
     // draw axes
-    plot
-      .selectAll("axis")
-      .data(axes)
+    const pcpAxisGroup = plot
+      .selectAll("pcpAxis")
+      .data(allAxes.map((axis) => axis.name))
       .enter()
       .append("g")
+      .attr("class", "pcpAxis")
       // translate according to defined scalePoint
-      .attr("transform", (axis) => "translate(" + x(axis) + ")")
+      .attr("transform", (axisName) => "translate(" + x(axisName) + ")")
       // for each axis draw the y axis.
-      .each(function (axis) {
-        d3.select(this).call(d3.axisLeft(y[axis]));
-      })
-      // add axis label
+      .each(function (axisName) {
+        d3.select(this).call(d3.axisLeft(y[axisName]));
+      });
+
+    // add axis labels
+    pcpAxisGroup
       .append("text")
-      .text((axis) => axis)
+      .text((axis) => axesLabelMap?.get(axis) ?? axis)
       .attr("y", height + 25)
       .style("text-anchor", "middle")
+      .style("font-size", width / 75)
       .style("fill", "black");
 
     // draw the polylines for each record

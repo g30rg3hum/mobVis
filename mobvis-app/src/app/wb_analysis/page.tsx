@@ -1,6 +1,7 @@
 "use client";
 import HyperLink from "@/components/custom/hyperlink";
 import SortIcon from "@/components/page-specific/analyses/sort-icon";
+import { Button } from "@/components/shadcn-components/button";
 import {
   Card,
   CardContent,
@@ -32,7 +33,9 @@ import {
 } from "@/components/shadcn-components/table";
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
 import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
-import RadarChart from "@/components/viz/charts&graphs/radar-chart";
+import RadarChart, {
+  colours,
+} from "@/components/viz/charts&graphs/radar-chart";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
@@ -54,6 +57,8 @@ import {
   PerWbParameter,
   PerWbParameters,
 } from "@/types/parameters";
+import { faStar, faX } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 export default function WbAnalysis() {
@@ -139,6 +144,15 @@ export default function WbAnalysis() {
 
   const [v3ParamX, setV3ParamX] = useState<string>("stride_length_m");
   const [v3ParamY, setV3ParamY] = useState<string>("walking_speed_mps");
+
+  const [v5Wbs, setV5Wbs] = useState<number[]>([0]);
+  const [v5SelectedWb, setV5SelectedWb] = useState<number | undefined>(
+    undefined
+  );
+
+  const [modalMessage, setModalMessage] = useState<string | undefined>(
+    undefined
+  );
 
   // dragging functionality
   const handleDragStart = (
@@ -474,7 +488,7 @@ export default function WbAnalysis() {
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "A regular scatter plot where you can select the gait parameters for the x and y axes respectively. This offers a more isolated and clearer view of correlation between two specific gait parameters."
+                    "A regular scatter plot where you can select the gait parameters for the x and y axes respectively. This offers a more isolated and clearer view of correlation between two specific gait parameters. Hover over the trend line to also see the correlation coefficient."
                   }
                   exampleAnalysis="does longer stride length correlate to faster gait speeds?"
                 />
@@ -547,24 +561,102 @@ export default function WbAnalysis() {
                 <VizCardTitle>Comparison between walking bouts</VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "A radar chart with axes for each gait parameter, plotting against identified walking bouts from this current gait analysis that you select to add from the dropdown. Representing the walking bouts as shapes provide straightforward insights about how the walking bouts compare across each dimension (gait parameter). You can plot for up to three walking bouts, to avoid the chart getting too cluttered."
+                    "A radar chart with an axis for each gait parameter, plotting against identified walking bouts from this current gait analysis. Select walking bouts to plot by using the dropdown. Representing the walking bouts as shapes provide straightforward insights about how the walking bouts compare across each dimension (gait parameter). You can plot for up to three walking bouts, to avoid the chart getting too cluttered."
                   }
                   exampleAnalysis="for which parameters does a given walking bout have higher values for, compared against another walking bout?"
                 />
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-10">
+                <div className="space-y-2">
+                  <div className="flex gap-3 items-center">
+                    <Select
+                      onValueChange={(val: string) =>
+                        setV5SelectedWb(Number(val))
+                      }
+                      defaultValue={v5SelectedWb?.toString()}
+                    >
+                      <div className="flex flex-col gap-1">
+                        <Label>Walking bout</Label>
+                        <SelectTrigger className="w-[240px]">
+                          <SelectValue placeholder="Select a walking bout to plot" />
+                        </SelectTrigger>
+                      </div>
+                      <SelectContent>
+                        <SelectGroup>
+                          {perWbParameters
+                            .map((param) => param.wb_id)
+                            .filter((id) => !v5Wbs.includes(id))
+                            .map((id) => (
+                              <SelectItem value={id.toString()} key={id}>
+                                {id}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      variant="default"
+                      type="button"
+                      onClick={() => {
+                        console.log(v5Wbs);
+                        if (v5Wbs.length === 3) {
+                          setModalMessage(
+                            "You can only plot up to 3 walking bouts."
+                          );
+                          return;
+                        }
+                        if (v5SelectedWb !== undefined)
+                          setV5Wbs((prev) => [...prev, v5SelectedWb]);
+                      }}
+                      className="self-end"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  <div className="absolute">
+                    <ul>
+                      {v5Wbs.map((wb, i) => (
+                        <li key={wb} className="flex items-center gap-2">
+                          <p>{wb}</p>
+                          <FontAwesomeIcon icon={faStar} color={colours[i]} />
+                          <FontAwesomeIcon
+                            icon={faX}
+                            className="ml-1 cursor-pointer"
+                            onClick={() =>
+                              setV5Wbs(v5Wbs.filter((id) => id !== wb))
+                            }
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
                 <RadarChart
                   height={500}
                   width={1000}
                   radius={300}
                   margin={{ left: 50, right: 50, bottom: 100, top: 100 }}
                   data={perWbParameters}
-                  recordsToPlot={[0]}
-                  axes={perWbDataFields}
+                  recordsToPlot={v5Wbs}
+                  axes={perWbDataFields.filter((col) => col !== "wb_id")}
                   className="self-center"
                 />
               </CardContent>
             </Card>
+            <Dialog
+              open={modalMessage !== undefined}
+              onOpenChange={() => setModalMessage(undefined)}
+            >
+              <DialogContent data-testid="inputs-dialog">
+                <DialogHeader>
+                  <DialogTitle className="font-semibold">
+                    Attention! 🚨
+                  </DialogTitle>
+                </DialogHeader>
+                <p>{modalMessage}</p>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

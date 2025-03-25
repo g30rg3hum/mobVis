@@ -62,8 +62,8 @@ describe("WbAnalysis", () => {
     const rows = within(table).getAllByTestId("table-wb-row");
     const firstRow = rows[0];
     const lastRow = rows[rows.length - 1];
-    expect(within(firstRow).getByText("0")).toBeInTheDocument();
-    expect(within(lastRow).getByText("4")).toBeInTheDocument();
+    expect(within(firstRow).getByText("4")).toBeInTheDocument();
+    expect(within(lastRow).getByText("0")).toBeInTheDocument();
   });
 
   it("groups walking bouts correctly", async () => {

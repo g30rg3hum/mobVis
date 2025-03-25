@@ -69,6 +69,8 @@ export default function TableOfPerWbParameters({ allPerWbParameters }: Props) {
   }
 
   function sortOneParam(param: PerWbDataField) {
+    const sortParamState = getSortParamState(param);
+
     // flip the sort order if same param is clicked
     setSortIdAsc(param === "wb_id" && !sortIdAsc);
     setSortNStridesAsc(param === "n_strides" && !sortNStridesAsc);
@@ -86,7 +88,7 @@ export default function TableOfPerWbParameters({ allPerWbParameters }: Props) {
       sortWbsByProperty(
         displayedWbParameters!,
         param as keyof PerWbParameter,
-        getSortParamState(param)
+        !sortParamState
       )
     );
   }

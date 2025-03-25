@@ -1,4 +1,9 @@
-import { PerWbParameter, PerWbParameters } from "@/types/parameters";
+import {
+  PerStrideParameter,
+  PerStrideParameters,
+  PerWbParameter,
+  PerWbParameters,
+} from "@/types/parameters";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -61,4 +66,50 @@ export function getWbProperty(
   property: keyof PerWbParameter
 ) {
   return wbs.map((wb) => wb[property]);
+}
+
+export function groupPerStrideParametersByWbId(
+  perStrideParameters: PerStrideParameters
+) {
+  // create a map of wb_id to perStrideParameters
+  const wbIdToPerStrideParameters = new Map<number, PerStrideParameters>();
+  perStrideParameters.forEach((perStrideParameter) => {
+    const wbId = perStrideParameter.wb_id;
+    const currentArr = wbIdToPerStrideParameters.get(wbId);
+    wbIdToPerStrideParameters.set(
+      wbId,
+      currentArr ? [...currentArr, perStrideParameter] : [perStrideParameter]
+    );
+  });
+  return wbIdToPerStrideParameters;
+}
+
+export function sortStridesByProperty(
+  strides: PerStrideParameters,
+  property: keyof PerStrideParameter,
+  asc: boolean = true
+) {
+  let sorted;
+  if (asc) {
+    if (property === "lr_label") {
+      sorted = strides.toSorted((stride1, stride2) =>
+        stride1[property].localeCompare(stride2[property])
+      );
+    } else {
+      sorted = strides.toSorted(
+        (stride1, stride2) => stride1[property] - stride2[property]
+      );
+    }
+  } else {
+    if (property === "lr_label") {
+      sorted = strides.toSorted((stride1, stride2) =>
+        stride2[property].localeCompare(stride1[property])
+      );
+    } else {
+      sorted = strides.toSorted(
+        (stride1, stride2) => stride2[property] - stride1[property]
+      );
+    }
+  }
+  return sorted;
 }

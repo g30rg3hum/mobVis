@@ -23,12 +23,8 @@ import {
 } from "@/lib/utils";
 import { Label } from "@/components/shadcn-components/label";
 import { Button } from "@/components/shadcn-components/button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import { Input } from "@/components/shadcn-components/input";
+import SwitchWb from "./switch-wb";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -145,46 +141,23 @@ export default function TableOfPerStrideParameters({
   return (
     <>
       <div className="flex gap-8">
-        <div className="flex flex-col gap-1">
-          <Label>ID of current WB to view</Label>
-          <div className="flex gap-2 items-center">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                if (currentWbId > 0) {
-                  setCurrentWbId(currentWbId - 1);
-                  setDisplayedPerStrideParameters(
-                    mapWbIdToPerStrideParameters.get(currentWbId - 1)!
-                  );
-                  setCurrentGroup(0);
-                }
-              }}
-              data-testid="btn-wb-id-previous"
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </Button>
-            <div className="text-md font-semibold" data-testid="current-wb-id">
-              {currentWbId}
-            </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => {
-                if (currentWbId < wbCount - 1) {
-                  setCurrentWbId(currentWbId + 1);
-                  setDisplayedPerStrideParameters(
-                    mapWbIdToPerStrideParameters.get(currentWbId + 1)!
-                  );
-                  setCurrentGroup(0);
-                }
-              }}
-              data-testid="btn-wb-id-next"
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
-            </Button>
-          </div>
-        </div>
+        <SwitchWb
+          currentWbId={currentWbId}
+          setCurrentWbId={setCurrentWbId}
+          wbCount={wbCount}
+          prevOperations={() => {
+            setDisplayedPerStrideParameters(
+              mapWbIdToPerStrideParameters.get(currentWbId - 1)!
+            );
+            setCurrentGroup(0);
+          }}
+          nextOperations={() => {
+            setDisplayedPerStrideParameters(
+              mapWbIdToPerStrideParameters.get(currentWbId + 1)!
+            );
+            setCurrentGroup(0);
+          }}
+        />
 
         <div className="flex flex-col gap-1">
           <Label>Number of records in each group</Label>

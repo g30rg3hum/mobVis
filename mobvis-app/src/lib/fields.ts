@@ -5,6 +5,7 @@ export const refinedParamNames = new Map([
   ["stride_length_m", "Stride length (m)"],
   ["walking_speed_mps", "Walking speed (m/s)"],
   ["stride_duration_s", "Stride duration (s)"],
+  ["lr_label", "Left/Right label"],
 ]);
 
 export const perWbDataFields = [

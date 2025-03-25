@@ -109,10 +109,10 @@ export default function TableOfPerWbParameters({ allPerWbParameters }: Props) {
   ) => {
     // swap positions
     const draggedWbId = Number(e.dataTransfer?.getData("wb_id"));
-
-    const draggedWb = displayedWbParameters!.find(
+    const draggedWb = displayedWbParameters.find(
       (wb) => wb.wb_id === draggedWbId
     );
+
     const swapWb = displayedWbParameters.find((wb) => wb.wb_id === wb_id);
     const draggedWbIndex = displayedWbParameters.indexOf(draggedWb!);
     const swapWbIndex = displayedWbParameters.indexOf(swapWb!);

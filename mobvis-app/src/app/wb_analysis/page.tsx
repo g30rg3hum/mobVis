@@ -63,7 +63,7 @@ export default function WbAnalysis() {
           />
         </div>
         <div className="flex justify-center mb-10">
-          <div className="flex flex-col gap-5 w-[1300px]">
+          <div className="flex flex-col gap-5 w-full max-w-[1300px] min-w-[1150px] mx-6">
             <Card>
               <CardHeader>
                 <VizCardTitle>
@@ -71,7 +71,7 @@ export default function WbAnalysis() {
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "Tabular view of the exact figures of each gait parameter for each identified walking bout in the CSV data you uploaded. Use this table to assist your decision in picking what walking bouts to visualise for, in the visualisations below. There is also a field in which you can set the number to group the records into."
+                    "Tabular view of the exact figures of each gait parameter for each identified walking bout in the CSV data you uploaded. Use this table to assist your decision in picking what walking bouts to visualise for, in the visualisations below. Drag rows around to compare certain records side by side. There is also a field in which you can set the number to group the records into. Please note that if a value is 0, it means that the value could not be calculated."
                   }
                   exampleAnalysis="what is the precise walking speed that the patient was walking at in the initial walking bout?"
                 />

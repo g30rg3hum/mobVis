@@ -17,6 +17,15 @@ export const perWbDataFields = [
   "stride_duration_s",
 ];
 
+export const perStrideDataFields = [
+  "s_id",
+  "lr_label",
+  "stride_duration_s",
+  "cadence_spm",
+  "stride_length_m",
+  "walking_speed_mps",
+];
+
 export const refinedInputFieldNames = new Map([
   ["name", "Name"],
   ["description", "Description"],

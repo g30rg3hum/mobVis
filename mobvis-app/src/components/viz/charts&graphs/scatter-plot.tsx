@@ -157,27 +157,30 @@ export default function ScatterPlot({
         );
 
       // create the tooltip for correlation coefficient
-      const tooltip = d3
+      const tooltipCorrelationCoefficient = d3
         .select("body")
         .append("div")
         .style("position", "absolute")
         .style("visibility", "visible")
         .html(
-          `<b>Pearson correlation coefficient:</b> ${roundToNDpIfNeeded(
-            result.pearsonCorrelation,
-            5
-          )}`
+          `
+          <div class="bg-black text-white p-2 rounded-md">
+            <b>Pearson correlation coefficient:</b> 
+            ${roundToNDpIfNeeded(result.pearsonCorrelation, 5)}
+          </div>`
         )
         .style("font-size", 50);
 
       plottedLOB
         .on("mouseover", (event) =>
-          tooltip
+          tooltipCorrelationCoefficient
             .style("visibility", "visible")
             .style("left", event.pageX + "px")
             .style("top", event.pageY + 20 + "px")
         )
-        .on("mouseout", () => tooltip.style("visibility", "hidden"));
+        .on("mouseout", () =>
+          tooltipCorrelationCoefficient.style("visibility", "hidden")
+        );
     }
   }
 

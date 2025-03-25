@@ -35,20 +35,24 @@ def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, For
 
     # already have per_wb and per_stride parameters
     per_wb_parameters = results.per_wb_parameters_
-    per_wb_parameters = per_wb_parameters.drop(columns=["rule_name", "rule_obj"]).replace(np.nan, -1)
+    per_wb_parameters = per_wb_parameters.drop(columns=["rule_name", "rule_obj"]).replace(np.nan, 0)
     # add the wb_id (index) as a column
     per_wb_parameters["wb_id"] = per_wb_parameters.index
     # print(per_wb_parameters)
 
     per_stride_parameters = results.per_stride_parameters_
-    per_stride_parameters = per_stride_parameters.drop(columns=["original_gs_id"]).replace(np.nan, -1)
+    per_stride_parameters = per_stride_parameters.drop(columns=["original_gs_id"]).replace(np.nan, 0)
     # add s_id which contains wb_id but also the stride index.
     per_stride_parameters["s_id"] = per_stride_parameters.index.get_level_values("s_id")
+    # adjust s_id to only include the stride index, not wb
+    per_stride_parameters["s_id"] = per_stride_parameters["s_id"].apply(lambda s_id: int(s_id.split("_")[1]))
     # add wb_id to easier access strides for a wb
     per_stride_parameters["wb_id"] = per_stride_parameters.index.get_level_values("wb_id")
 
     # calculate agg params from per wb params
-    aggregate_parameters = calculate_aggregate_parameters(per_wb_parameters).replace(np.nan, -1)
+    aggregate_parameters = calculate_aggregate_parameters(per_wb_parameters).replace(np.nan, 0)
+
+    # 0 is an okay alternative for NaN because the parameters should be non-zero anyway when calculated.
     
     response = {
       "total_walking_duration": results.aggregated_parameters_.loc["all_wbs","total_walking_duration_h"],

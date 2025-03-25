@@ -1,4 +1,4 @@
-import { perWbDataFields } from "@/lib/fields";
+import { perStrideDataFields, perWbDataFields } from "@/lib/fields";
 
 export type Record = { [key: string]: number };
 
@@ -44,7 +44,7 @@ export type PerWbParameters = Array<PerWbParameter>;
 
 export type PerStrideParameter = {
   wb_id: number;
-  s_id: string;
+  s_id: number;
   start: number;
   end: number;
   lr_label: "right" | "left";
@@ -53,5 +53,7 @@ export type PerStrideParameter = {
   stride_length_m: number;
   walking_speed_mps: number;
 };
+
+export type PerStrideDataField = (typeof perStrideDataFields)[number];
 
 export type PerStrideParameters = Array<PerStrideParameter>;

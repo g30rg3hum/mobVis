@@ -8,11 +8,18 @@ import {
 } from "@/components/shadcn-components/select";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import { perStrideDataFields, refinedParamNames } from "@/lib/fields";
-import { createDataset, groupPerStrideParametersByWbId } from "@/lib/utils";
+import {
+  colours,
+  createDataset,
+  groupPerStrideParametersByWbId,
+  splitPerStrideParametersIntoLAndR,
+} from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
 import { Label } from "@radix-ui/react-label";
 import { useState } from "react";
 import SwitchWb from "./switch-wb";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -60,7 +67,7 @@ export default function StrideParamProgressionScatterPlot({
           </SelectContent>
         </Select>
 
-        <div className="flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-center justify-center gap-2 mt-5">
           <input
             type="checkbox"
             value={step.toString()}
@@ -70,6 +77,27 @@ export default function StrideParamProgressionScatterPlot({
           />
           <Label htmlFor="strideParamProgressionStepCheckbox">Step?</Label>
         </div>
+      </div>
+
+      <div>
+        <ul>
+          <li>
+            <FontAwesomeIcon
+              icon={faCircle}
+              color={colours[0]}
+              className="mr-2"
+            />{" "}
+            Left stride
+          </li>
+          <li>
+            <FontAwesomeIcon
+              icon={faCircle}
+              color={colours[1]}
+              className="mr-2"
+            />{" "}
+            Right Stride
+          </li>
+        </ul>
       </div>
 
       <ScatterPlot
@@ -92,6 +120,9 @@ export default function StrideParamProgressionScatterPlot({
         type={step ? "step" : "connected"}
         integralX
         className="self-center"
+        differentColours={splitPerStrideParametersIntoLAndR(
+          currentPerStrideParameters
+        )}
       />
     </>
   );

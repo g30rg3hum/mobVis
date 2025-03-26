@@ -8,10 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn-components/select";
-import RadarChart, {
-  colours,
-} from "@/components/viz/charts&graphs/radar-chart";
+import RadarChart from "@/components/viz/charts&graphs/radar-chart";
 import { perWbDataFields } from "@/lib/fields";
+import { colours } from "@/lib/utils";
 import { PerWbParameters } from "@/types/parameters";
 import { faStar, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

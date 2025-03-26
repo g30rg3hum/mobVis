@@ -1,7 +1,7 @@
 "use client";
 
 import { leastSquaresRegression } from "@/lib/linearRegression";
-import { roundToNDpIfNeeded } from "@/lib/utils";
+import { colours, roundToNDpIfNeeded } from "@/lib/utils";
 import { Margin } from "@/types/viz";
 import * as d3 from "d3";
 import { useEffect, useRef } from "react";
@@ -16,6 +16,8 @@ interface Props {
   type: "connected" | "step" | "correlation";
   integralX?: boolean;
   className: string;
+  // groups of indexes that should have the same colour
+  differentColours?: number[][];
 }
 export default function ScatterPlot({
   width,
@@ -27,6 +29,7 @@ export default function ScatterPlot({
   type = "connected",
   integralX = false,
   className,
+  differentColours,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
@@ -94,18 +97,6 @@ export default function ScatterPlot({
       .text(yLabel)
       .attr("font-weight", 700);
 
-    // plot the data
-    plot
-      .append("g")
-      .selectAll("point")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", (d) => x(d[0]))
-      .attr("cy", (d) => y(d[1]))
-      .attr("r", 4)
-      .style("fill", "#9B29FF");
-
     function connectPointsLine(): d3.Line<[number, number]> {
       if (type === "connected") {
         return d3
@@ -123,15 +114,18 @@ export default function ScatterPlot({
     }
 
     if (type === "connected" || type === "step") {
-      plot
+      const lines = plot
         .append("path")
         .datum(data)
-        .attr("stroke", "#9B29FF")
         .attr("stroke-width", 2)
         .attr("fill", "none")
-        .attr("d", connectPointsLine());
+        .attr("d", connectPointsLine())
+        .attr("stroke", "#9B29FF");
+
+      if (differentColours) lines.attr("stroke", "#000");
     }
 
+    // lines first so they are under the points
     if (type === "correlation") {
       // calculate least squares regression
       const result = leastSquaresRegression(xValues, yValues);
@@ -164,10 +158,10 @@ export default function ScatterPlot({
         .style("visibility", "visible")
         .html(
           `
-          <div class="bg-black text-white p-2 rounded-md">
-            <b>Pearson correlation coefficient:</b> 
-            ${roundToNDpIfNeeded(result.pearsonCorrelation, 5)}
-          </div>`
+            <div class="bg-black text-white p-2 rounded-md">
+              <b>Pearson correlation coefficient:</b> 
+              ${roundToNDpIfNeeded(result.pearsonCorrelation, 5)}
+            </div>`
         )
         .style("font-size", 50);
 
@@ -181,6 +175,30 @@ export default function ScatterPlot({
         .on("mouseout", () =>
           tooltipCorrelationCoefficient.style("visibility", "hidden")
         );
+    }
+
+    // plot the data
+    const dataPoints = plot
+      .append("g")
+      .selectAll("point")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", (d) => x(d[0]))
+      .attr("cy", (d) => y(d[1]))
+      .attr("r", 4);
+
+    if (differentColours) {
+      dataPoints.style("fill", (point, i) => {
+        for (let j = 0; j < differentColours.length; j++) {
+          if (differentColours[j].includes(i)) {
+            return colours[j];
+          }
+        }
+        return "#000"; // Default color if no match is found
+      });
+    } else {
+      dataPoints.style("fill", "#9B29FF");
     }
   }
 

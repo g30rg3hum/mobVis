@@ -7,7 +7,7 @@ import {
 import { LocalStorageMock } from "../../../../test_helpers/mocks";
 import StrideAnalysis from "@/app/stride_analysis/page";
 
-describe("WbAnalysis", () => {
+describe("StrideAnalysis", () => {
   beforeAll(() => {
     global.localStorage = new LocalStorageMock();
     // set the local storage items required
@@ -55,9 +55,9 @@ describe("WbAnalysis", () => {
   });
 
   it("transitions between walking bouts to focus on", async () => {
-    const currentWbId = screen.getByTestId("current-wb-id");
-    const previousWbBtn = screen.getByTestId("btn-wb-id-previous");
-    const nextWbBtn = screen.getByTestId("btn-wb-id-next");
+    const currentWbId = screen.getAllByTestId("current-wb-id")[0]; // get the first one, corresponds to the table.
+    const previousWbBtn = screen.getAllByTestId("btn-wb-id-previous")[0];
+    const nextWbBtn = screen.getAllByTestId("btn-wb-id-next")[0];
 
     expect(currentWbId).toHaveTextContent("0");
     await userEvent.click(nextWbBtn);

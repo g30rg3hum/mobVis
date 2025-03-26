@@ -113,3 +113,20 @@ export function sortStridesByProperty(
   }
   return sorted;
 }
+
+export const colours = ["#9B29FF", "#08f0fc", "#ff243d"];
+
+export function splitPerStrideParametersIntoLAndR(
+  strides: PerStrideParameters
+) {
+  // left subarray, right subarray.
+  const dividedStrides: [number[], number[]] = [[], []];
+  strides.forEach((stride, i) => {
+    if (stride.lr_label === "left") {
+      dividedStrides[0].push(i);
+    } else {
+      dividedStrides[1].push(i);
+    }
+  });
+  return dividedStrides;
+}

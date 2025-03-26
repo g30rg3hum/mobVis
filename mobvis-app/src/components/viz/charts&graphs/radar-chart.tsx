@@ -1,11 +1,10 @@
 "use client";
 
+import { colours } from "@/lib/utils";
 import { Record } from "@/types/parameters";
 import { Margin } from "@/types/viz";
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
-
-export const colours = ["#9B29FF", "#08f0fc", "#ff243d"];
 
 interface Props {
   width: number;

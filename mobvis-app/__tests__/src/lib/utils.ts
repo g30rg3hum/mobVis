@@ -2,6 +2,7 @@ import {
   groupPerStrideParametersByWbId,
   sortStridesByProperty,
   sortWbsByProperty,
+  splitPerStrideParametersIntoLAndR,
 } from "@/lib/utils";
 import {
   samplePerStrideParameters,
@@ -52,7 +53,6 @@ describe("sortStridesByProperty", () => {
       "lr_label"
     );
 
-    console.log(result);
     // the first three should be left
     expect(result[0].lr_label).toBe("left");
     expect(result[1].lr_label).toBe("left");
@@ -60,5 +60,18 @@ describe("sortStridesByProperty", () => {
     // then the last 2 should be right
     expect(result[3].lr_label).toBe("right");
     expect(result[4].lr_label).toBe("right");
+  });
+});
+
+describe("splitPerStrideParametersIntoLAndR", () => {
+  it("splits the strides into left and right correctly", () => {
+    const result = splitPerStrideParametersIntoLAndR(
+      samplePerStrideParameters.slice(0, 5)
+    );
+    const leftStrides = result[0];
+    const rightStrides = result[1];
+
+    expect(leftStrides).toEqual([0, 1, 3]);
+    expect(rightStrides).toEqual([2, 4]);
   });
 });

@@ -47,7 +47,7 @@ export type PerStrideParameter = {
   s_id: number;
   start: number;
   end: number;
-  lr_label: "right" | "left";
+  lr_label: string;
   cadence_spm: number;
   stride_duration_s: number;
   stride_length_m: number;

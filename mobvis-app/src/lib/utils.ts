@@ -130,3 +130,10 @@ export function splitPerStrideParametersIntoLAndR(
   });
   return dividedStrides;
 }
+
+export function getStrideProperty(
+  strides: PerStrideParameters,
+  property: keyof PerStrideParameter
+) {
+  return strides.map((stride) => stride[property]);
+}

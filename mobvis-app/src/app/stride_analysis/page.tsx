@@ -2,6 +2,7 @@
 
 import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
+import StrideParamProgressionBarChart from "@/components/page-specific/stride_analysis/stride-param-progression-bar-chart";
 import StrideParamProgressionScatterPlot from "@/components/page-specific/stride_analysis/stride-param-progression-scatter-plot";
 import TableOfPerStrideParameters from "@/components/page-specific/stride_analysis/table-of-per-stride-parameters";
 import {
@@ -91,23 +92,22 @@ export default function StrideAnalysis() {
               </Card>
 
               <Card className="w-1/2 flex flex-col justify-between">
-                {/* <CardHeader>
+                <CardHeader>
                   <VizCardTitle>
-                    Progression of a gait parameter (over time/ascending
-                    duration) (bar chart)
+                    Progression of a gait parameter (over time) (bar chart)
                   </VizCardTitle>
                   <VizCardDescription
                     mainDescription={
-                      "Similar to the scatter plot on the left except represented in bar chart form. The fuller 'bar' form may offer a clearer and more straight-forward representation and comparison of value. There is also an additional checkbox setting to sort in increasing order of duration to see if there is a trend between WB duration and the focus parameter."
+                      "Same as the scatter plot on the left except presented in bar chart form. The 'bar' form may offer a clearer and more straightforward represention of value."
                     }
-                    exampleAnalysis="do the bars of each chronological walking decrease steadily for gait speed and if so, by how much each time?"
+                    exampleAnalysis="do the bars of each chronological stride decrease steadily for gait speed and if so, by how much each time?"
                   />
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center gap-10">
-                  <ParamProgressionBarChart
-                    allPerWbParameters={perWbParameters}
+                  <StrideParamProgressionBarChart
+                    allPerStrideParameters={perStrideParameters}
                   />
-                </CardContent> */}
+                </CardContent>
               </Card>
             </div>
           </div>

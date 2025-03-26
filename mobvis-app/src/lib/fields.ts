@@ -27,6 +27,10 @@ export const perStrideDataFields = [
   "walking_speed_mps",
 ];
 
+export const perStrideParamFields = perStrideDataFields.filter(
+  (param) => param !== "s_id" && param !== "lr_label"
+);
+
 export const refinedInputFieldNames = new Map([
   ["name", "Name"],
   ["description", "Description"],

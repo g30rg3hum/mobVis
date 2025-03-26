@@ -2,6 +2,7 @@
 import { Margin } from "@/types/viz";
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import { colours } from "@/lib/utils";
 
 interface Props {
   width: number;
@@ -12,6 +13,7 @@ interface Props {
   xLabel: string;
   yLabel: string;
   tiltXLabels?: boolean;
+  differentColours?: number[][];
 }
 export default function BarChart({
   width,
@@ -22,6 +24,7 @@ export default function BarChart({
   xLabel,
   yLabel,
   tiltXLabels = false,
+  differentColours,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
@@ -86,7 +89,7 @@ export default function BarChart({
       .attr("font-weight", 700);
 
     // add the bars
-    plot
+    const bars = plot
       .selectAll("bar")
       .data(data)
       .enter()
@@ -94,8 +97,19 @@ export default function BarChart({
       .attr("x", (d) => x(d[0])!)
       .attr("y", (d) => y(d[1])!)
       .attr("width", x.bandwidth())
-      .attr("height", (d) => height - y(d[1]))
-      .attr("fill", "#9B29FF");
+      .attr("height", (d) => height - y(d[1]));
+    if (differentColours) {
+      bars.style("fill", (bar, i) => {
+        for (let j = 0; j < differentColours.length; j++) {
+          if (differentColours[j].includes(i)) {
+            return colours[j];
+          }
+        }
+        return "#000";
+      });
+    } else {
+      bars.attr("fill", "#9B29FF");
+    }
   }
 
   return (

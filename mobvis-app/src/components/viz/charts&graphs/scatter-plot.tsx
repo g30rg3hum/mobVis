@@ -15,7 +15,7 @@ interface Props {
   yLabel: string;
   type: "connected" | "step" | "correlation";
   integralX?: boolean;
-  className: string;
+  className?: string;
   // groups of indexes that should have the same colour
   differentColours?: number[][];
 }

@@ -1,6 +1,7 @@
 "use client";
 import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
+import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
 import AllParamsRelationshipPcp from "@/components/page-specific/wb_analysis/all-params-relationship-pcp";
 import ComparisonWbsRadar from "@/components/page-specific/wb_analysis/comparison-wbs-radar";
 import ParamProgressionBarChart from "@/components/page-specific/wb_analysis/param-progression-bar-chart";
@@ -12,12 +13,6 @@ import {
   CardContent,
   CardHeader,
 } from "@/components/shadcn-components/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/shadcn-components/dialog";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
 import { getAndParseStorageItem } from "@/lib/utils";
@@ -179,19 +174,10 @@ export default function WbAnalysis() {
               </CardContent>
             </Card>
 
-            <Dialog
-              open={modalMessage !== undefined}
-              onOpenChange={() => setModalMessage(undefined)}
-            >
-              <DialogContent data-testid="inputs-dialog">
-                <DialogHeader>
-                  <DialogTitle className="font-semibold">
-                    Attention! 🚨
-                  </DialogTitle>
-                </DialogHeader>
-                <p>{modalMessage}</p>
-              </DialogContent>
-            </Dialog>
+            <ModalMessageDialog
+              modalMessage={modalMessage}
+              setModalMessage={setModalMessage}
+            />
           </div>
         </div>
       </div>

@@ -1,13 +1,5 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/shadcn-components/select";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
-import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
+import { refinedParamNames } from "@/lib/fields";
 import {
   colours,
   createDataset,
@@ -20,6 +12,7 @@ import { useState } from "react";
 import SwitchWb from "./switch-wb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import SelectFocusParam from "./select-focus-param";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -47,23 +40,10 @@ export default function StrideParamProgressionScatterPlot({
           wbCount={wbCount}
         />
 
-        <Select onValueChange={setFocusParam} defaultValue={focusParam}>
-          <div className="flex flex-col gap-1">
-            <Label>Focus parameter</Label>
-            <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Select focus parameter" />
-            </SelectTrigger>
-          </div>
-          <SelectContent>
-            <SelectGroup>
-              {perStrideParamFields.map((param) => (
-                <SelectItem value={param} key={param}>
-                  {refinedParamNames.get(param)}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <SelectFocusParam
+          setFocusParam={setFocusParam}
+          focusParam={focusParam}
+        />
 
         <div className="flex items-center justify-center gap-2 mt-5">
           <input
@@ -100,7 +80,7 @@ export default function StrideParamProgressionScatterPlot({
 
       <ScatterPlot
         height={500}
-        width={500}
+        width={450}
         margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
         data={
           createDataset(

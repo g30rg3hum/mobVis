@@ -2,6 +2,8 @@
 
 import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
+import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
+import StrideParamDistributionViolinPlot from "@/components/page-specific/stride_analysis/stride-param-distribution-violin-plot";
 import StrideParamProgressionBarChart from "@/components/page-specific/stride_analysis/stride-param-progression-bar-chart";
 import StrideParamProgressionScatterPlot from "@/components/page-specific/stride_analysis/stride-param-progression-scatter-plot";
 import TableOfPerStrideParameters from "@/components/page-specific/stride_analysis/table-of-per-stride-parameters";
@@ -28,6 +30,11 @@ export default function StrideAnalysis() {
 
   // inputs dialog
   const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
+
+  // modal message
+  const [modalMessage, setModalMessage] = useState<string | undefined>(
+    undefined
+  );
 
   if (inputs && perStrideParameters) {
     return (
@@ -110,8 +117,63 @@ export default function StrideAnalysis() {
                 </CardContent>
               </Card>
             </div>
+
+            <div className="flex gap-5">
+              <Card className="w-1/2">
+                <CardHeader>
+                  <VizCardTitle>
+                    Distribution of a given parameter (violin plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    mainDescription={
+                      "A violin plot that shows the distribution of values by the area of the density curves. The focus is on the distribution of a given gait parameter across all strides for a given walking bout. You can add up to three violins (walking bouts) and the gait parameter can be changed with the dropdown"
+                    }
+                    exampleAnalysis="how much does this patient's stride length vary across the strides of one walking bout compared to another?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5">
+                  <StrideParamDistributionViolinPlot
+                    allPerStrideParameters={perStrideParameters}
+                    setModalMessage={setModalMessage}
+                  />
+                </CardContent>
+              </Card>
+              <Card className="w-1/2">
+                <CardHeader>
+                  <VizCardTitle>
+                    Distribution of a given parameter (box plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    mainDescription={
+                      "A box plot displays key distribution points (maximum, upper quartile, median, lower quartile and minimum). Essentially this also shows distribution like the violin plot on the left, but it concretely shows key distribution values rather than a smoothed distribution shape. The functions of changing the focus parameter and adding additional walking bouts work the same way as in the violin plot."
+                    }
+                    exampleAnalysis="how much does this patient’s stride length vary for one walking bout compared to another?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5"></CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Distribution of a given parameter (histogram)
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription={
+                    "A histogram depicting the frequency of a given gait parameter's values across strides. It visualises distribution like above, but it is simpler and there is a clearer and direct view of actual parameter values, as opposed to curves which have a smoothing effect. Additional histograms for other walking bouts and the focus parameter and walking bout can be manipulated in the same way, however there is a limit of three histograms to avoid clutter. Note that separating the walking bouts into left and right strides will only be available for when only displaying one walking bout, to allow for clearer analysis."
+                  }
+                  exampleAnalysis="what is the most frequent value range for cadence? How does this compare against the mean value?"
+                />
+              </CardHeader>
+              <CardContent className="space-y-5"></CardContent>
+            </Card>
           </div>
         </div>
+        <ModalMessageDialog
+          modalMessage={modalMessage}
+          setModalMessage={setModalMessage}
+        />
       </div>
     );
   } else {

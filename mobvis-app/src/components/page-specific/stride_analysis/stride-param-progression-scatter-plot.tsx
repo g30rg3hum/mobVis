@@ -4,7 +4,7 @@ import {
   colours,
   createDataset,
   groupPerStrideParametersByWbId,
-  splitPerStrideParametersIntoLAndR,
+  splitPerStrideParametersIntoLAndRIndicesArray,
 } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
 import { Label } from "@radix-ui/react-label";
@@ -98,7 +98,7 @@ export default function StrideParamProgressionScatterPlot({
         type={step ? "step" : "connected"}
         integralX
         className="self-center"
-        differentColours={splitPerStrideParametersIntoLAndR(
+        differentColours={splitPerStrideParametersIntoLAndRIndicesArray(
           currentPerStrideParameters
         )}
       />

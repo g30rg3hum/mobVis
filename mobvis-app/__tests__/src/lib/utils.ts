@@ -2,7 +2,7 @@ import {
   groupPerStrideParametersByWbId,
   sortStridesByProperty,
   sortWbsByProperty,
-  splitPerStrideParametersIntoLAndR,
+  splitPerStrideParametersIntoLAndRIndicesArray,
 } from "@/lib/utils";
 import {
   samplePerStrideParameters,
@@ -65,7 +65,7 @@ describe("sortStridesByProperty", () => {
 
 describe("splitPerStrideParametersIntoLAndR", () => {
   it("splits the strides into left and right correctly", () => {
-    const result = splitPerStrideParametersIntoLAndR(
+    const result = splitPerStrideParametersIntoLAndRIndicesArray(
       samplePerStrideParameters.slice(0, 5)
     );
     const leftStrides = result[0];

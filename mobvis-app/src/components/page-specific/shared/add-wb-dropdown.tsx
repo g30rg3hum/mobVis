@@ -16,6 +16,7 @@ interface Props {
   maxWbs: number;
   maxHit?: () => void;
   setCurrentWbIds: (value: SetStateAction<number[]>) => void;
+  disabled?: boolean;
 }
 export default function AddWbDropdown({
   currentWbIds,
@@ -23,6 +24,7 @@ export default function AddWbDropdown({
   maxWbs,
   maxHit,
   setCurrentWbIds,
+  disabled = false,
 }: Props) {
   const [selectedWb, setSelectedWb] = useState<number | undefined>(undefined);
 
@@ -35,7 +37,11 @@ export default function AddWbDropdown({
         <div className="flex flex-col gap-1">
           <Label>Walking bout</Label>
           <SelectTrigger className="w-[240px]">
-            <SelectValue placeholder="Select a walking bout to plot" />
+            <SelectValue placeholder="Select a walking bout to plot">
+              {selectedWb !== undefined
+                ? selectedWb.toString()
+                : "Select a walking bout to plot"}
+            </SelectValue>
           </SelectTrigger>
         </div>
         <SelectContent>
@@ -60,9 +66,11 @@ export default function AddWbDropdown({
               return;
             }
             setCurrentWbIds((prev) => [...prev, selectedWb]);
+            setSelectedWb(undefined);
           }
         }}
         className="self-end"
+        disabled={disabled}
       >
         Add
       </Button>

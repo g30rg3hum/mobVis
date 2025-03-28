@@ -116,7 +116,7 @@ export function sortStridesByProperty(
 
 export const colours = ["#9B29FF", "#08f0fc", "#ff243d", "#fff700", "#00ff26"];
 
-export function splitPerStrideParametersIntoLAndR(
+export function splitPerStrideParametersIntoLAndRIndicesArray(
   strides: PerStrideParameters
 ) {
   // left subarray, right subarray.
@@ -136,4 +136,44 @@ export function getStrideProperty(
   property: keyof PerStrideParameter
 ) {
   return strides.map((stride) => stride[property]);
+}
+
+// TODO: TEST THIS.
+export function createDatasetOfKeyAndValTuples(
+  currentWbIds: number[],
+  focusParam: keyof PerStrideParameter,
+  groupedPerStrideParameters: Map<number, PerStrideParameters>,
+  leftAndRight: boolean = false
+): [string, number][] {
+  // include logic on splitting left and right strides if only 1 wbId
+  if (currentWbIds.length !== 1 && leftAndRight) {
+    throw new Error("Can only split left and right strides if only 1 wbId");
+  }
+
+  if (leftAndRight) {
+    // create ["left"|"right", val][]
+    const stridesForWbId = groupedPerStrideParameters.get(currentWbIds[0])!;
+    return stridesForWbId.map((stride) => {
+      const strideVal = stride[focusParam] as number;
+      if (stride.lr_label === "left") return ["left", strideVal];
+      else return ["right", strideVal];
+    });
+  }
+
+  // regular implementation, no splitting into L and R.
+  return currentWbIds.flatMap((wbId) => {
+    const stridesForWbId = groupedPerStrideParameters.get(wbId)!;
+    const allValuesForParam = getStrideProperty(
+      stridesForWbId,
+      // the focusParam is always a number parameter.
+      focusParam as keyof PerStrideParameter
+    ) as number[];
+
+    // flattened so [wbId, val][]
+    const result = allValuesForParam.map(
+      (val) => [wbId.toString(), val] as [string, number]
+    );
+
+    return result;
+  });
 }

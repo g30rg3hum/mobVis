@@ -7,7 +7,7 @@ import {
   createDataset,
   getStrideProperty,
   groupPerStrideParametersByWbId,
-  splitPerStrideParametersIntoLAndR,
+  splitPerStrideParametersIntoLAndRIndicesArray,
 } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
 import { useState } from "react";
@@ -86,7 +86,7 @@ export default function StrideParamProgressionBarChart({
         xLabel="Stride ID"
         yLabel={refinedParamNames.get(focusParam) as string}
         className="self-center"
-        differentColours={splitPerStrideParametersIntoLAndR(
+        differentColours={splitPerStrideParametersIntoLAndRIndicesArray(
           currentPerStrideParameters
         )}
       />

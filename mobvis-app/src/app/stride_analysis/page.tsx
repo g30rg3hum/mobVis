@@ -3,6 +3,7 @@
 import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
 import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
+import StrideParamDistributionHistogram from "@/components/page-specific/stride_analysis/stride-param-distribution-histogram";
 import StrideParamDistributionViolinPlot from "@/components/page-specific/stride_analysis/stride-param-distribution-violin-plot";
 import StrideParamProgressionBarChart from "@/components/page-specific/stride_analysis/stride-param-progression-bar-chart";
 import StrideParamProgressionScatterPlot from "@/components/page-specific/stride_analysis/stride-param-progression-scatter-plot";
@@ -146,12 +147,17 @@ export default function StrideAnalysis() {
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "A histogram depicting the frequency of a given gait parameter's values across strides. It visualises distribution like above, but it is simpler and there is a clearer and direct view of actual parameter values, as opposed to curves which have a smoothing effect. Additional histograms for other walking bouts and the focus parameter and walking bout can be manipulated in the same way, however there is a limit of three histograms to avoid clutter. Note that separating the walking bouts into left and right strides will only be available for when only displaying one walking bout, to allow for clearer analysis."
+                    "A histogram depicting the frequency of a given gait parameter's values across strides. It visualises distribution like above, but it is simpler and there is a clearer and direct view of concrete parameter values, as opposed to curves (which have a smoothing effect) and boxes (which summarise and 'over-simplify' distribution). Histograms for more than one walking bout can be added (up to 3). The focus parameter can be changed using the dropdown. There is also the option of separating the histogram of a walking bout into left and right strides; but this is only available for when only displaying one walking bout, to maintain a clear analysis."
                   }
                   exampleAnalysis="what is the most frequent value range for cadence? How does this compare against the mean value?"
                 />
               </CardHeader>
-              <CardContent className="space-y-5"></CardContent>
+              <CardContent className="flex flex-col justify-center gap-5">
+                <StrideParamDistributionHistogram
+                  allPerStrideParameters={perStrideParameters}
+                  setModalMessage={setModalMessage}
+                />
+              </CardContent>
             </Card>
           </div>
         </div>

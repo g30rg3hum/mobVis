@@ -4,6 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/shadcn-components/dialog";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface Props {
   modalMessage: string | undefined;
@@ -21,6 +22,7 @@ export default function ModalMessageDialog({
       <DialogContent data-testid="inputs-dialog">
         <DialogHeader>
           <DialogTitle className="font-semibold">Attention! 🚨</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <p>{modalMessage}</p>
       </DialogContent>

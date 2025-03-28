@@ -69,50 +69,6 @@ export default function RadarChart({
       .attr("r", radius)
       .attr("opacity", 0.1);
 
-    // draw the axes
-    plot
-      .selectAll("axis")
-      .data(axes)
-      .enter()
-      .append("g")
-      .each(function (axis, i) {
-        // create the axis
-        const d3Axis = d3.axisRight(y[axis]);
-        d3.select(this).call(d3Axis);
-
-        // manipulate the ticks before rotating whole axis
-        const angle = (360 / axes.length) * i;
-        d3.select(this)
-          .selectAll(".tick text")
-          .attr("transform", `rotate(${-angle})`)
-          .style("text-anchor", "start");
-
-        // move ticks to the center of the axis
-        d3.select(this)
-          .selectAll(".tick line")
-          .attr("transform", "translate(-3,0)");
-
-        // remove the first tick
-        d3.select(this)
-          .selectAll(".tick")
-          .filter((_, i) => i === 0)
-          .remove();
-
-        d3.select(this)
-          .append("text")
-          .attr("text-anchor", "middle")
-          .style("fill", "black")
-          .style("font-weight", 600)
-          .style("font-size", "0.8rem")
-          .attr("transform", `translate(0, ${radius + 25}) rotate(${-angle})`)
-          .text(axis);
-      })
-      // rotate the axis around the circle
-      .attr("transform", (_, i) => {
-        const angle = (360 / axes.length) * i;
-        return `translate(${width / 2}, ${height / 2}) rotate(${angle})`;
-      });
-
     // plot the shapes for selected records
     recordsToPlot.forEach((index, order) => {
       const colour = colours[order % colours.length];
@@ -158,6 +114,68 @@ export default function RadarChart({
         .attr("r", 3)
         .style("fill", colour);
     });
+
+    // draw the axes
+    plot
+      .selectAll("axis")
+      .data(axes)
+      .enter()
+      .append("g")
+      .each(function (axis, i) {
+        // create the axis
+        const d3Axis = d3.axisRight(y[axis]);
+        d3.select(this).call(d3Axis);
+
+        // manipulate the ticks before rotating whole axis
+        const angle = (360 / axes.length) * i;
+        const ticksTexts = d3
+          .select(this)
+          .selectAll(".tick text")
+          .attr("transform", `rotate(${-angle})`)
+          .style("text-anchor", "start");
+
+        // move ticks to the center of the axis
+        d3.select(this)
+          .selectAll(".tick line")
+          .attr("transform", "translate(-3,0)");
+
+        // remove the first tick
+        d3.select(this)
+          .selectAll(".tick")
+          .filter((_, i) => i === 0)
+          .remove();
+
+        const labels = d3
+          .select(this)
+          .append("text")
+          .attr("text-anchor", "middle")
+          .style("fill", "black")
+          .style("font-weight", 600)
+          .style("font-size", "0.8rem")
+          .attr("transform", `translate(0, ${radius + 20}) rotate(${-angle})`)
+          .text(axis);
+
+        if (i === 1 && axes.length === 4) {
+          ticksTexts.attr("transform", "");
+          labels.attr(
+            "transform",
+            `translate(-10, ${radius + 20}) rotate(${-angle})`
+          );
+        }
+
+        if (i === 3 && axes.length === 4) {
+          ticksTexts.attr("transform", "translate(-32,0)");
+          labels.attr(
+            "transform",
+            `translate(10, ${radius + 20}) rotate(${-angle})`
+          );
+        }
+      })
+      // rotate the axis around the circle
+      .attr("transform", (_, i) => {
+        const angle = (360 / axes.length) * i;
+        return `translate(${width / 2}, ${height / 2}) rotate(${angle})`;
+      });
   }
 
   return (

@@ -4,6 +4,7 @@ import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
 import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
 import RelationshipBetweenAllGaitParametersPcp from "@/components/page-specific/stride_analysis/relationship-between-all-gait-parameter-pcp";
+import StrideComparisonRadarChart from "@/components/page-specific/stride_analysis/stride-comparison-radar-chart";
 import StrideParamDistributionHistogram from "@/components/page-specific/stride_analysis/stride-param-distribution-histogram";
 import StrideParamDistributionViolinPlot from "@/components/page-specific/stride_analysis/stride-param-distribution-violin-plot";
 import StrideParamProgressionBarChart from "@/components/page-specific/stride_analysis/stride-param-progression-bar-chart";
@@ -164,7 +165,8 @@ export default function StrideAnalysis() {
             <Card>
               <CardHeader>
                 <VizCardTitle>
-                  Relationship between all gait parameters
+                  Relationship between all gait parameters (parallel coordinates
+                  plot)
                 </VizCardTitle>
                 <VizCardDescription
                   mainDescription={
@@ -175,6 +177,24 @@ export default function StrideAnalysis() {
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-5">
                 <RelationshipBetweenAllGaitParametersPcp
+                  allPerStrideParameters={perStrideParameters}
+                  setModalMessage={setModalMessage}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Comparison between strides (radar chart)
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription="A radar chart with axes for each gait parameter, plotting against identified strides from walking bouts that you select to add from the dropdown. Representing the strides as shapes provide straightforward insights about how the strides compare across each dimension (gait parameter). You can plot for up to three strides, to avoid the chart getting too cluttered."
+                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-5">
+                <StrideComparisonRadarChart
                   allPerStrideParameters={perStrideParameters}
                   setModalMessage={setModalMessage}
                 />

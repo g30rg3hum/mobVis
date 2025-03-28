@@ -14,6 +14,7 @@ import { perWbDataFields, refinedParamNames } from "@/lib/fields";
 import { createDataset } from "@/lib/utils";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
+import SettingCheckbox from "../shared/setting-checkbox";
 
 interface Props {
   allPerWbParameters: PerWbParameters;
@@ -46,16 +47,11 @@ export default function ParamProgressionScatterPlot({
             </SelectGroup>
           </SelectContent>
         </Select>
-        <div className="flex items-center justify-center gap-2 mt-4">
-          <input
-            type="checkbox"
-            value={step.toString()}
-            onChange={(el) => setStep(el.target.checked)}
-            className="w-4 h-4"
-            id="v1StepCheckbox"
-          />
-          <Label htmlFor="v1StepCheckbox">Step?</Label>
-        </div>
+        <SettingCheckbox
+          state={step}
+          setState={setStep}
+          inputId="v1StepCheckbox"
+        />
       </div>
       <ScatterPlot
         height={500}

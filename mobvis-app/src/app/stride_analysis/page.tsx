@@ -118,41 +118,26 @@ export default function StrideAnalysis() {
               </Card>
             </div>
 
-            <div className="flex gap-5">
-              <Card className="w-1/2">
-                <CardHeader>
-                  <VizCardTitle>
-                    Distribution of a given parameter (violin plot)
-                  </VizCardTitle>
-                  <VizCardDescription
-                    mainDescription={
-                      "A violin plot that shows the distribution of values by the area of the density curves. The focus is on the distribution of a given gait parameter across all strides for a given walking bout. You can add up to three violins (walking bouts) and the gait parameter can be changed with the dropdown"
-                    }
-                    exampleAnalysis="how much does this patient's stride length vary across the strides of one walking bout compared to another?"
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col justify-center gap-5">
-                  <StrideParamDistributionViolinPlot
-                    allPerStrideParameters={perStrideParameters}
-                    setModalMessage={setModalMessage}
-                  />
-                </CardContent>
-              </Card>
-              <Card className="w-1/2">
-                <CardHeader>
-                  <VizCardTitle>
-                    Distribution of a given parameter (box plot)
-                  </VizCardTitle>
-                  <VizCardDescription
-                    mainDescription={
-                      "A box plot displays key distribution points (maximum, upper quartile, median, lower quartile and minimum). Essentially this also shows distribution like the violin plot on the left, but it concretely shows key distribution values rather than a smoothed distribution shape. The functions of changing the focus parameter and adding additional walking bouts work the same way as in the violin plot."
-                    }
-                    exampleAnalysis="how much does this patient’s stride length vary for one walking bout compared to another?"
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col justify-center gap-5"></CardContent>
-              </Card>
-            </div>
+            {/* <div className="flex gap-5"> */}
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Distribution of a given parameter (violin + box plot)
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription={
+                    "A violin/box plot that shows the distribution of values. You can switch between a violin and box plot using the checkbox. The violin version looks at distribution by the area of the density curves, while the box plot displays key distribution points (max, upperquartile, median, lower quartile and min). The focus is on the distribution of a given gait parameter across all strides for a given walking bout. You can add up to five violins/boxes (walking bouts) and the focus gait parameter can be changed with the dropdown."
+                  }
+                  exampleAnalysis="how much does this patient's stride length vary across the strides of one walking bout compared to another?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-5">
+                <StrideParamDistributionViolinPlot
+                  allPerStrideParameters={perStrideParameters}
+                  setModalMessage={setModalMessage}
+                />
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>

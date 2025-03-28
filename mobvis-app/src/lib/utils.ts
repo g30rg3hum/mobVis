@@ -114,7 +114,7 @@ export function sortStridesByProperty(
   return sorted;
 }
 
-export const colours = ["#9B29FF", "#08f0fc", "#ff243d"];
+export const colours = ["#9B29FF", "#08f0fc", "#ff243d", "#fff700", "#00ff26"];
 
 export function splitPerStrideParametersIntoLAndR(
   strides: PerStrideParameters

@@ -1,4 +1,3 @@
-import ViolinPlot from "@/components/viz/charts&graphs/violin-plot";
 import { getStrideProperty, groupPerStrideParametersByWbId } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
 import { useState } from "react";
@@ -6,6 +5,8 @@ import SelectFocusParam from "./select-focus-param";
 import AddWbDropdown from "../shared/add-wb-dropdown";
 import SelectedWbsList from "../shared/selected-wbs-list";
 import { refinedParamNames } from "@/lib/fields";
+import ViolinBoxPlot from "@/components/viz/charts&graphs/violin-plot";
+import SettingCheckbox from "../shared/setting-checkbox";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -17,6 +18,7 @@ export default function StrideParamDistributionViolinPlot({
 }: Props) {
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [currentWbIds, setCurrentWbIds] = useState<number[]>([0]);
+  const [box, setBox] = useState(false);
 
   const groupedPerStrideParameters = groupPerStrideParametersByWbId(
     allPerStrideParameters
@@ -26,34 +28,39 @@ export default function StrideParamDistributionViolinPlot({
   return (
     <>
       <div>
-        <div className="flex flex-col gap-5">
+        <div className="flex items-end gap-5 ">
           <AddWbDropdown
             currentWbIds={currentWbIds}
             allWbIds={allWbIds}
-            maxWbs={3}
+            maxWbs={5}
             setCurrentWbIds={setCurrentWbIds}
             maxHit={() =>
-              setModalMessage("You can only plot up to 3 walking bouts.")
+              setModalMessage("You can only plot up to 5 walking bouts.")
             }
           />
 
-          <div className="flex gap-3 items-center">
-            <SelectFocusParam
-              setFocusParam={setFocusParam}
-              focusParam={focusParam}
-            />
-            <SelectedWbsList
-              wbs={currentWbIds}
-              setWbs={setCurrentWbIds}
-              horizontal
-            />
-          </div>
+          <SelectFocusParam
+            setFocusParam={setFocusParam}
+            focusParam={focusParam}
+          />
+
+          <SettingCheckbox
+            state={box}
+            setState={setBox}
+            inputId="violinBoxCheckbox"
+          />
+
+          <SelectedWbsList
+            wbs={currentWbIds}
+            setWbs={setCurrentWbIds}
+            horizontal
+          />
         </div>
       </div>
 
-      <ViolinPlot
+      <ViolinBoxPlot
         className="self-center"
-        width={450}
+        width={1050}
         height={500}
         margin={{ left: 70, right: 30, top: 30, bottom: 70 }}
         xLabel="WB ID"
@@ -73,6 +80,7 @@ export default function StrideParamDistributionViolinPlot({
 
           return result;
         })}
+        box={box}
       />
     </>
   );

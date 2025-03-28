@@ -1,4 +1,5 @@
 import {
+  createDatasetOfKeyAndValTuples,
   groupPerStrideParametersByWbId,
   sortStridesByProperty,
   sortWbsByProperty,
@@ -8,6 +9,7 @@ import {
   samplePerStrideParameters,
   samplePerWbParameters,
 } from "../../../test_helpers/sample_data";
+import { PerStrideParameters } from "@/types/parameters";
 
 describe("sortWbsByProperty", () => {
   it("sorts the wbs by the n_strides correctly (asc)", () => {
@@ -73,5 +75,90 @@ describe("splitPerStrideParametersIntoLAndR", () => {
 
     expect(leftStrides).toEqual([0, 1, 3]);
     expect(rightStrides).toEqual([2, 4]);
+  });
+});
+
+describe("createDatasetOfKeyAndTuples", () => {
+  it("creates dataset of [wbId, val][] correctly (typical/regular case)", () => {
+    const currentWbIds = [0, 1];
+    const focusParam = "walking_speed_mps";
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, samplePerStrideParameters.slice(0, 2)],
+      [1, samplePerStrideParameters.slice(2, 4)],
+    ]);
+
+    const result = createDatasetOfKeyAndValTuples(
+      currentWbIds,
+      focusParam,
+      groupedPerStrideParameters
+    );
+    const stride0ParamValue = samplePerStrideParameters[0].walking_speed_mps;
+    const stride1ParamValue = samplePerStrideParameters[1].walking_speed_mps;
+    const stride2ParamValue = samplePerStrideParameters[2].walking_speed_mps;
+    const stride3ParamValue = samplePerStrideParameters[3].walking_speed_mps;
+
+    const expectedResult = [
+      ["0", stride0ParamValue],
+      ["0", stride1ParamValue],
+      ["1", stride2ParamValue],
+      ["1", stride3ParamValue],
+    ];
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it("throws an error if no. of wbIds is not 1 and split into left and right is set to true", () => {
+    const currentWbIds = [0, 1];
+    const focusParam = "walking_speed_mps";
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, samplePerStrideParameters.slice(0, 2)],
+      [1, samplePerStrideParameters.slice(2, 4)],
+    ]);
+
+    expect(() =>
+      createDatasetOfKeyAndValTuples(
+        currentWbIds,
+        focusParam,
+        groupedPerStrideParameters,
+        true
+      )
+    ).toThrow("Can only split left and right strides if only 1 wbId");
+  });
+
+  it("splits the strides into left and right correctly", () => {
+    const currentWbIds = [0];
+    const focusParam = "walking_speed_mps";
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, samplePerStrideParameters.slice(0, 5)],
+    ]);
+
+    const result = createDatasetOfKeyAndValTuples(
+      currentWbIds,
+      focusParam,
+      groupedPerStrideParameters,
+      true
+    );
+
+    const stride0LR = samplePerStrideParameters[0].lr_label;
+    const stride1LR = samplePerStrideParameters[1].lr_label;
+    const stride2LR = samplePerStrideParameters[2].lr_label;
+    const stride3LR = samplePerStrideParameters[3].lr_label;
+    const stride4LR = samplePerStrideParameters[4].lr_label;
+
+    const stride0ParamValue = samplePerStrideParameters[0].walking_speed_mps;
+    const stride1ParamValue = samplePerStrideParameters[1].walking_speed_mps;
+    const stride2ParamValue = samplePerStrideParameters[2].walking_speed_mps;
+    const stride3ParamValue = samplePerStrideParameters[3].walking_speed_mps;
+    const stride4ParamValue = samplePerStrideParameters[4].walking_speed_mps;
+
+    const expectedResult = [
+      [stride0LR, stride0ParamValue],
+      [stride1LR, stride1ParamValue],
+      [stride2LR, stride2ParamValue],
+      [stride3LR, stride3ParamValue],
+      [stride4LR, stride4ParamValue],
+    ];
+
+    expect(result).toEqual(expectedResult);
   });
 });

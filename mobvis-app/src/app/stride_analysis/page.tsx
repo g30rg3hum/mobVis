@@ -3,6 +3,7 @@
 import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
 import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
+import RelationshipBetweenAllGaitParametersPcp from "@/components/page-specific/stride_analysis/relationship-between-all-gait-parameter-pcp";
 import StrideParamDistributionHistogram from "@/components/page-specific/stride_analysis/stride-param-distribution-histogram";
 import StrideParamDistributionViolinPlot from "@/components/page-specific/stride_analysis/stride-param-distribution-violin-plot";
 import StrideParamProgressionBarChart from "@/components/page-specific/stride_analysis/stride-param-progression-bar-chart";
@@ -154,6 +155,26 @@ export default function StrideAnalysis() {
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-5">
                 <StrideParamDistributionHistogram
+                  allPerStrideParameters={perStrideParameters}
+                  setModalMessage={setModalMessage}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Relationship between all gait parameters
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription={
+                    "A parallel coordinates plot with an axis for each gait parameter. Each stride is plotted as a polyline through these axes. The patterns of how these polylines cross and converge through these axes can reveal relationships between the gait parameters. This visualisation is limited to strides of three walking bouts at a time. In the same way as the histogram above, you can only split the polylines into left and right strides if only one walking bout is selected."
+                  }
+                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-5">
+                <RelationshipBetweenAllGaitParametersPcp
                   allPerStrideParameters={perStrideParameters}
                   setModalMessage={setModalMessage}
                 />

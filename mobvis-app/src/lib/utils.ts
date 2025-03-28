@@ -138,7 +138,7 @@ export function getStrideProperty(
   return strides.map((stride) => stride[property]);
 }
 
-// TODO: TEST THIS.
+// THIS IS FOR DATA IN VIZ LIKE HISTOGRAM, VIOLIN PLOT
 export function createDatasetOfKeyAndValTuples(
   currentWbIds: number[],
   focusParam: keyof PerStrideParameter,
@@ -175,5 +175,32 @@ export function createDatasetOfKeyAndValTuples(
     );
 
     return result;
+  });
+}
+
+// THIS IS FOR DATA IN VIZ LIKE PCP
+export function createPerStrideDatasetWithDesiredWbIds(
+  currentWbIds: number[],
+  groupedPerStrideParameters: Map<number, PerStrideParameters>,
+  leftAndRight: boolean = false
+): PerStrideParameters[] {
+  if (currentWbIds.length !== 1 && leftAndRight) {
+    throw new Error("Can only split left and right strides if only 1 wbId");
+  }
+
+  // split into left and right.
+  if (leftAndRight) {
+    const stridesForWbId = groupedPerStrideParameters.get(currentWbIds[0])!;
+    const dividedStridesIndices =
+      splitPerStrideParametersIntoLAndRIndicesArray(stridesForWbId);
+    const leftStrides = dividedStridesIndices[0].map((i) => stridesForWbId[i]);
+    const rightStrides = dividedStridesIndices[1].map((i) => stridesForWbId[i]);
+    return [leftStrides, rightStrides];
+  }
+
+  // regular path:
+  return currentWbIds.map((wbId) => {
+    const stridesForWbId = groupedPerStrideParameters.get(wbId)!;
+    return stridesForWbId;
   });
 }

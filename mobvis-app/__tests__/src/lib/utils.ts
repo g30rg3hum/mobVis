@@ -1,5 +1,6 @@
 import {
   createDatasetOfKeyAndValTuples,
+  createPerStrideDatasetWithDesiredWbIds,
   groupPerStrideParametersByWbId,
   sortStridesByProperty,
   sortWbsByProperty,
@@ -158,6 +159,68 @@ describe("createDatasetOfKeyAndTuples", () => {
       [stride3LR, stride3ParamValue],
       [stride4LR, stride4ParamValue],
     ];
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+describe("createPerStrideDatasetWithDesiredWbIds", () => {
+  it("creates groups of PerStrideParameters correctly (regular case)", () => {
+    const currentWbIds = [0, 1];
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, samplePerStrideParameters.slice(0, 2)],
+      [1, samplePerStrideParameters.slice(2, 4)],
+    ]);
+
+    const result = createPerStrideDatasetWithDesiredWbIds(
+      currentWbIds,
+      groupedPerStrideParameters
+    );
+
+    const expectedResult = [
+      samplePerStrideParameters.slice(0, 2),
+      samplePerStrideParameters.slice(2, 4),
+    ];
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  it("throws an error if no. of wbIds is not 1 and split into left and right is set to true", () => {
+    const currentWbIds = [0, 1];
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, samplePerStrideParameters.slice(0, 2)],
+      [1, samplePerStrideParameters.slice(2, 4)],
+    ]);
+
+    expect(() =>
+      createPerStrideDatasetWithDesiredWbIds(
+        currentWbIds,
+        groupedPerStrideParameters,
+        true
+      )
+    ).toThrow("Can only split left and right strides if only 1 wbId");
+  });
+
+  it("splits the strides into left and right correctly", () => {
+    const currentWbIds = [0];
+    const sampleStrideRecords = samplePerStrideParameters.slice(0, 5);
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, sampleStrideRecords],
+    ]);
+
+    const result = createPerStrideDatasetWithDesiredWbIds(
+      currentWbIds,
+      groupedPerStrideParameters,
+      true
+    );
+
+    const expectedResult = [];
+    expectedResult[0] = sampleStrideRecords.filter(
+      (stride) => stride.lr_label === "left"
+    );
+    expectedResult[1] = sampleStrideRecords.filter(
+      (stride) => stride.lr_label === "right"
+    );
 
     expect(result).toEqual(expectedResult);
   });

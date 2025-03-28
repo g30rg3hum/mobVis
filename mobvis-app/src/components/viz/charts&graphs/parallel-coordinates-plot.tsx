@@ -3,14 +3,15 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Margin } from "@/types/viz";
 import { Record } from "@/types/parameters";
+import { colours } from "@/lib/utils";
 
 interface Props {
   width: number;
   height: number;
   margin: Margin;
   className?: string;
-  // array of custom data objects
-  data: Record[];
+  // groups of datasets.
+  data: Record[][];
   // a subset of the fields from data to plot for as dimensions.
   axes: string[];
   axesLabelMap?: Map<string, string>;
@@ -52,14 +53,25 @@ export default function ParallelCoordinatesPlot({
     // build a linear scale for each axis
     const y: { [key: string]: d3.ScaleLinear<number, number> } = {};
     axes.forEach((axis) => {
-      const dataForAxis = data.map((d) => d[axis]);
-      const max = Math.max(...dataForAxis);
-      const min = Math.min(...dataForAxis);
+      // get the min and max of data for this axis.
+      let max: number;
+      let min: number;
+      data.forEach((group) => {
+        group.forEach((record) => {
+          const recordValue = record[axis];
+          if (max === undefined || recordValue > max) {
+            max = recordValue;
+          }
+          if (min === undefined || recordValue < min) {
+            min = recordValue;
+          }
+        });
+      });
 
       y[axis] = d3
         .scaleLinear()
         // domain is the min and max of data[axis]
-        .domain([min - 0.1 * min, max + 0.1 * max])
+        .domain([min! - 0.1 * min!, max! + 0.1 * max!])
         .range([height, 0]);
     });
 
@@ -103,16 +115,18 @@ export default function ParallelCoordinatesPlot({
       return d3.line()(coordinates);
     };
 
-    plot
-      .selectAll("polyline")
-      .data(data)
-      .enter()
-      .append("path")
-      .attr("d", recordToPath)
-      .style("fill", "none")
-      .style("opacity", 0.5)
-      .attr("stroke", "#9B29FF")
-      .attr("stroke-width", 2);
+    data.forEach((group, i) => {
+      plot
+        .selectAll("polyline")
+        .data(group)
+        .enter()
+        .append("path")
+        .attr("d", recordToPath)
+        .style("fill", "none")
+        .style("opacity", 0.5)
+        .attr("stroke", colours[i])
+        .attr("stroke-width", 2);
+    });
   }
   return (
     <svg width={width} height={height} ref={ref} className={className}></svg>

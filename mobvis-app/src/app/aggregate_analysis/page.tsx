@@ -1,6 +1,7 @@
 "use client";
 
 import HyperLink from "@/components/custom/hyperlink";
+import ParameterDistributionHistogram from "@/components/page-specific/aggregate_analysis/parameter-distribution-histogram";
 import ParameterDistributionViolinPlot from "@/components/page-specific/aggregate_analysis/parameter-distribution-violin-plot";
 import TableOfAggregateParameters from "@/components/page-specific/aggregate_analysis/table-of-aggregate-parameters";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
@@ -108,11 +109,11 @@ export default function AggregateAnalysis() {
               </CardContent>
             </Card>
 
-            <div>
+            <div className="flex gap-5">
               <Card className="w-1/2">
                 <CardHeader>
                   <VizCardTitle>
-                    Distribution of a given parameter (violin plot)
+                    Distribution of a given parameter (box/violin plot)
                   </VizCardTitle>
                   <VizCardDescription
                     mainDescription={
@@ -127,22 +128,26 @@ export default function AggregateAnalysis() {
                   />
                 </CardContent>
               </Card>
-            </div>
 
-            {/* 
-              <Card>
+              <Card className="w-1/2">
                 <CardHeader>
-                  <VizCardTitle>Overall gait performance</VizCardTitle>
+                  <VizCardTitle>
+                    Distribution of a given parameter (histogram)
+                  </VizCardTitle>
                   <VizCardDescription
                     mainDescription={
-                      "Radar chart with each gait parameter as an axis. For each gait parameter, its average value across all walking bouts is plotted."
+                      "A histogram depicting the frequency of a given gait parameter’s values over identified walking bouts. It visualises distribution like the visualisation above, but it is simpler and there is a clearer and direct view of actual parameter values, as opposed to curves which have a smoothing effect. The focus parameter can be manipulated in the same way."
                     }
-                    exampleAnalysis="how does this patient's gait this time around compare against the last assessment?"
+                    exampleAnalysis="what is the most frequent value range for cadence? This may be considered alongside the mean."
                   />
                 </CardHeader>
-                <CardContent></CardContent>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <ParameterDistributionHistogram
+                    allPerWbParameters={perWbParameters}
+                  />
+                </CardContent>
               </Card>
-           */}
+            </div>
           </div>
         </div>
       </div>

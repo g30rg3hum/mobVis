@@ -1,18 +1,16 @@
-import ViolinBoxPlot from "@/components/viz/charts&graphs/violin-plot";
-import SelectFocusParam from "../stride_analysis/select-focus-param";
-import { useState } from "react";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
+import { useState } from "react";
+import SelectFocusParam from "../stride_analysis/select-focus-param";
+import Histogram from "@/components/viz/charts&graphs/histogram";
 import { refinedParamNames } from "@/lib/fields";
-import SettingCheckbox from "../shared/setting-checkbox";
 
 interface Props {
   allPerWbParameters: PerWbParameters;
 }
-export default function ParameterDistributionViolinPlot({
+export default function ParameterDistributionHistogram({
   allPerWbParameters,
 }: Props) {
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
-  const [box, setBox] = useState(false);
 
   return (
     <>
@@ -21,27 +19,19 @@ export default function ParameterDistributionViolinPlot({
           setFocusParam={setFocusParam}
           focusParam={focusParam}
         />
-
-        <SettingCheckbox
-          state={box}
-          setState={setBox}
-          inputId="violinBoxCheckbox"
-          label="Box?"
-        />
       </div>
 
-      <ViolinBoxPlot
+      <Histogram
         width={450}
         height={450}
         margin={{ top: 20, bottom: 65, left: 75, right: 25 }}
-        xLabel=" Analysis"
-        yLabel={refinedParamNames.get(focusParam)!}
         data={allPerWbParameters.map((wb) => [
           "Current analysis",
           wb[focusParam as keyof PerWbParameter] as number,
         ])}
         className="self-center"
-        box={box}
+        xLabel=" Analysis"
+        yLabel={refinedParamNames.get(focusParam)!}
       />
     </>
   );

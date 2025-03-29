@@ -1,3 +1,4 @@
+import { HeatMapRecord } from "@/components/viz/charts&graphs/heat-map";
 import {
   PerStrideParameter,
   PerStrideParameters,
@@ -203,4 +204,54 @@ export function createPerStrideDatasetWithDesiredWbIds(
     const stridesForWbId = groupedPerStrideParameters.get(wbId)!;
     return stridesForWbId;
   });
+}
+
+export function createPerStrideDatasetForHeatmap(
+  groupedPerStrideParameters: Map<number, PerStrideParameters>,
+  currentWbIds: number[],
+  focusParam: keyof PerStrideParameter
+): HeatMapRecord[] {
+  const dataset: HeatMapRecord[] = [];
+
+  const relevantWbs = currentWbIds.map(
+    (wbId) => groupedPerStrideParameters.get(wbId)!
+  );
+
+  // get the max strides for a walking bout
+  const allStridesLengths = Array.from(relevantWbs.values()).map(
+    (val) => val.length
+  );
+  const maxStrides = Math.max(...allStridesLengths);
+  // console.log(maxStrides);
+
+  currentWbIds.forEach((wbId) => {
+    // create the records for this wbId
+    const stridesForWbId = groupedPerStrideParameters.get(wbId)!;
+
+    stridesForWbId.forEach((stride, index) => {
+      const paramValue = stride[focusParam] as number;
+      const record: HeatMapRecord = {
+        x: (index + 1).toString(),
+        y: wbId.toString(),
+        value: paramValue,
+      };
+
+      dataset.push(record);
+    });
+
+    // add the rest of the blank records.
+    const numOfStrides = stridesForWbId.length;
+    for (let i = numOfStrides; i < maxStrides; i++) {
+      const record: HeatMapRecord = {
+        x: (i + 1).toString(),
+        y: wbId.toString(),
+        value: 0,
+      };
+      dataset.push(record);
+    }
+  });
+
+  // console.log(dataset);
+
+  return dataset;
 }

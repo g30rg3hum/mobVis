@@ -4,6 +4,7 @@ import HyperLink from "@/components/custom/hyperlink";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
 import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
 import RelationshipBetweenAllGaitParametersPcp from "@/components/page-specific/stride_analysis/relationship-between-all-gait-parameter-pcp";
+import StrideComparisonHeatMap from "@/components/page-specific/stride_analysis/stride-comparison-heat-map";
 import StrideComparisonRadarChart from "@/components/page-specific/stride_analysis/stride-comparison-radar-chart";
 import StrideParamDistributionHistogram from "@/components/page-specific/stride_analysis/stride-param-distribution-histogram";
 import StrideParamDistributionViolinPlot from "@/components/page-specific/stride_analysis/stride-param-distribution-violin-plot";
@@ -195,6 +196,24 @@ export default function StrideAnalysis() {
               </CardHeader>
               <CardContent className="flex flex-col justify-center gap-5">
                 <StrideComparisonRadarChart
+                  allPerStrideParameters={perStrideParameters}
+                  setModalMessage={setModalMessage}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <VizCardTitle>
+                  Comparison between strides (heat map)
+                </VizCardTitle>
+                <VizCardDescription
+                  mainDescription="A heat map of a given focus gait parameter’s values for each stride of selected walking bouts. The y-axis represents each selected walking bout and x-axis displays each corresponding chronological stride (e.g. first stride, second stride...). The colour coding of the heat map offers a clearer view of which strides have the highest/lowest values for the given gait parameter. If walking bouts have unequal stride counts, unavailable strides will be blacked out."
+                  exampleAnalysis="which set of strides of a given walking bout have extremely long durations?"
+                />
+              </CardHeader>
+              <CardContent className="flex flex-col justify-center gap-5">
+                <StrideComparisonHeatMap
                   allPerStrideParameters={perStrideParameters}
                   setModalMessage={setModalMessage}
                 />

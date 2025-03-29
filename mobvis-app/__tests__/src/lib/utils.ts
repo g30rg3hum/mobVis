@@ -1,5 +1,6 @@
 import {
   createDatasetOfKeyAndValTuples,
+  createPerStrideDatasetForHeatmap,
   createPerStrideDatasetWithDesiredWbIds,
   groupPerStrideParametersByWbId,
   sortStridesByProperty,
@@ -221,6 +222,54 @@ describe("createPerStrideDatasetWithDesiredWbIds", () => {
     expectedResult[1] = sampleStrideRecords.filter(
       (stride) => stride.lr_label === "right"
     );
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+describe("createPerStrideDatasetForHeatmap", () => {
+  it("successfully creates the dataset for a heatmap with blank padded records", () => {
+    const currentWbIds = [0, 1, 2];
+    const groupedPerStrideParameters = new Map<number, PerStrideParameters>([
+      [0, samplePerStrideParameters.slice(0, 3)],
+      [1, samplePerStrideParameters.slice(3, 4)],
+      [2, samplePerStrideParameters.slice(4, 8)],
+      // samples 0-7
+    ]);
+
+    // all wbs are relevant.
+    // const maxStridesInWb = 4;
+    const focusParam = "walking_speed_mps";
+
+    const result = createPerStrideDatasetForHeatmap(
+      groupedPerStrideParameters,
+      currentWbIds,
+      focusParam
+    );
+
+    const stride0ParamValue = samplePerStrideParameters[0].walking_speed_mps;
+    const stride1ParamValue = samplePerStrideParameters[1].walking_speed_mps;
+    const stride2ParamValue = samplePerStrideParameters[2].walking_speed_mps;
+    const stride3ParamValue = samplePerStrideParameters[3].walking_speed_mps;
+    const stride4ParamValue = samplePerStrideParameters[4].walking_speed_mps;
+    const stride5ParamValue = samplePerStrideParameters[5].walking_speed_mps;
+    const stride6ParamValue = samplePerStrideParameters[6].walking_speed_mps;
+    const stride7ParamValue = samplePerStrideParameters[7].walking_speed_mps;
+
+    const expectedResult = [
+      { x: "1", y: "0", value: stride0ParamValue },
+      { x: "2", y: "0", value: stride1ParamValue },
+      { x: "3", y: "0", value: stride2ParamValue },
+      { x: "4", y: "0", value: 0 }, // blank padding
+      { x: "1", y: "1", value: stride3ParamValue },
+      { x: "2", y: "1", value: 0 },
+      { x: "3", y: "1", value: 0 },
+      { x: "4", y: "1", value: 0 },
+      { x: "1", y: "2", value: stride4ParamValue },
+      { x: "2", y: "2", value: stride5ParamValue },
+      { x: "3", y: "2", value: stride6ParamValue },
+      { x: "4", y: "2", value: stride7ParamValue },
+    ];
 
     expect(result).toEqual(expectedResult);
   });

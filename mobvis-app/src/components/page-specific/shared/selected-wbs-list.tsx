@@ -7,6 +7,7 @@ interface Props {
   setWbs: (wbs: number[]) => void;
   horizontal?: boolean;
   splitLR?: boolean;
+  showColours?: boolean;
 }
 
 const orientationConfig = {
@@ -18,6 +19,7 @@ export default function SelectedWbsList({
   setWbs,
   horizontal = false,
   splitLR = false,
+  showColours = true,
 }: Props) {
   const style = horizontal
     ? orientationConfig.horizontal
@@ -35,7 +37,8 @@ export default function SelectedWbsList({
     listItems = wbs.map((wb, i) => (
       <li key={wb} className="flex items-center gap-2">
         <p className="min-w-[10px]">{wb}</p>
-        <FontAwesomeIcon icon={faCircle} color={colours[i]} />
+        {showColours && <FontAwesomeIcon icon={faCircle} color={colours[i]} />}
+
         <FontAwesomeIcon
           icon={faX}
           className="ml-1 cursor-pointer"

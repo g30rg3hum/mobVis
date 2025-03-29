@@ -23,7 +23,7 @@ app.add_middleware(
 general_error_message = "No gait parameters could be extracted. Please check inputs such as: sampling rate, input CSV data format (presence of 'samples' column?), conversion to m/s² checkbox (if needed?)."
 # data extraction POST route.
 @app.post("/api/py/dmo_extraction")
-def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], public: Annotated[bool, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], csvFile: UploadFile):
+def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], csvFile: UploadFile):
   # validation has been handled in the FE.
   # TODO: perhaps also do backend validation here.
   try:

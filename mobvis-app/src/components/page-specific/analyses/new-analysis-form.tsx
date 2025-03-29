@@ -46,7 +46,7 @@ const formSchema = z.object({
   setting: z.string().refine((val) => settingOptions.includes(val), {
     message: "Setting is not from the list",
   }),
-  public: z.boolean(),
+  // public: z.boolean(),
   // TODO: change the file size limit.
   csvFile: z
     .instanceof(File, { message: mandatoryErrorMsg })
@@ -146,7 +146,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
       sensorHeight: 0,
       patientHeight: 0,
       setting: "laboratory",
-      public: false,
+      // public: false,
       csvFile: undefined,
       convertToMs: false,
     },
@@ -265,7 +265,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="public"
             render={({ field: { value, onChange } }) => (
@@ -290,7 +290,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <FormField
             control={form.control}
             name="csvFile"

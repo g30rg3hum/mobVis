@@ -1,38 +1,31 @@
 "use client";
 
 import HyperLink from "@/components/custom/hyperlink";
+import ParameterDistributionViolinPlot from "@/components/page-specific/aggregate_analysis/parameter-distribution-violin-plot";
+import TableOfAggregateParameters from "@/components/page-specific/aggregate_analysis/table-of-aggregate-parameters";
+import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
 import {
   Card,
   CardContent,
   CardHeader,
 } from "@/components/shadcn-components/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/shadcn-components/table";
 import StatCard from "@/components/viz/stat-card";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
-import { refinedParamNames } from "@/lib/fields";
 import {
   convertHoursToMinutesAndTrunc,
   getAndParseStorageItem,
-  roundToNDpIfNeeded,
 } from "@/lib/utils";
 import {
   AggregateParameters,
-  Inputs,
+  InputsJson,
   PerWbParameters,
 } from "@/types/parameters";
 import { useEffect, useState } from "react";
 
 export default function AggregateAnalysis() {
   // need to ensure inputs are being set with localStorage on the client side.
-  const [inputs, setInputs] = useState<Inputs | null>(null);
+  const [inputs, setInputs] = useState<InputsJson | null>(null);
   const [aggregateParameters, setAggregateParameters] =
     useState<AggregateParameters | null>(null);
   const [perWbParameters, setPerWbParameters] =
@@ -40,6 +33,9 @@ export default function AggregateAnalysis() {
   const [totalWalkingDurationMins, setTotalWalkingDurationMins] = useState<
     number | null
   >(null);
+
+  // inputs dialog state.
+  const [isInputDialogOpen, setIsInputDialogOpen] = useState(false);
 
   useEffect(() => {
     setInputs(getAndParseStorageItem("inputs"));
@@ -67,12 +63,19 @@ export default function AggregateAnalysis() {
           <p>
             Visualisations for aggregate gait parameters extracted from{" "}
             <span className="font-semibold">{inputs.name}</span>.{" "}
-            <HyperLink url="">Click here</HyperLink> to see the inputs
-            you&apos;ve submitted.
+            <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>
+              Click here
+            </HyperLink>{" "}
+            to see the inputs you&apos;ve submitted.
           </p>
+          <InputsDialog
+            inputs={inputs}
+            isInputDialogOpen={isInputDialogOpen}
+            setIsInputDialogOpen={setIsInputDialogOpen}
+          />
         </div>
         <div className="flex justify-center mb-10">
-          <div className="flex flex-col gap-5 w-[850px]">
+          <div className="flex flex-col gap-5 w-full max-w-[1300px] min-w-[1150px] mx-6">
             <div className="flex justify-center gap-5">
               <StatCard
                 name="Total detected walking bouts"
@@ -87,51 +90,45 @@ export default function AggregateAnalysis() {
                 }
               />
             </div>
+
             <Card>
               <CardHeader>
                 <VizCardTitle>Table of all aggregate parameters</VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "Tabular view of the exact figures of the aggregate parameters (average, maximum, minimum and variance) for each gait parameter."
+                    "Tabular view of the exact figures of the aggregate parameters (average, maximum, minimum and variance) for each gait parameter. You can reorder the rows to compare different parameters."
                   }
                   exampleAnalysis="what is the precise walking speed that the patient walks at on average?"
                 />
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Parameter</TableHead>
-                      <TableHead>Average</TableHead>
-                      <TableHead>Maximum</TableHead>
-                      <TableHead>Minimum</TableHead>
-                      <TableHead>Variance</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {aggregateParameters.map((param) => (
-                      <TableRow key={param.param}>
-                        <TableCell>
-                          {refinedParamNames.get(param.param) ?? param.param}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.avg, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.max, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.min, 5)}
-                        </TableCell>
-                        <TableCell>
-                          {roundToNDpIfNeeded(param.var, 5)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <CardContent className="flex flex-col justify-center gap-10">
+                <TableOfAggregateParameters
+                  allAggregateParameters={aggregateParameters}
+                />
               </CardContent>
             </Card>
+
+            <div>
+              <Card className="w-1/2">
+                <CardHeader>
+                  <VizCardTitle>
+                    Distribution of a given parameter (violin plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    mainDescription={
+                      "A visualisation that is convertible between violin and box plot. The violin plot shows the distribution of values by the area of the density curves, and the box plot shows the key distribution points (maximum, upper quartile, median, lower quartile, minimum). The focus is on the distribution of a given gait parameter (across identified walking bouts), which can be changed with the dropdown."
+                    }
+                    exampleAnalysis="how much does this patient’s stride length vary across all the walking bouts?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <ParameterDistributionViolinPlot
+                    allPerWbParameters={perWbParameters}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+
             {/* 
               <Card>
                 <CardHeader>

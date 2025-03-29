@@ -122,7 +122,6 @@ export default function StrideAnalysis() {
               </Card>
             </div>
 
-            {/* <div className="flex gap-5"> */}
             <Card>
               <CardHeader>
                 <VizCardTitle>

@@ -67,8 +67,10 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
   const [dialogMessage, setDialogMessage] = useState("");
   const [possibleError, setPossibleError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fileKey, setFileKey] = useState(0);
+  const [convertKey, setConvertKey] = useState(1);
 
-  async function submitForm(values: FormValues) {
+  async function submitForm(values: FormValues, formReset: () => void) {
     setIsSubmitting(true);
     // sending FormData rather than just json.
     // create the form data first.
@@ -79,18 +81,22 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
       formData.append(key, isStringOrFile ? value : value.toString());
     }
 
+    let isSuccessful;
     // send the api call.
     const response = await fetch("/api/py/dmo_extraction", {
       method: "POST",
       body: formData,
     }).then((res) => {
       if (res.ok) {
-        setSuccess(true);
+        isSuccessful = true;
+        setSuccess(isSuccessful);
+        setPossibleError(null);
         setDialogMessage(
           "Gait parameters have been successfully extracted from your input data. Results have been saved locally."
         );
       } else {
-        setSuccess(false);
+        isSuccessful = false;
+        setSuccess(isSuccessful);
         setDialogMessage(
           "There was an error trying to extract gait parameters from your input data. Please ensure that your inputs are sensible."
         );
@@ -98,7 +104,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
       return res.json();
     });
 
-    if (success) {
+    if (isSuccessful) {
       localStorage.setItem(
         "inputs",
         JSON.stringify({ ...values, csvFile: values.csvFile.name })
@@ -119,6 +125,9 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
         "aggregate_parameters",
         JSON.stringify(response.aggregate_parameters)
       );
+      formReset();
+      setFileKey(fileKey + 1);
+      setConvertKey(convertKey + 1);
     } else {
       setPossibleError(response["detail"]);
     }
@@ -126,16 +135,6 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
     setIsDialogOpen(true);
     setIsSubmitting(false);
   }
-
-  // to enable customisation of submission handler from outside.
-  const onSubmit = (values: FormValues) => {
-    if (submissionHandler) {
-      submissionHandler(values);
-    } else {
-      // actual implementation.
-      submitForm(values);
-    }
-  };
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -151,6 +150,16 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
       convertToMs: false,
     },
   });
+
+  // to enable customisation of submission handler from outside.
+  const onSubmit = (values: FormValues) => {
+    if (submissionHandler) {
+      submissionHandler(values);
+    } else {
+      // actual implementation.
+      submitForm(values, form.reset);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -300,11 +309,14 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
                 <FormLabel>Upload CSV *</FormLabel>
                 <FormControl>
                   <Input
+                    key={fileKey}
                     type="file"
                     accept=".csv"
-                    onChange={(e) =>
-                      onChange(e.target.files ? e.target.files[0] : undefined)
-                    }
+                    onChange={(e) => {
+                      return onChange(
+                        e.target.files ? e.target.files[0] : undefined
+                      );
+                    }}
                     {...restProps}
                   />
                 </FormControl>
@@ -329,6 +341,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
                       type="checkbox"
                       value={value.toString()}
                       onChange={onChange}
+                      key={convertKey}
                     />
                   </FormControl>
                   <FormLabel>

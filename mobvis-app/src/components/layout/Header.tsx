@@ -1,37 +1,42 @@
 import {
-  faHospitalUser,
-  faHouse,
-  faRightToBracket,
-  faUsers,
+  faFileLines,
+  faLayerGroup,
+  faShoePrints,
+  faWalking,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "@/types/header";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import LogoutBtn from "./logout-btn";
 import Logo from "./logo";
 
 // define preset set of navigation links
-const visitorLinks: NavLink[] = [
-  { href: "/", label: "Home", icon: faHouse },
-  { href: "/login", label: "Login", icon: faRightToBracket },
-];
+// const visitorLinks: NavLink[] = [
+//   { href: "/", label: "Home", icon: faHouse },
+//   { href: "/login", label: "Login", icon: faRightToBracket },
+// ];
 
-const loggedInLinks: NavLink[] = [
-  { href: "/population-insights", label: "Population Insights", icon: faUsers },
-  { href: "/my-patients", label: "My Patients", icon: faHospitalUser },
+// const loggedInLinks: NavLink[] = [
+//   { href: "/population-insights", label: "Population Insights", icon: faUsers },
+//   { href: "/my-patients", label: "My Patients", icon: faHospitalUser },
+// ];
+
+const links: NavLink[] = [
+  { href: "/", label: "New", icon: faFileLines },
+  { href: "/aggregate_analysis", label: "Aggregate", icon: faLayerGroup },
+  { href: "/wb_analysis", label: "Per Walking Bout", icon: faWalking },
+  { href: "/stride_analysis", label: "Per Stride", icon: faShoePrints },
 ];
 
 export default async function Header() {
-  const session = await getServerSession();
+  // const session = await getServerSession();
 
-  const navLinks = session ? loggedInLinks : visitorLinks;
+  // const navLinks = session ? loggedInLinks : visitorLinks;
 
   return (
     <header className="bg-background-dark py-4 px-6 m-3 rounded-lg flex items-center justify-between text-foreground-dark">
-      <Logo size="2x" textSize="3xl" />
+      <Logo size="2x" textSize="3xl" gap="gap-4" />
       <div className="flex gap-8">
-        {navLinks.map((link) => (
+        {links.map((link) => (
           <div
             key={link.label}
             className="text-lg flex flex-row gap-3 items-center font-extrabold transition hover:text-[#D1D1D1]"
@@ -44,12 +49,12 @@ export default async function Header() {
             </Link>
           </div>
         ))}
-        {session && (
+        {/* {session && (
           <>
             <LogoutBtn />
             <span className="text-md mt-[2px]">{session.user?.email}</span>
           </>
-        )}
+        )} */}
       </div>
     </header>
   );

@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="flex flex-row justify-center items-center mt-20 py-8 gap-5 items-stretch">
       <FadeInScroll>
-        <div className="w-[500px] border border-black rounded-lg p-5 bg-white space-y-5 text-justify flex flex-col justify-center">
+        <div className="w-[600px] border border-black rounded-lg p-5 bg-white space-y-5 text-justify flex flex-col justify-center h-full">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold flex">
               What is{" "}
@@ -19,19 +19,21 @@ export default function Home() {
               ?
             </h1>
             <p>
-              <b>mobVis</b> is a visualisation interface tool which generates
-              useful graphs, charts and plots around walking data inputted by
-              the user. Gait parameters, also known as Digital Mobility Outcomes
-              (DMOs), are extracted from the data and visualised.
+              <b>mobVis</b> is a visualisation interface tool for clinicians
+              which generates useful graphs, charts and plots around walking
+              data. Gait parameters (e.g. walking speed), also known as Digital
+              Mobility Outcomes (DMOs), are extracted from the recorded walking
+              data you submit (on the right) and visualised.
             </p>
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold flex">Who should use this?</h1>
+            <h1 className="text-2xl font-bold flex">Who is this made for?</h1>
             <p>
-              The target users are clinicians who work with patients who have
-              multiple sclerosis, a condition which affects mobility. The hope
-              is that generated visualisations will aid in forming conclusions
-              about patient gait.
+              Target users are clinicians who specifically{" "}
+              <b>work with patients who have multiple sclerosis (MS)</b>, a
+              condition which affects mobility. The hope is that generated
+              visualisations will aid in forming conclusions about patient gait
+              and thus overall mobility.
             </p>
           </div>
           <div className="space-y-1">
@@ -50,22 +52,45 @@ export default function Home() {
                 mobgap
               </HyperLink>
               .
+              <br />{" "}
+            </p>
+            <p className="pt-1">
+              <span className="text-red-500">IMPORTANT: </span> if you submit
+              walking data of subjects who are not impaired by MS, the extracted
+              gait parameters will likely be invalid/unsound.
             </p>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-bold flex">How do I use this?</h1>
             <p>
-              Simply fill in the form on the right and click "Extract and Save".
-              Analysis can be done on an <b>aggregate level</b>,{" "}
-              <b>per walking-bout level</b> and <b>per-stride level</b>. Simply
-              navigate to the respective page by clicking on the top links.
+              Simply fill in the form on the right and click &quot;Extract and
+              Save&quot;. Analysis can be done on three levels, from most to
+              least granular: <b>overview/summary</b>, <b>per-walking-bout</b>{" "}
+              (since the patient might not always be walking throughout the
+              entire recording) and <b>per-stride</b> (of each walking bout).
+            </p>
+            <p className="pt-1">
+              Simply navigate to the respective page by clicking on the top
+              links. It is useful to note that one set of gait parameters are
+              extracted and saved from the latest submission of inputs, i.e.
+              only one analysis for one walking assessment captured by one CSV
+              recording file can be done at a time.
             </p>
           </div>
         </div>
       </FadeInScroll>
 
       <FadeInScroll>
-        <div className="w-[600px] border border-black rounded-lg p-5 bg-white">
+        <div className="w-[600px] border border-black rounded-lg p-5 bg-white h-full flex flex-col justify-center">
+          <div className="mb-5">
+            <h1 className="text-2xl font-bold flex">New gait assessment</h1>
+            <p className="text-slate-600 mt-1">
+              Input and save details about the recording for your gait
+              assessment. DMOs will be extracted from the inputs you submit
+              here.
+            </p>
+          </div>
+
           <NewAnalysisForm />
         </div>
       </FadeInScroll>

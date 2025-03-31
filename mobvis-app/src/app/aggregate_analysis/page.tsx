@@ -56,18 +56,24 @@ export default function AggregateAnalysis() {
     totalWalkingDurationMins
   ) {
     return (
-      <div>
-        <div className="p-10 text-white">
+      <div className="flex justify-center flex-col items-center">
+        <div className="text-black max-w-[1300px] my-10">
           <h1 className="text-4xl font-bold mb-2">
             📦 Aggregate-level analysis
           </h1>
-          <p>
-            Visualisations for aggregate gait parameters extracted from{" "}
-            <span className="font-semibold">{inputs.name}</span>.{" "}
+          <p className="mb-5">
             <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>
               Click here
             </HyperLink>{" "}
-            to see the inputs you&apos;ve submitted.
+            to see the inputs you&apos;ve submitted for the current analysis.
+          </p>
+
+          <p>
+            Visualisations for aggregate gait parameters extracted from{" "}
+            <span className="font-semibold">{inputs.name}</span>. This is the
+            highest level of analysis you can do, focused on summary metrics
+            (e.g. mean, median) of the per-walking bout values of each gait
+            parameter.
           </p>
           <InputsDialog
             inputs={inputs}
@@ -84,6 +90,7 @@ export default function AggregateAnalysis() {
               />
               <StatCard
                 name="Total walking duration"
+                description="over all detected walking bouts, rounded to nearest min"
                 value={
                   totalWalkingDurationMins +
                   " min" +
@@ -97,7 +104,7 @@ export default function AggregateAnalysis() {
                 <VizCardTitle>Table of all aggregate parameters</VizCardTitle>
                 <VizCardDescription
                   mainDescription={
-                    "Tabular view of the exact figures of the aggregate parameters (average, maximum, minimum and variance) for each gait parameter. You can reorder the rows to compare different parameters."
+                    "Tabular view of the exact figures of the aggregate values (average, maximum, minimum and variance) for each gait parameter. You can reorder the rows to move them closer and compare specific parameters."
                   }
                   exampleAnalysis="what is the precise walking speed that the patient walks at on average?"
                 />

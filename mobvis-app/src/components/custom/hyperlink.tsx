@@ -8,7 +8,7 @@ interface Props {
 }
 export default function HyperLink({ url, children, onClick }: Props) {
   return (
-    <Link href={url} className="text-sky-500 underline" onClick={onClick}>
+    <Link href={url} className="text-sky-600 underline" onClick={onClick}>
       {children}
     </Link>
   );

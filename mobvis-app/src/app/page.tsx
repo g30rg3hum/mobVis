@@ -7,9 +7,9 @@ import NewAnalysisForm from "@/components/page-specific/analyses/new-analysis-fo
 
 export default function Home() {
   return (
-    <div className="flex flex-row justify-center items-center mt-20 py-8 gap-5 items-stretch">
+    <div className="flex flex-row justify-center items-center my-16 gap-5 ">
       <FadeInScroll>
-        <div className="w-[600px] border border-black rounded-lg p-5 bg-white space-y-5 text-justify flex flex-col justify-center h-full">
+        <div className="w-[600px] border border-black rounded-lg p-5 bg-white space-y-5 text-justify flex flex-col justify-center h-max">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold flex">
               What is{" "}
@@ -81,7 +81,7 @@ export default function Home() {
       </FadeInScroll>
 
       <FadeInScroll>
-        <div className="w-[600px] border border-black rounded-lg p-5 bg-white h-full flex flex-col justify-center">
+        <div className="w-[600px] border border-black rounded-lg p-5 bg-white h-full flex flex-col justify-center h-max">
           <div className="mb-5">
             <h1 className="text-2xl font-bold flex">New gait assessment</h1>
             <p className="text-slate-600 mt-1">

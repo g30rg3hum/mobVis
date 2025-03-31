@@ -32,6 +32,8 @@ import { DialogDescription } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import InformationTooltip from "@/components/custom/information-tooltip";
+import InputRequirementsDialog from "../shared/input-requirements-dialog";
 
 const settingOptions = ["laboratory", "free_living"];
 const formSchema = z.object({
@@ -47,11 +49,11 @@ const formSchema = z.object({
     message: "Setting is not from the list",
   }),
   // public: z.boolean(),
-  // TODO: change the file size limit.
   csvFile: z
     .instanceof(File, { message: mandatoryErrorMsg })
-    .refine((file: File) => file.size < 5000000, {
-      message: "File size must be less than 5MB",
+    // NOTE CAN CHANGE THIS ACCORDINGLY.
+    .refine((file: File) => file.size < 5000000 * 1000, {
+      message: "File size must be less than 5GB",
     }),
   convertToMs: z.boolean(),
 });
@@ -63,6 +65,8 @@ interface Props {
 }
 export default function NewAnalysisForm({ submissionHandler }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDataRequirementsModalOpen, setIsDataRequirementsModalOpen] =
+    useState(false);
   const [success, setSuccess] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [possibleError, setPossibleError] = useState<string | null>(null);
@@ -162,52 +166,19 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-2">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name *</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter the name of your analysis"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description *</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Describe what your analysis is about"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex space-x-4">
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="space-y-2">
             <FormField
               control={form.control}
-              name="samplingRate"
+              name="name"
               render={({ field }) => (
-                <FormItem className="w-1/3">
-                  <FormLabel>Sampling rate (hz) *</FormLabel>
+                <FormItem>
+                  <FormLabel>Name *</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter sampling rate in hz"
-                      type="number"
+                      placeholder="Enter the name of your analysis"
                       {...field}
                     />
                   </FormControl>
@@ -217,14 +188,13 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
             />
             <FormField
               control={form.control}
-              name="sensorHeight"
+              name="description"
               render={({ field }) => (
-                <FormItem className="w-1/3">
-                  <FormLabel>Sensor height (m) *</FormLabel>
+                <FormItem>
+                  <FormLabel>Description *</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter sensor height in m"
-                      type="number"
+                    <Textarea
+                      placeholder="Describe what your analysis is about"
                       {...field}
                     />
                   </FormControl>
@@ -232,161 +202,232 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
                 </FormItem>
               )}
             />
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="samplingRate"
+                render={({ field }) => (
+                  <FormItem className="w-1/3">
+                    <FormLabel>
+                      Sampling rate (hz) *{" "}
+                      <InformationTooltip
+                        size="1x"
+                        text="How often does your IMU sensor recording device collect data?"
+                      />
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter sampling rate in hz"
+                        type="number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sensorHeight"
+                render={({ field }) => (
+                  <FormItem className="w-1/3">
+                    <FormLabel>
+                      Sensor height (m) *{" "}
+                      <InformationTooltip
+                        size="1x"
+                        text="How high was the IMU sensor recording device from the ground? i.e. where was it worn?"
+                      />
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter sensor height in m"
+                        type="number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="patientHeight"
+                render={({ field }) => (
+                  <FormItem className="w-1/3">
+                    <FormLabel>Patient height (m) *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter patient height in m"
+                        type="number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="patientHeight"
+              name="setting"
               render={({ field }) => (
-                <FormItem className="w-1/3">
-                  <FormLabel>Patient height (m) *</FormLabel>
+                <FormItem>
+                  <FormLabel>
+                    Measurement setting *{" "}
+                    <InformationTooltip
+                      size="1x"
+                      text="Was the recording done in day-to-day conditions or in a lab?"
+                    />
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your management setting" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="laboratory">Laboratory</SelectItem>
+                      <SelectItem value="free_living">Free living</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <FormField
+          control={form.control}
+          name="public"
+          render={({ field: { value, onChange } }) => (
+            <FormItem>
+              <div className="flex gap-2 items-center mt-4">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    value={value.toString()}
+                    onChange={onChange}
+                  />
+                </FormControl>
+                <FormLabel>Public?</FormLabel>
+              </div>
+              <MutedMsg>
+                By making this public, you are allowing other clinicians to
+                use this gait analysis and associated relevant patient
+                information (including attributes like height, but excluding
+                identifying info like name) for comparison against their own
+                analyses.
+              </MutedMsg>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+            <FormField
+              control={form.control}
+              name="csvFile"
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              render={({ field: { value, onChange, ...restProps } }) => (
+                <FormItem>
+                  <FormLabel>
+                    Upload CSV *{" "}
+                    <InformationTooltip
+                      size="1x"
+                      text="This is the CSV file of values collected by the worn IMU sensor recording device while the patient was walking."
+                    />
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter patient height in m"
-                      type="number"
-                      {...field}
+                      key={fileKey}
+                      type="file"
+                      accept=".csv"
+                      onChange={(e) => {
+                        return onChange(
+                          e.target.files ? e.target.files[0] : undefined
+                        );
+                      }}
+                      {...restProps}
                     />
                   </FormControl>
+                  <MutedMsg>
+                    Please read through these{" "}
+                    <HyperLink
+                      url="#"
+                      onClick={() => {
+                        setIsDataRequirementsModalOpen(true);
+                      }}
+                    >
+                      data requirements
+                    </HyperLink>{" "}
+                    for the input CSV file, and ensure that they are met before
+                    creating a new gait analysis.
+                  </MutedMsg>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="convertToMs"
+              render={({ field: { value, onChange } }) => (
+                <FormItem>
+                  <div className="flex gap-2 items-center mt-4">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        value={value.toString()}
+                        onChange={onChange}
+                        key={convertKey}
+                      />
+                    </FormControl>
+                    <FormLabel>
+                      Convert acceleration units from g to m/s²
+                    </FormLabel>
+                  </div>
+                  <MutedMsg>
+                    If current acceleration values are in g (gravity), check the
+                    box to convert to m/s² as required.
+                  </MutedMsg>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <FormField
-            control={form.control}
-            name="setting"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Measurement setting *</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your management setting" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="laboratory">Laboratory</SelectItem>
-                    <SelectItem value="free_living">Free living</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* <FormField
-            control={form.control}
-            name="public"
-            render={({ field: { value, onChange } }) => (
-              <FormItem>
-                <div className="flex gap-2 items-center mt-4">
-                  <FormControl>
-                    <input
-                      type="checkbox"
-                      value={value.toString()}
-                      onChange={onChange}
-                    />
-                  </FormControl>
-                  <FormLabel>Public?</FormLabel>
-                </div>
-                <MutedMsg>
-                  By making this public, you are allowing other clinicians to
-                  use this gait analysis and associated relevant patient
-                  information (including attributes like height, but excluding
-                  identifying info like name) for comparison against their own
-                  analyses.
-                </MutedMsg>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-          <FormField
-            control={form.control}
-            name="csvFile"
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            render={({ field: { value, onChange, ...restProps } }) => (
-              <FormItem>
-                <FormLabel>Upload CSV *</FormLabel>
-                <FormControl>
-                  <Input
-                    key={fileKey}
-                    type="file"
-                    accept=".csv"
-                    onChange={(e) => {
-                      return onChange(
-                        e.target.files ? e.target.files[0] : undefined
-                      );
-                    }}
-                    {...restProps}
-                  />
-                </FormControl>
-                <MutedMsg>
-                  Please read through these{" "}
-                  <HyperLink url="#">data requirements</HyperLink> for the input
-                  CSV file, and ensure that they are met before creating a new
-                  gait analysis.
-                </MutedMsg>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="convertToMs"
-            render={({ field: { value, onChange } }) => (
-              <FormItem>
-                <div className="flex gap-2 items-center mt-4">
-                  <FormControl>
-                    <input
-                      type="checkbox"
-                      value={value.toString()}
-                      onChange={onChange}
-                      key={convertKey}
-                    />
-                  </FormControl>
-                  <FormLabel>
-                    Convert acceleration units from g to m/s²
-                  </FormLabel>
-                </div>
-                <MutedMsg>
-                  If current acceleration values are in g (gravity), check the
-                  box to convert to m/s² as required.
-                </MutedMsg>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <Button
-          type="submit"
-          className="w-full disabled:bg-black"
-          disabled={isSubmitting}
-        >
-          Extract & Save
-        </Button>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {success ? "Successful! ✅" : "Something went wrong! ❌"}
-              </DialogTitle>
-            </DialogHeader>
-            <DialogDescription>
-              <span> {dialogMessage}</span>
-              {possibleError && (
-                <>
-                  <br />
-                  <br />
-                  <span>
-                    The following might the problem:{" "}
-                    <span className="text-red-500">{possibleError}</span>
-                  </span>
-                </>
-              )}
-            </DialogDescription>
-          </DialogContent>
-        </Dialog>
-      </form>
-    </Form>
+          <Button
+            type="submit"
+            className="w-full disabled:bg-black"
+            disabled={isSubmitting}
+          >
+            Extract & Save
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {success ? "Successful! ✅" : "Something went wrong! ❌"}
+                </DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                <span> {dialogMessage}</span>
+                {possibleError && (
+                  <>
+                    <br />
+                    <br />
+                    <span>
+                      The following might the problem:{" "}
+                      <span className="text-red-500">{possibleError}</span>
+                    </span>
+                  </>
+                )}
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
+        </form>
+      </Form>
+      <InputRequirementsDialog
+        setIsDataRequirementsModalOpen={setIsDataRequirementsModalOpen}
+        isDataRequirementsModalOpen={isDataRequirementsModalOpen}
+      />
+    </>
   );
 }

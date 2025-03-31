@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface Props {
@@ -8,13 +9,13 @@ interface Props {
 }
 export default function HyperLink({ url, children, onClick, download }: Props) {
   return (
-    <a
+    <Link
       href={url ?? ""}
       className="text-sky-600 underline"
       onClick={onClick}
       download={download}
     >
       {children}
-    </a>
+    </Link>
   );
 }

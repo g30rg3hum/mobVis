@@ -23,15 +23,15 @@ export default function ParameterDistributionHistogram({
 
       <Histogram
         width={450}
-        height={450}
+        height={500}
         margin={{ top: 20, bottom: 65, left: 75, right: 25 }}
         data={allPerWbParameters.map((wb) => [
           "Current analysis",
           wb[focusParam as keyof PerWbParameter] as number,
         ])}
         className="self-center"
-        xLabel=" Analysis"
-        yLabel={refinedParamNames.get(focusParam)!}
+        xLabel={refinedParamNames.get(focusParam)!}
+        yLabel="Frequency"
       />
     </>
   );

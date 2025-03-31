@@ -22,9 +22,9 @@ import Logo from "./logo";
 
 const links: NavLink[] = [
   { href: "/", label: "New", icon: faFileLines },
-  { href: "/aggregate_analysis", label: "Aggregate", icon: faLayerGroup },
-  { href: "/wb_analysis", label: "Per Walking Bout", icon: faWalking },
-  { href: "/stride_analysis", label: "Per Stride", icon: faShoePrints },
+  { href: "/aggregate_analysis", label: "Summary", icon: faLayerGroup },
+  { href: "/wb_analysis", label: "Each Walking Bout", icon: faWalking },
+  { href: "/stride_analysis", label: "Each Stride", icon: faShoePrints },
 ];
 
 export default async function Header() {

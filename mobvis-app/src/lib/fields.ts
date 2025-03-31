@@ -1,6 +1,6 @@
 export const refinedParamNames = new Map([
   ["n_strides", "Number of strides"],
-  ["duration_s", "Duration (s)"],
+  ["duration_s", "Walking bout duration (s)"],
   ["cadence_spm", "Cadence (steps per minute)"],
   ["stride_length_m", "Stride length (m)"],
   ["walking_speed_mps", "Walking speed (m/s)"],

@@ -64,9 +64,9 @@ export default function TableOfAggregateParameters({
         <TableRow>
           <TableHead>Parameter</TableHead>
           <TableHead>Average</TableHead>
+          <TableHead>Variance</TableHead>
           <TableHead>Maximum</TableHead>
           <TableHead>Minimum</TableHead>
-          <TableHead>Variance</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -82,9 +82,9 @@ export default function TableOfAggregateParameters({
               {refinedParamNames.get(param.param) ?? param.param}
             </TableCell>
             <TableCell>{roundToNDpIfNeeded(param.avg, 5)}</TableCell>
+            <TableCell>{roundToNDpIfNeeded(param.var, 5)}</TableCell>
             <TableCell>{roundToNDpIfNeeded(param.max, 5)}</TableCell>
             <TableCell>{roundToNDpIfNeeded(param.min, 5)}</TableCell>
-            <TableCell>{roundToNDpIfNeeded(param.var, 5)}</TableCell>
           </TableRow>
         ))}
       </TableBody>

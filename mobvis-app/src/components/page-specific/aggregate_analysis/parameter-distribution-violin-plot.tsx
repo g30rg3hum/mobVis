@@ -16,7 +16,7 @@ export default function ParameterDistributionViolinPlot({
 
   return (
     <>
-      <div className="flex items-end gap-5">
+      <div className="flex items-center gap-5">
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}

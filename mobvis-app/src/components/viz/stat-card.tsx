@@ -14,8 +14,8 @@ interface Props {
 }
 
 const wrapStyleConfig = {
-  wrap: "text-center w-max p-2",
-  noWrap: "text-center w-full p-2",
+  wrap: "text-center w-max p-2 h-full flex flex-col justify-center",
+  noWrap: "text-center w-full p-2 h-full flex flex-col justify-center",
 };
 export default function StatCard({
   name,

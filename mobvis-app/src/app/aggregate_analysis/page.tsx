@@ -1,6 +1,8 @@
 "use client";
 
+import FadeInScroll from "@/components/custom/animation-scroll";
 import HyperLink from "@/components/custom/hyperlink";
+import LookingForData from "@/components/custom/looking-for-data";
 import ParameterDistributionHistogram from "@/components/page-specific/aggregate_analysis/parameter-distribution-histogram";
 import ParameterDistributionViolinPlot from "@/components/page-specific/aggregate_analysis/parameter-distribution-violin-plot";
 import TableOfAggregateParameters from "@/components/page-specific/aggregate_analysis/table-of-aggregate-parameters";
@@ -58,10 +60,10 @@ export default function AggregateAnalysis() {
     return (
       <div className="flex justify-center flex-col items-center">
         <div className="text-black max-w-[1300px] my-10">
-          <h1 className="text-4xl font-bold mb-2">
-            📦 Aggregate-level analysis
+          <h1 className="text-4xl font-black mb-2">
+            📦 Summary-level analysis
           </h1>
-          <p className="mb-5">
+          <p className="mb-5 text-slate-600 font-semibold">
             <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>
               Click here
             </HyperLink>{" "}
@@ -70,10 +72,10 @@ export default function AggregateAnalysis() {
 
           <p>
             Visualisations for aggregate gait parameters extracted from{" "}
-            <span className="font-semibold">{inputs.name}</span>. This is the
-            highest level of analysis you can do, focused on summary metrics
-            (e.g. mean, median) of the per-walking bout values of each gait
-            parameter.
+            <span className="font-semibold">&apos;{inputs.name}&apos;</span>.
+            This is the highest level of analysis you can do, focused on summary
+            metrics (e.g. mean, median) of the values of each gait parameter
+            under each identified walking bout from the recording you submitted.
           </p>
           <InputsDialog
             inputs={inputs}
@@ -83,84 +85,103 @@ export default function AggregateAnalysis() {
         </div>
         <div className="flex justify-center mb-10">
           <div className="flex flex-col gap-5 w-full max-w-[1300px] min-w-[1150px] mx-6">
-            <div className="flex justify-center gap-5">
-              <StatCard
-                name="Total detected walking bouts"
-                value={perWbParameters.length}
-              />
-              <StatCard
-                name="Total walking duration"
-                description="over all detected walking bouts, rounded to nearest min"
-                value={
-                  totalWalkingDurationMins +
-                  " min" +
-                  (totalWalkingDurationMins > 1 ? "s" : "")
-                }
-              />
+            <div className="flex justify-center gap-5 items-stretch">
+              <FadeInScroll className="w-1/2 h-full">
+                <StatCard
+                  name="Total detected walking bouts"
+                  value={perWbParameters.length}
+                />
+              </FadeInScroll>
+
+              <FadeInScroll className="w-1/2">
+                <StatCard
+                  name="Total walking duration"
+                  description="over all detected walking bouts, rounded to nearest min"
+                  value={
+                    totalWalkingDurationMins +
+                    " min" +
+                    (totalWalkingDurationMins > 1 ? "s" : "")
+                  }
+                />
+              </FadeInScroll>
             </div>
 
-            <Card>
-              <CardHeader>
-                <VizCardTitle>Table of all aggregate parameters</VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "Tabular view of the exact figures of the aggregate values (average, maximum, minimum and variance) for each gait parameter. You can reorder the rows to move them closer and compare specific parameters."
-                  }
-                  exampleAnalysis="what is the precise walking speed that the patient walks at on average?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-10">
-                <TableOfAggregateParameters
-                  allAggregateParameters={aggregateParameters}
-                />
-              </CardContent>
-            </Card>
-
-            <div className="flex gap-5">
-              <Card className="w-1/2">
+            <FadeInScroll>
+              <Card>
                 <CardHeader>
-                  <VizCardTitle>
-                    Distribution of a given parameter (box/violin plot)
-                  </VizCardTitle>
+                  <VizCardTitle>Table of all aggregate parameters</VizCardTitle>
                   <VizCardDescription
-                    mainDescription={
-                      "A visualisation that is convertible between violin and box plot. The violin plot shows the distribution of values by the area of the density curves, and the box plot shows the key distribution points (maximum, upper quartile, median, lower quartile, minimum). The focus is on the distribution of a given gait parameter (across identified walking bouts), which can be changed with the dropdown."
+                    subheading={
+                      "Table view of the exact figures of the aggregate values (average, maximum, minimum and variance) for each gait parameter."
                     }
-                    exampleAnalysis="how much does this patient’s stride length vary across all the walking bouts?"
+                    descriptions={[
+                      "You can reorder the rows to move them closer and compare specific parameters.",
+                    ]}
+                    exampleAnalysis="what is the precise walking speed that the patient walks at on average?"
                   />
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center gap-10">
-                  <ParameterDistributionViolinPlot
-                    allPerWbParameters={perWbParameters}
+                  <TableOfAggregateParameters
+                    allAggregateParameters={aggregateParameters}
                   />
                 </CardContent>
               </Card>
+            </FadeInScroll>
 
-              <Card className="w-1/2">
-                <CardHeader>
-                  <VizCardTitle>
-                    Distribution of a given parameter (histogram)
-                  </VizCardTitle>
-                  <VizCardDescription
-                    mainDescription={
-                      "A histogram depicting the frequency of a given gait parameter’s values over identified walking bouts. It visualises distribution like the visualisation above, but it is simpler and there is a clearer and direct view of actual parameter values, as opposed to curves which have a smoothing effect. The focus parameter can be manipulated in the same way."
-                    }
-                    exampleAnalysis="what is the most frequent value range for cadence? This may be considered alongside the mean."
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col justify-center gap-10">
-                  <ParameterDistributionHistogram
-                    allPerWbParameters={perWbParameters}
-                  />
-                </CardContent>
-              </Card>
+            <div className="flex gap-5 items-stretch">
+              <FadeInScroll className="w-1/2 h-full">
+                <Card>
+                  <CardHeader>
+                    <VizCardTitle>
+                      Distribution of a gait parameter (box/violin plot)
+                    </VizCardTitle>
+                    <VizCardDescription
+                      subheading="A visualisation that is convertible between violin and box plot. The violin plot shows the distribution of values by the area of the density curves. Wider areas of the curve represent a higher density/frequency of values. Meanwhile, the box plot shows the key distribution points. The highest, middle and lowest horizontal lines represent the max, median and min respectively. The box area represents the interquartile range, where the middle 50% of the data lies, thus representing spread of central data."
+                      descriptions={[
+                        "The focus is on the distribution of values for a focus gait parameter across all identified walking bouts. You can change the focus parameter using the dropdown and switch between box and violin plot using the checkbox.",
+                      ]}
+                      exampleAnalysis="how much does this patient’s stride length vary across all the walking bouts?"
+                    />
+                  </CardHeader>
+                  <CardContent className="flex flex-col justify-center gap-10">
+                    <ParameterDistributionViolinPlot
+                      allPerWbParameters={perWbParameters}
+                    />
+                  </CardContent>
+                </Card>
+              </FadeInScroll>
+
+              <FadeInScroll className="w-1/2 h-full">
+                <Card className="h-full flex flex-col">
+                  <CardHeader>
+                    <VizCardTitle>
+                      Distribution of a given parameter (histogram)
+                    </VizCardTitle>
+                    <VizCardDescription
+                      subheading="This histogram shows the frequency of each value interval for a given focus gait parameter over all identified walking bouts. This visualises distribution like the violin/box plot on the left, but here it is possible to determine the precise frequencies of each value range. This is tough to do with the smoothed curves of the violin plot."
+                      descriptions={[
+                        "The histogram is isolated to a single, focus gait parameter. You can change this using the dropdown below.",
+                      ]}
+                      exampleAnalysis="what is the most frequent value range for cadence? How does this differ from the mean cadence? How is this compared to the frequency of other value ranges?"
+                    />
+                  </CardHeader>
+                  <CardContent className="flex flex-col justify-center gap-10">
+                    <ParameterDistributionHistogram
+                      allPerWbParameters={perWbParameters}
+                    />
+                  </CardContent>
+                </Card>
+              </FadeInScroll>
             </div>
           </div>
         </div>
       </div>
     );
   } else {
-    // TODO: render not found form if no inputs submitted.
-    return <div>No data can be found...</div>;
+    return (
+      <div className="flex justify-center mt-20">
+        <LookingForData />
+      </div>
+    );
   }
 }

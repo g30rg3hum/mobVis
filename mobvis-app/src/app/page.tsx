@@ -65,9 +65,9 @@ export default function Home() {
             <p>
               Simply fill in the form on the right and click &quot;Extract and
               Save&quot;. Analysis can be done on three levels, from most to
-              least granular: <b>overview/summary</b>, <b>per-walking-bout</b>{" "}
+              least granular: <b>overview/summary</b>, <b>each walking-bout</b>{" "}
               (since the patient might not always be walking throughout the
-              entire recording) and <b>per-stride</b> (of each walking bout).
+              entire recording) and <b>each stride</b> (of each walking bout).
             </p>
             <p className="pt-1">
               Simply navigate to the respective page by clicking on the top

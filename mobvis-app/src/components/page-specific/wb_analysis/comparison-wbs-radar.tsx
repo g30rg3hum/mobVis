@@ -14,6 +14,7 @@ import {
 } from "@/components/shadcn-components/select";
 import { Label } from "@/components/shadcn-components/label";
 import { Button } from "@/components/shadcn-components/button";
+import { filterOutAllZerosPerWbParameters } from "@/lib/utils";
 
 interface Props {
   allPerWbParameters: PerWbParameters;
@@ -32,13 +33,16 @@ export default function ComparisonWbsRadar({
     perWbDataFields.filter((col) => col !== "wb_id")
   );
 
+  const filteredAllPerWbParameters =
+    filterOutAllZerosPerWbParameters(allPerWbParameters);
+
   return (
     <>
       <div className="flex gap-5 items-end">
         <div className="flex gap-2">
           <AddWbDropdown
             currentWbIds={wbs}
-            allWbIds={allPerWbParameters.map((param) => param.wb_id)}
+            allWbIds={filteredAllPerWbParameters.map((param) => param.wb_id)}
             maxWbs={3}
             maxHit={() =>
               setModalMessage("You can only plot up to 3 walking bouts.")
@@ -121,7 +125,7 @@ export default function ComparisonWbsRadar({
         width={1000}
         radius={300}
         margin={{ left: 50, right: 50, bottom: 100, top: 100 }}
-        data={allPerWbParameters}
+        data={filteredAllPerWbParameters}
         recordsToPlot={wbs}
         axes={currentAxes}
         axesNameMapper={refinedParamNames}

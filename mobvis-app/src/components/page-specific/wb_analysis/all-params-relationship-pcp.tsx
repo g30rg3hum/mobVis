@@ -10,6 +10,7 @@ import {
 } from "@/components/shadcn-components/select";
 import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
 import { perWbDataFields, refinedParamNames } from "@/lib/fields";
+import { filterOutAllZerosPerWbParameters } from "@/lib/utils";
 import { PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
 
@@ -19,17 +20,20 @@ interface Props {
 export default function AllParamsRelationshipPcp({
   allPerWbParameters,
 }: Props) {
-  const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
+  const [shiftParam, setShiftParam] = useState<string>("walking_speed_mps");
   const [newPosition, setNewPosition] = useState<number>(0);
   const [currentAxes, setCurrentAxes] = useState<string[]>(
     perWbDataFields.filter((param) => param !== "wb_id")
   );
 
+  const filteredAllPerWbParameters =
+    filterOutAllZerosPerWbParameters(allPerWbParameters);
+
   return (
     <>
       <div className="flex gap-5 items-center">
         <div className="flex gap-2">
-          <Select onValueChange={setFocusParam} defaultValue={focusParam}>
+          <Select onValueChange={setShiftParam} defaultValue={shiftParam}>
             <div className="flex flex-col gap-1">
               <Label>Axis to shift</Label>
               <SelectTrigger className="w-[240px]">
@@ -76,10 +80,10 @@ export default function AllParamsRelationshipPcp({
             onClick={() => {
               // swap the axes.
               const newAxes = [...currentAxes];
-              const oldPosition = currentAxes.indexOf(focusParam);
+              const oldPosition = currentAxes.indexOf(shiftParam);
               const paramAtNewPosition = newAxes[newPosition];
               newAxes[oldPosition] = paramAtNewPosition;
-              newAxes[newPosition] = focusParam;
+              newAxes[newPosition] = shiftParam;
               setCurrentAxes(newAxes);
             }}
             className="self-end"
@@ -92,7 +96,7 @@ export default function AllParamsRelationshipPcp({
         height={400}
         width={1000}
         margin={{ left: 100, right: 100, bottom: 50, top: 20 }}
-        data={[allPerWbParameters]}
+        data={[filteredAllPerWbParameters]}
         axes={currentAxes}
         className="self-center"
         axesLabelMap={refinedParamNames}

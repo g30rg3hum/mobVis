@@ -11,7 +11,12 @@ import {
 } from "@/components/shadcn-components/select";
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
 import { perWbDataFields, refinedParamNames } from "@/lib/fields";
-import { createDataset, getWbProperty, sortWbsByProperty } from "@/lib/utils";
+import {
+  createDataset,
+  filterOutZerosPerWbParameters,
+  getWbProperty,
+  sortWbsByProperty,
+} from "@/lib/utils";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
 
@@ -23,6 +28,11 @@ export default function ParamProgressionBarChart({
 }: Props) {
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [ascDuration, setAscDuration] = useState<boolean>(false);
+
+  const filteredAllPerWbParameters = filterOutZerosPerWbParameters(
+    allPerWbParameters,
+    focusParam as keyof PerWbParameter
+  );
 
   return (
     <>
@@ -66,14 +76,14 @@ export default function ParamProgressionBarChart({
           createDataset(
             getWbProperty(
               ascDuration
-                ? sortWbsByProperty(allPerWbParameters, "duration_s")
-                : allPerWbParameters,
+                ? sortWbsByProperty(filteredAllPerWbParameters, "duration_s")
+                : filteredAllPerWbParameters,
               "wb_id"
             ),
             getWbProperty(
               ascDuration
-                ? sortWbsByProperty(allPerWbParameters, "duration_s")
-                : allPerWbParameters,
+                ? sortWbsByProperty(filteredAllPerWbParameters, "duration_s")
+                : filteredAllPerWbParameters,
               focusParam as keyof PerWbParameter
             )
           ) as [string, number][]
@@ -82,14 +92,14 @@ export default function ParamProgressionBarChart({
           createDataset(
             getWbProperty(
               ascDuration
-                ? sortWbsByProperty(allPerWbParameters, "duration_s")
-                : allPerWbParameters,
+                ? sortWbsByProperty(filteredAllPerWbParameters, "duration_s")
+                : filteredAllPerWbParameters,
               "wb_id"
             ),
             getWbProperty(
               ascDuration
-                ? sortWbsByProperty(allPerWbParameters, "duration_s")
-                : allPerWbParameters,
+                ? sortWbsByProperty(filteredAllPerWbParameters, "duration_s")
+                : filteredAllPerWbParameters,
               "duration_s"
             )
           ) as [string, number][]

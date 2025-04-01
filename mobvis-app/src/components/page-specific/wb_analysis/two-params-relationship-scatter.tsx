@@ -24,6 +24,12 @@ export default function TwoParamsRelationshipScatter({
   const [paramX, setParamX] = useState<string>("stride_length_m");
   const [paramY, setParamY] = useState<string>("walking_speed_mps");
 
+  const filteredAllPerWbParameters = allPerWbParameters.filter(
+    (wb) =>
+      wb[paramX as keyof PerWbParameter] !== 0 &&
+      wb[paramY as keyof PerWbParameter] !== 0
+  );
+
   return (
     <>
       <div className="flex gap-5 items-center">
@@ -72,8 +78,12 @@ export default function TwoParamsRelationshipScatter({
         margin={{ left: 100, right: 50, bottom: 65, top: 20 }}
         data={
           createDataset(
-            allPerWbParameters.map((wb) => wb[paramX as keyof PerWbParameter]),
-            allPerWbParameters.map((wb) => wb[paramY as keyof PerWbParameter])
+            filteredAllPerWbParameters.map(
+              (wb) => wb[paramX as keyof PerWbParameter]
+            ),
+            filteredAllPerWbParameters.map(
+              (wb) => wb[paramY as keyof PerWbParameter]
+            )
           ) as [number, number][]
         }
         xLabel={refinedParamNames.get(paramX) as string}

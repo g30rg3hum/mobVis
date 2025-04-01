@@ -11,7 +11,7 @@ import {
 } from "@/components/shadcn-components/select";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
 import { perWbDataFields, refinedParamNames } from "@/lib/fields";
-import { createDataset } from "@/lib/utils";
+import { createDataset, filterOutZerosPerWbParameters } from "@/lib/utils";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
 import SettingCheckbox from "../shared/setting-checkbox";
@@ -24,6 +24,11 @@ export default function ParamProgressionScatterPlot({
 }: Props) {
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [step, setStep] = useState<boolean>(false);
+
+  const filteredAllPerWbParameters = filterOutZerosPerWbParameters(
+    allPerWbParameters,
+    focusParam as keyof PerWbParameter
+  );
 
   return (
     <>
@@ -60,8 +65,8 @@ export default function ParamProgressionScatterPlot({
         margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
         data={
           createDataset(
-            allPerWbParameters.map((wb) => wb.wb_id),
-            allPerWbParameters.map(
+            filteredAllPerWbParameters.map((wb) => wb.wb_id),
+            filteredAllPerWbParameters.map(
               (wb) => wb[focusParam as keyof PerWbParameter]
             )
           ) as [number, number][]

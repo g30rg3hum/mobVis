@@ -262,3 +262,36 @@ export function createPerStrideDatasetForHeatmap(
 
   return dataset;
 }
+
+export function filterOutZerosPerStrideParameters(
+  perStrideParameters: PerStrideParameters,
+  focusParam: keyof PerStrideParameter
+) {
+  return perStrideParameters.filter(
+    (perStrideParameter) =>
+      perStrideParameter[focusParam as keyof PerStrideParameter] !== 0
+  );
+}
+
+export function filterOutZerosPerWbParameters(
+  perWbParameters: PerWbParameters,
+  focusParam: keyof PerWbParameter
+) {
+  return perWbParameters.filter(
+    (perWbParameter) => perWbParameter[focusParam as keyof PerWbParameter] !== 0
+  );
+}
+
+export function filterOutAllZerosPerWbParameters(
+  perWbParameters: PerWbParameters
+) {
+  return perWbParameters.filter(
+    (wb) =>
+      wb["n_strides"] !== 0 &&
+      wb["duration_s"] !== 0 &&
+      wb["stride_duration_s"] !== 0 &&
+      wb["stride_length_m"] !== 0 &&
+      wb["walking_speed_mps"] !== 0 &&
+      wb["cadence_spm"] !== 0
+  );
+}

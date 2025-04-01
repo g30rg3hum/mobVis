@@ -43,7 +43,7 @@ export default function WbAnalysis() {
       <div className="flex flex-col justify-center items-center">
         <div className="text-black max-w-[1300px] my-10">
           <h1 className="text-4xl font-black mb-2">
-            🚶 Walking bout level analysis
+            🚶 Analysis on each walking bout
           </h1>
           <p className="mb-5 text-slate-600 font-semibold">
             <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { refinedParamNames } from "@/lib/fields";
 import SettingCheckbox from "../shared/setting-checkbox";
+import { filterOutZerosPerWbParameters } from "@/lib/utils";
 
 interface Props {
   allPerWbParameters: PerWbParameters;
@@ -13,6 +14,11 @@ export default function ParameterDistributionViolinPlot({
 }: Props) {
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [box, setBox] = useState(false);
+
+  const filteredAllPerWbParameters = filterOutZerosPerWbParameters(
+    allPerWbParameters,
+    focusParam as keyof PerWbParameter
+  );
 
   return (
     <>
@@ -36,7 +42,7 @@ export default function ParameterDistributionViolinPlot({
         margin={{ top: 20, bottom: 65, left: 75, right: 25 }}
         xLabel=" Analysis"
         yLabel={refinedParamNames.get(focusParam)!}
-        data={allPerWbParameters.map((wb) => [
+        data={filteredAllPerWbParameters.map((wb) => [
           "Current analysis",
           wb[focusParam as keyof PerWbParameter] as number,
         ])}

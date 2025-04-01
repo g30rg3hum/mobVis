@@ -1,6 +1,7 @@
 import Histogram from "@/components/viz/charts&graphs/histogram";
 import {
   createDatasetOfKeyAndValTuples,
+  filterOutZerosPerStrideParameters,
   groupPerStrideParametersByWbId,
 } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
@@ -23,8 +24,13 @@ export default function StrideParamDistributionHistogram({
   const [currentWbIds, setCurrentWbIds] = useState<number[]>([0]);
   const [splitLR, setSplitLR] = useState(false);
 
+  const filteredPerStrideParameters = filterOutZerosPerStrideParameters(
+    allPerStrideParameters,
+    focusParam as keyof PerStrideParameter
+  );
+
   const groupedPerStrideParameters = groupPerStrideParametersByWbId(
-    allPerStrideParameters
+    filteredPerStrideParameters
   );
   const allWbIds = Array.from(groupedPerStrideParameters.keys());
 

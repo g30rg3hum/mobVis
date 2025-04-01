@@ -3,6 +3,7 @@ import { refinedParamNames } from "@/lib/fields";
 import {
   colours,
   createDataset,
+  filterOutZerosPerStrideParameters,
   groupPerStrideParametersByWbId,
   splitPerStrideParametersIntoLAndRIndicesArray,
 } from "@/lib/utils";
@@ -28,8 +29,10 @@ export default function StrideParamProgressionScatterPlot({
     allPerStrideParameters
   );
   const wbCount = groupedPerStrideParameters.size;
-  const currentPerStrideParameters =
-    groupedPerStrideParameters.get(currentWbId)!;
+  const currentPerStrideParameters = filterOutZerosPerStrideParameters(
+    groupedPerStrideParameters.get(currentWbId)!,
+    focusParam as keyof PerStrideParameter
+  );
 
   return (
     <>

@@ -127,7 +127,8 @@ export default function Histogram({
       // width of the bin, - 1 to account for the gap.
       .attr("width", (d) => x(d.x1!) - x(d.x0!) - 1)
       // height from top of the bar to the bottom of the chart.
-      .attr("height", (d) => height - y(d.length));
+      .attr("height", (d) => height - y(d.length))
+      .attr("opacity", 0.75);
   }
 
   return (

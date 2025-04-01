@@ -5,6 +5,7 @@ import { refinedParamNames } from "@/lib/fields";
 import {
   colours,
   createDataset,
+  filterOutZerosPerStrideParameters,
   getStrideProperty,
   groupPerStrideParametersByWbId,
   splitPerStrideParametersIntoLAndRIndicesArray,
@@ -29,8 +30,10 @@ export default function StrideParamProgressionBarChart({
     allPerStrideParameters
   );
   const wbCount = groupedPerStrideParameters.size;
-  const currentPerStrideParameters =
-    groupedPerStrideParameters.get(currentWbId)!;
+  const currentPerStrideParameters = filterOutZerosPerStrideParameters(
+    groupedPerStrideParameters.get(currentWbId)!,
+    focusParam as keyof PerStrideParameter
+  );
 
   return (
     <>
@@ -69,7 +72,7 @@ export default function StrideParamProgressionBarChart({
       </div>
 
       <BarChart
-        height={600}
+        height={540}
         width={450}
         margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
         data={

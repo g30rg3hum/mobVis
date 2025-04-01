@@ -16,7 +16,7 @@ interface Props {
   data: Record[][];
   // a subset of the fields from data to plot for as dimensions.
   axes: string[];
-  identifyingField?: string;
+  identifyingFields?: string[];
   axesLabelMap?: Map<string, string>;
 }
 
@@ -33,7 +33,7 @@ export default function ParallelCoordinatesPlot({
   className,
   data,
   axes,
-  identifyingField,
+  identifyingFields,
   axesLabelMap,
 }: Props) {
   const [currentColor, setCurrentColor] = useState("#9B29FF");
@@ -48,7 +48,7 @@ export default function ParallelCoordinatesPlot({
   }, [
     data,
     axes,
-    identifyingField,
+    identifyingFields,
     axesLabelMap,
     width,
     height,
@@ -164,12 +164,14 @@ export default function ParallelCoordinatesPlot({
         .attr("stroke", colours[i])
         .attr("stroke-width", 3);
 
-      if (identifyingField) {
+      if (identifyingFields) {
         lines
           .on("mouseover", (event, d) => {
-            const identifier = d[identifyingField];
+            const identifiers = identifyingFields.map(
+              (identifyingField) => d[identifyingField]
+            );
             tooltip
-              .html(`${identifier}`)
+              .html(`${identifiers.join(",")}`)
               .style("display", "block")
               .style("left", event.pageX + 10 + "px")
               .style("top", event.pageY - 20 + "px");

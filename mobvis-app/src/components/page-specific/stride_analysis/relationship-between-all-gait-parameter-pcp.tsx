@@ -4,12 +4,14 @@ import { PerStrideParameters } from "@/types/parameters";
 import { useState } from "react";
 import {
   createPerStrideDatasetWithDesiredWbIds,
+  filterOutAllZerosPerStrideParameters,
   groupPerStrideParametersByWbId,
 } from "@/lib/utils";
 import SelectedWbsList from "../shared/selected-wbs-list";
 import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
 import { Record } from "@/types/parameters";
 import SettingCheckbox from "../shared/setting-checkbox";
+import ShiftAxis from "../shared/shift-axis";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -19,11 +21,17 @@ export default function RelationshipBetweenAllGaitParametersPcp({
   allPerStrideParameters,
   setModalMessage,
 }: Props) {
+  const [currentAxes, setCurrentAxes] =
+    useState<string[]>(perStrideParamFields);
   const [currentWbIds, setCurrentWbIds] = useState<number[]>([0]);
   const [splitLR, setSplitLR] = useState(false);
 
-  const groupedPerStrideParameters = groupPerStrideParametersByWbId(
+  const filteredPerStrideParameters = filterOutAllZerosPerStrideParameters(
     allPerStrideParameters
+  );
+
+  const groupedPerStrideParameters = groupPerStrideParametersByWbId(
+    filteredPerStrideParameters
   );
   const allWbIds = Array.from(groupedPerStrideParameters.keys());
 
@@ -41,6 +49,13 @@ export default function RelationshipBetweenAllGaitParametersPcp({
           disabled={splitLR}
         />
 
+        <SelectedWbsList
+          wbs={currentWbIds}
+          setWbs={setCurrentWbIds}
+          horizontal
+          splitLR={splitLR}
+        />
+
         <SettingCheckbox
           state={splitLR}
           setState={setSplitLR}
@@ -48,12 +63,13 @@ export default function RelationshipBetweenAllGaitParametersPcp({
           label="Split L and R strides?"
           disabled={currentWbIds.length !== 1}
         />
-
-        <SelectedWbsList
-          wbs={currentWbIds}
-          setWbs={setCurrentWbIds}
-          horizontal
-          splitLR={splitLR}
+      </div>
+      <div className="flex items-end gap-5">
+        <ShiftAxis
+          dataFields={perStrideParamFields}
+          refinedParamFieldNames={refinedParamNames}
+          currentAxes={currentAxes}
+          setCurrentAxes={setCurrentAxes}
         />
       </div>
 
@@ -68,9 +84,10 @@ export default function RelationshipBetweenAllGaitParametersPcp({
             splitLR
           ) as unknown as Record[][]
         }
-        axes={perStrideParamFields}
+        axes={currentAxes}
         className="self-center"
         axesLabelMap={refinedParamNames}
+        identifyingFields={["wb_id", "s_id"]}
       />
     </>
   );

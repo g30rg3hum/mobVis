@@ -3,6 +3,7 @@ import AddWbDropdown from "../shared/add-wb-dropdown";
 import { useState } from "react";
 import {
   createPerStrideDatasetForHeatmap,
+  filterOutZerosPerStrideParameters,
   groupPerStrideParametersByWbId,
 } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
@@ -20,8 +21,13 @@ export default function StrideComparisonHeatMap({
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [currentWbIds, setCurrentWbIds] = useState<number[]>([0]);
 
+  const filteredPerStrideParameters = filterOutZerosPerStrideParameters(
+    allPerStrideParameters,
+    focusParam as keyof PerStrideParameter
+  );
+
   const groupedPerStrideParameters = groupPerStrideParametersByWbId(
-    allPerStrideParameters
+    filteredPerStrideParameters
   );
   const allWbIds = Array.from(groupedPerStrideParameters.keys());
 
@@ -52,12 +58,12 @@ export default function StrideComparisonHeatMap({
       </div>
 
       <HeatMap
-        className="self-center border border-red-500"
+        className="self-center"
         height={500}
         width={1000}
         margin={{ left: 95, right: 150, bottom: 100, top: 40 }}
-        xLabel="Strides"
-        yLabel="Walking Bouts"
+        xLabel="Chronological strides"
+        yLabel="Walking bout ID"
         data={createPerStrideDatasetForHeatmap(
           groupedPerStrideParameters,
           currentWbIds,

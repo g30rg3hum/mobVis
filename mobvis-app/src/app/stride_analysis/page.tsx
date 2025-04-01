@@ -1,6 +1,8 @@
 "use client";
 
+import FadeInScroll from "@/components/custom/animation-scroll";
 import HyperLink from "@/components/custom/hyperlink";
+import LookingForData from "@/components/custom/looking-for-data";
 import InputsDialog from "@/components/page-specific/inputs/inputs-dialog";
 import ModalMessageDialog from "@/components/page-specific/shared/modal-message-dialog";
 import RelationshipBetweenAllGaitParametersPcp from "@/components/page-specific/stride_analysis/relationship-between-all-gait-parameter-pcp";
@@ -42,17 +44,24 @@ export default function StrideAnalysis() {
 
   if (inputs && perStrideParameters) {
     return (
-      <div>
-        <div className="p-10 text-white">
-          <h1 className="text-4xl font-bold mb-2">🦶 Stride level analysis</h1>
-          <p>
-            Walking bouts are made up of left and right strides. Visualisations
-            for per walking bout gait parameters extracted from{" "}
-            <span className="font-semibold">{inputs.name}</span>.{" "}
+      <div className="flex flex-col items-center justify-center">
+        <div className="text-black max-w-[1300px] my-10">
+          <h1 className="text-4xl font-black mb-2">
+            🦶 Analysis on each stride
+          </h1>
+          <p className="mb-5 text-slate-600 font-semibold">
             <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>
               Click here
             </HyperLink>{" "}
-            to see the inputs you&apos;ve submitted.
+            to see the inputs you&apos;ve submitted for the current analysis.
+          </p>
+
+          <p>
+            Visualisations for gait parameters extracted from{" "}
+            <span className="font-semibold">&apos;{inputs.name}&apos;</span>.
+            This is the lowest level of analysis you can do, focused on the
+            values of each gait parameter under each left and right strides of
+            the identified walking bouts, from the recording you submitted.
           </p>
           <InputsDialog
             inputs={inputs}
@@ -60,164 +69,211 @@ export default function StrideAnalysis() {
             setIsInputDialogOpen={setIsInputDialogOpen}
           />
         </div>
+
         <div className="flex justify-center mb-10">
           <div className="flex flex-col gap-5 w-full max-w-[1300px] min-w-[1150px] mx-6">
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Table of all parameters of each stride under each walking bout
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "Tabular view of the exact figures of each gait parameter for each identified stride of each identified walking bout in the CSV data you uploaded. Use this table to assist your decision in picking what walking bouts to visualise for, in the visualisations below. Drag rows around to compare selected records side by side. Click the left and right buttons to view the strides of a desired walking bout. You can also set the number of stride records displayed with the input textbox. Please note that if a value is 0, it means that the value could not be calculated."
-                  }
-                  exampleAnalysis="which walking bout contained the stride with the largest length?"
-                />
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <TableOfPerStrideParameters
-                  allPerStrideParameters={perStrideParameters}
-                />
-              </CardContent>
-            </Card>
-
-            <div className="flex gap-5">
-              <Card className="w-1/2">
+            <FadeInScroll>
+              <Card>
                 <CardHeader>
                   <VizCardTitle>
-                    Progression of a gait parameter over time (scatter/step
-                    plot)
+                    Table of all gait parameters of each stride under each
+                    walking bout
                   </VizCardTitle>
                   <VizCardDescription
-                    mainDescription={
-                      "Plot of a focus gait parameter of strides of a given selected walking bout. The walking bouts are ordered chronologically to look for any temporal relationships. More specifically, how does the focus gait parameter evolve over time for the given walking bout? The plot can be displayed as a connected scatter plot or step plot using the checkbox."
-                    }
-                    exampleAnalysis="as more strides are taken, does the stride length decrease? Are there frequent dips in walking speed every time it's a left stride, indicating there is something wrong with the left leg?"
+                    subheading="Table view of the exact figures of each gait parameter for each identified stride of each identified walking bout in the CSV data you uploaded."
+                    descriptions={[
+                      "Use this table to assist your decision in picking what walking bouts to visualise for, in the visualisations below.",
+                      "Drag rows around to compare selected strides side by side.",
+                      "Click the left and right buttons to view the strides of a desired walking bout.",
+                      "You can also set the number of stride records displayed in each group using the input textbox, and navigate between different groups using the numbers at the bottom.",
+                      "Please note that if a value is N/A, it means that the value could not be calculated.",
+                    ]}
+                    exampleAnalysis="which walking bout contained the stride with the largest length?"
                   />
                 </CardHeader>
-                <CardContent className="flex flex-col justify-center gap-10">
-                  <StrideParamProgressionScatterPlot
+                <CardContent className="space-y-5">
+                  <TableOfPerStrideParameters
                     allPerStrideParameters={perStrideParameters}
                   />
                 </CardContent>
               </Card>
+            </FadeInScroll>
 
-              <Card className="w-1/2 flex flex-col justify-between">
-                <CardHeader>
-                  <VizCardTitle>
-                    Progression of a gait parameter (over time) (bar chart)
-                  </VizCardTitle>
-                  <VizCardDescription
-                    mainDescription={
-                      "Same as the scatter plot on the left except presented in bar chart form. The 'bar' form may offer a clearer and more straightforward represention of value."
-                    }
-                    exampleAnalysis="do the bars of each chronological stride decrease steadily for gait speed and if so, by how much each time?"
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col justify-center gap-10">
-                  <StrideParamProgressionBarChart
-                    allPerStrideParameters={perStrideParameters}
-                  />
-                </CardContent>
-              </Card>
+            <div className="flex gap-5 items-stretch">
+              <FadeInScroll className="w-1/2">
+                <Card className="h-full">
+                  <CardHeader>
+                    <VizCardTitle>
+                      Progression of a gait parameter over time (scatter/step
+                      plot)
+                    </VizCardTitle>
+                    <VizCardDescription
+                      subheading="A plot that is switchable between a scatter plot and step plot. Values for a focus gait parameter is plotted for each chronological stride of a given selected walking bout. By ordering the strides chronologically, you can see how the focus gait parameter evolves over time with each step."
+                      descriptions={[
+                        "Alternate between a connected and a step plot by clicking on the checkbox below",
+                        "Choose the current walking bout to visualise using the left and right buttons.",
+                        "Change the focus parameter by using the dropdown.",
+                      ]}
+                      exampleAnalysis="as more strides are taken, does the stride length decrease? Are there frequent dips in walking speed every time it's a left stride, indicating there is something wrong with the left leg?"
+                    />
+                  </CardHeader>
+                  <CardContent className="flex flex-col justify-center gap-10">
+                    <StrideParamProgressionScatterPlot
+                      allPerStrideParameters={perStrideParameters}
+                    />
+                  </CardContent>
+                </Card>
+              </FadeInScroll>
+
+              <FadeInScroll className="w-1/2">
+                <Card className="flex flex-col justify-start h-full">
+                  <CardHeader>
+                    <VizCardTitle>
+                      Progression of a gait parameter (over time) (bar chart)
+                    </VizCardTitle>
+                    <VizCardDescription
+                      subheading="A bar chart that is similar to the scatter plot on the left. The focus gait parameter is plotted for each chronological stride of a given selected walking bout. With the chronological order of strides and the more intuitive visual comparison provided by the bar form, you can easily interpret and compare how the focus gait parameter evolves over time with each step. "
+                      descriptions={[
+                        "Pick the walking bout to plot the strides of using the left and right buttons.",
+                        "Pick the focus gait parameter using the dropdown.",
+                      ]}
+                      exampleAnalysis="do the bars of each chronological stride decrease steadily for gait speed and if so, by how much each time?"
+                    />
+                  </CardHeader>
+                  <CardContent className="flex flex-col justify-center gap-10">
+                    <StrideParamProgressionBarChart
+                      allPerStrideParameters={perStrideParameters}
+                    />
+                  </CardContent>
+                </Card>
+              </FadeInScroll>
             </div>
 
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Distribution of a given parameter (violin + box plot)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "A violin/box plot that shows the distribution of values. You can switch between a violin and box plot using the checkbox. The violin version looks at distribution by the area of the density curves, while the box plot displays key distribution points (max, upperquartile, median, lower quartile and min). The focus is on the distribution of a given gait parameter across all strides for a given walking bout. You can add up to five violins/boxes (walking bouts) and the focus gait parameter can be changed with the dropdown."
-                  }
-                  exampleAnalysis="how much does this patient's stride length vary across the strides of one walking bout compared to another?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-5">
-                <StrideParamDistributionViolinPlot
-                  allPerStrideParameters={perStrideParameters}
-                  setModalMessage={setModalMessage}
-                />
-              </CardContent>
-            </Card>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Distribution of a given parameter (violin + box plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A plot that can be alternated between a box and violin plot, showing the distribution of gait parameter values across all the strides for a given walking bout. The violin version looks at distribution by the area of the density curves, with wider areas indicating more values in that range. On the other had, the box plot displays key distribution points (max - upper line, min - lower line, median - middle line, interquartile range - the box (where the middle 50% of values live, between the 25% and 75% of values))."
+                    descriptions={[
+                      "You can add/remove up to five violins/boxes (representing walking bouts)",
+                      "The focus gait parameter can be changed with the dropdown.",
+                      "There is a checkbox to switch between a box plot and violin plot.",
+                    ]}
+                    exampleAnalysis="how much does this patient's stride length vary across the strides of one walking bout compared to another walking bout?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5">
+                  <StrideParamDistributionViolinPlot
+                    allPerStrideParameters={perStrideParameters}
+                    setModalMessage={setModalMessage}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Distribution of a given parameter (histogram)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "A histogram depicting the frequency of a given gait parameter's values across strides. It visualises distribution like above, but it is simpler and there is a clearer and direct view of concrete parameter values, as opposed to curves (which have a smoothing effect) and boxes (which summarise and 'over-simplify' distribution). Histograms for more than one walking bout can be added (up to 3). The focus parameter can be changed using the dropdown. There is also the option of separating the histogram of a walking bout into left and right strides; but this is only available for when only displaying one walking bout, to maintain a clear analysis."
-                  }
-                  exampleAnalysis="what is the most frequent value range for cadence? How does this compare against the mean value?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-5">
-                <StrideParamDistributionHistogram
-                  allPerStrideParameters={perStrideParameters}
-                  setModalMessage={setModalMessage}
-                />
-              </CardContent>
-            </Card>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Distribution of a given parameter (histogram)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A histogram depicting the frequency of a given gait parameter's values across all strides of a given walking bout. It visualises distribution like in the visualisations above, but it is simpler and there is a clearer and direct view of concrete parameter values, as opposed to smoothed curves and boxes (which summarise and over-simplify distribution)."
+                    descriptions={[
+                      "Histograms for more than one walking bout can be added (up to 3).",
+                      "The focus parameter can be changed using the dropdown.",
+                      "There is also the option of separating the histogram of a walking bout into left and right strides; but this is only available for when only displaying one walking bout, to maintain a clear analysis.",
+                    ]}
+                    exampleAnalysis="what is the most frequent value range for cadence? How does this compare against the mean value? How does this compare with the frequency of the rest of the value ranges?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5">
+                  <StrideParamDistributionHistogram
+                    allPerStrideParameters={perStrideParameters}
+                    setModalMessage={setModalMessage}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Relationship between all gait parameters (parallel coordinates
-                  plot)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription={
-                    "A parallel coordinates plot with an axis for each gait parameter. Each stride is plotted as a polyline through these axes. The patterns of how these polylines cross and converge through these axes can reveal relationships between the gait parameters. This visualisation is limited to strides of three walking bouts at a time. In the same way as the histogram above, you can only split the polylines into left and right strides if only one walking bout is selected."
-                  }
-                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-5">
-                <RelationshipBetweenAllGaitParametersPcp
-                  allPerStrideParameters={perStrideParameters}
-                  setModalMessage={setModalMessage}
-                />
-              </CardContent>
-            </Card>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Relationship between all gait parameters (parallel
+                    coordinates plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A parallel coordinates plot with an axis for each gait parameter. Each stride of a given walking bout is plotted as a polyline through these axes. The patterns of how these data lines cross, converge and cluster through these axes reveal relationships between the many gait parameters. Lots of different analyses conclusions can be done from this plot: from identifying outliers (lines that deviate from the rest) to identifying correlations (positive - parallel lines between, negative - crossing lines between, none - mix of parallel and crossing)"
+                    descriptions={[
+                      "This visualisation is limited to strides of three walking bouts at a time.",
+                      "In the same way as the histogram above, you can only split the polylines into left and right strides if only one walking bout is selected.",
+                      "You can also colour the data lines by a selected colour, but please note that this colour is isolated so the preset colour scheme is not applicable. If you want to remove the colour, remove and re-add the corresponding walking bout again.",
+                      "Hover over a data line to see the respective (walking bout ID, stride ID).",
+                      "You can also shift a selected gait parameter axis to another position using the dropdowns.",
+                    ]}
+                    exampleAnalysis="are the data lines between two gait parameter axes mostly parallel, i.e. indicating a positive correlation?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5">
+                  <RelationshipBetweenAllGaitParametersPcp
+                    allPerStrideParameters={perStrideParameters}
+                    setModalMessage={setModalMessage}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Comparison between strides (radar chart)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription="A radar chart with axes for each gait parameter, plotting against identified strides from walking bouts that you select to add from the dropdown. Representing the strides as shapes provide straightforward insights about how the strides compare across each dimension (gait parameter). You can plot for up to three strides, to avoid the chart getting too cluttered."
-                  exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-5">
-                <StrideComparisonRadarChart
-                  allPerStrideParameters={perStrideParameters}
-                  setModalMessage={setModalMessage}
-                />
-              </CardContent>
-            </Card>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Comparison between strides (radar chart)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A radar chart with axes for each gait parameter, plotting against identified strides from walking bouts that you select from the dropdown. Representing the strides as shapes provides straightforward insights about how different strides compare across each dimension (gait parameter)."
+                    descriptions={[
+                      "You can plot for up to three strides from any walking bouts, to avoid the chart getting too cluttered.",
+                      "Use the dropdowns to swap two selected axes positions.",
+                    ]}
+                    exampleAnalysis="For which gait parameters does one stride have higher values for compared to another selected stride?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5">
+                  <StrideComparisonRadarChart
+                    allPerStrideParameters={perStrideParameters}
+                    setModalMessage={setModalMessage}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
-            <Card>
-              <CardHeader>
-                <VizCardTitle>
-                  Comparison between strides (heat map)
-                </VizCardTitle>
-                <VizCardDescription
-                  mainDescription="A heat map of a given focus gait parameter’s values for each stride of selected walking bouts. The y-axis represents each selected walking bout and x-axis displays each corresponding chronological stride (e.g. first stride, second stride...). The colour coding of the heat map offers a clearer view of which strides have the highest/lowest values for the given gait parameter. If walking bouts have unequal stride counts, unavailable strides will be blacked out."
-                  exampleAnalysis="which set of strides of a given walking bout have extremely long durations?"
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center gap-5">
-                <StrideComparisonHeatMap
-                  allPerStrideParameters={perStrideParameters}
-                  setModalMessage={setModalMessage}
-                />
-              </CardContent>
-            </Card>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Comparison between strides (heat map)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A heatmap of a given focus gait parameter's values for each stride of selected walking bouts. The y-axis represents each selected walking bout and x-axis displays each corresponding chronological stride (e.g. first stride, second stride...). The colour coding of the heatmap offers a clearer view of which strides have the highest/lowest values for the given gait parameter."
+                    descriptions={[
+                      "If walking bouts have unequal stride counts, unavailable strides will be blacked out.",
+                      "Select walking bouts to add and the focus gait parameter using the dropdown. You can add up to 10 walking bouts at a time.",
+                    ]}
+                    exampleAnalysis="which set of strides of a given walking bout have extremely long durations?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-5">
+                  <StrideComparisonHeatMap
+                    allPerStrideParameters={perStrideParameters}
+                    setModalMessage={setModalMessage}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
           </div>
         </div>
         <ModalMessageDialog
@@ -227,7 +283,8 @@ export default function StrideAnalysis() {
       </div>
     );
   } else {
-    // TODO: amend this.
-    return "Loading...";
+    <div className="flex justify-center mt-20">
+      <LookingForData />
+    </div>;
   }
 }

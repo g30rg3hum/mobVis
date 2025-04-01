@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/shadcn-components/select";
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
-import { perWbDataFields, refinedParamNames } from "@/lib/fields";
+import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import {
   createDataset,
   filterOutZerosPerWbParameters,
@@ -46,7 +46,7 @@ export default function ParamProgressionBarChart({
           </div>
           <SelectContent>
             <SelectGroup>
-              {perWbDataFields.map((param) => (
+              {perWbParamFields.map((param) => (
                 <SelectItem value={param} key={param}>
                   {refinedParamNames.get(param)}
                 </SelectItem>

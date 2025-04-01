@@ -18,7 +18,7 @@ import React, { useState } from "react";
 import {
   divideThenRoundUpToInt,
   groupPerStrideParametersByWbId,
-  roundToNDpIfNeeded,
+  NAIfZeroElseRoundTo5Dp,
   sortStridesByProperty,
 } from "@/lib/utils";
 import { Label } from "@/components/shadcn-components/label";
@@ -250,16 +250,16 @@ export default function TableOfPerStrideParameters({
                 <TableCell>{perStrideParameter.s_id}</TableCell>
                 <TableCell>{perStrideParameter.lr_label}</TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(perStrideParameter.stride_duration_s, 5)}
+                  {NAIfZeroElseRoundTo5Dp(perStrideParameter.stride_duration_s)}
                 </TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(perStrideParameter.cadence_spm, 5)}
+                  {NAIfZeroElseRoundTo5Dp(perStrideParameter.cadence_spm)}
                 </TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(perStrideParameter.stride_length_m, 5)}
+                  {NAIfZeroElseRoundTo5Dp(perStrideParameter.stride_length_m)}
                 </TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(perStrideParameter.walking_speed_mps, 5)}
+                  {NAIfZeroElseRoundTo5Dp(perStrideParameter.walking_speed_mps)}
                 </TableCell>
               </TableRow>
             ))}

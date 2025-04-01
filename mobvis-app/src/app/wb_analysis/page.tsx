@@ -126,7 +126,7 @@ export default function WbAnalysis() {
                       duration) (bar chart)
                     </VizCardTitle>
                     <VizCardDescription
-                      subheading="Similar to the scatter plot on the left, except represented in typical bar chart form.The 'bar' form offers a different, and perhaps more simple representation and comparison of value."
+                      subheading="Similar to the scatter plot on the left, except represented in typical bar chart form. The 'bar' form offers a different, and perhaps more simple representation and comparison of value."
                       descriptions={[
                         "There is also an additional checkbox setting to sort the walking bouts in increasing order of walking bout duration to see if there is any relationship between WB duration and the focus gait parameter.",
                         "Hover over the individual bars to also see the respective walking bout duration.",
@@ -175,7 +175,8 @@ export default function WbAnalysis() {
                   <VizCardDescription
                     subheading="A regular scatter plot showing the level of correlation between two gait parameters. A trendline is plotted with an indicated correlation coefficient to quantify the level of correlation.This offers a more isolated and clearer view of correlation between two specific gait parameters, in addition to the parallel coordinates plot above."
                     descriptions={[
-                      "Use the dropdowns to select the gait parameters for the x and y axes respectively. Hover over the trend line to also see the correlation coefficient.",
+                      "Use the dropdowns to select the gait parameters for the x and y axes respectively.",
+                      "Hover over the trend line to also see the correlation coefficient. This trendline has been calculated and plotted using the least squares regression formula.",
                     ]}
                     exampleAnalysis="does longer stride length correlate to faster gait speeds?"
                   />

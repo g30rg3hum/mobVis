@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/shadcn-components/select";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
-import { perWbDataFields, refinedParamNames } from "@/lib/fields";
+import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import { createDataset } from "@/lib/utils";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
@@ -42,7 +42,7 @@ export default function TwoParamsRelationshipScatter({
           </div>
           <SelectContent>
             <SelectGroup>
-              {perWbDataFields
+              {perWbParamFields
                 .filter((param) => param !== paramY)
                 .map((param) => (
                   <SelectItem value={param} key={param}>
@@ -61,7 +61,7 @@ export default function TwoParamsRelationshipScatter({
           </div>
           <SelectContent>
             <SelectGroup>
-              {perWbDataFields
+              {perWbParamFields
                 .filter((param) => param !== paramX)
                 .map((param) => (
                   <SelectItem value={param} key={param}>

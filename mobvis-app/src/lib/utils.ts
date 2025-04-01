@@ -31,7 +31,7 @@ export function roundToNDpIfNeeded(num: number, n: number) {
 
 export function NAIfZeroElseRoundTo5Dp(num: number) {
   if (num === 0) {
-    return "NA";
+    return "N/A";
   }
   return roundToNDpIfNeeded(num, 5);
 }
@@ -293,5 +293,17 @@ export function filterOutAllZerosPerWbParameters(
       wb["stride_length_m"] !== 0 &&
       wb["walking_speed_mps"] !== 0 &&
       wb["cadence_spm"] !== 0
+  );
+}
+
+export function filterOutAllZerosPerStrideParameters(
+  perStrideParameters: PerStrideParameters
+) {
+  return perStrideParameters.filter(
+    (stride) =>
+      stride["cadence_spm"] !== 0 &&
+      stride["stride_duration_s"] !== 0 &&
+      stride["stride_length_m"] !== 0 &&
+      stride["walking_speed_mps"] !== 0
   );
 }

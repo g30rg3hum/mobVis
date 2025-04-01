@@ -66,7 +66,7 @@ export default function ViolinBoxPlot({
       .attr("font-weight", 700);
 
     // add the X axis
-    const x = d3.scaleBand().range([0, width]).domain(xValues).padding(0.5);
+    const x = d3.scaleBand().range([0, width]).domain(xValues).padding(0.25);
     const xAxis = d3.axisBottom(x);
     plot
       .append("g")

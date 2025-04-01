@@ -68,7 +68,7 @@ export default function BarChart({
     const maxY = Math.max(...yValues);
     const y = d3
       .scaleLinear()
-      .domain([0, maxY + maxY * 0.5])
+      .domain([0, maxY + maxY * 0.25])
       .range([height, 0]);
     const yAxis = d3.axisLeft(y);
     plot.append("g").call(yAxis);

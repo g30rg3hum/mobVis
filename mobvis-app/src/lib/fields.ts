@@ -18,6 +18,10 @@ export const perWbDataFields = [
   "stride_duration_s",
 ];
 
+export const perWbParamFields = perWbDataFields.filter(
+  (param) => param !== "wb_id"
+);
+
 export const perStrideDataFields = [
   "s_id",
   "lr_label",

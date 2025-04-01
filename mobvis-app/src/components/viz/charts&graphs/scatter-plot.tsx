@@ -75,7 +75,7 @@ export default function ScatterPlot({
     const maxY = Math.max(...yValues);
     const y = d3
       .scaleLinear()
-      .domain([0, maxY + maxY * 0.5])
+      .domain([0, maxY + maxY * 0.25])
       .range([height, 0]);
     plot.append("g").call(d3.axisLeft(y));
 

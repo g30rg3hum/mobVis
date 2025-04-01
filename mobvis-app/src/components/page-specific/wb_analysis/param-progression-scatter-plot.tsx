@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/shadcn-components/select";
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
-import { perWbDataFields, refinedParamNames } from "@/lib/fields";
+import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import { createDataset, filterOutZerosPerWbParameters } from "@/lib/utils";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
@@ -42,13 +42,11 @@ export default function ParamProgressionScatterPlot({
           </div>
           <SelectContent>
             <SelectGroup>
-              {perWbDataFields
-                .filter((param) => param !== "wb_id")
-                .map((param) => (
-                  <SelectItem value={param} key={param}>
-                    {refinedParamNames.get(param)}
-                  </SelectItem>
-                ))}
+              {perWbParamFields.map((param) => (
+                <SelectItem value={param} key={param}>
+                  {refinedParamNames.get(param)}
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
         </Select>

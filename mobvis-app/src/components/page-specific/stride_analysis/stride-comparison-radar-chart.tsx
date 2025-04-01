@@ -6,14 +6,19 @@ import {
   SelectTrigger,
 } from "@/components/shadcn-components/select";
 import RadarChart from "@/components/viz/charts&graphs/radar-chart";
-import { perStrideParamFields } from "@/lib/fields";
-import { colours, groupPerStrideParametersByWbId } from "@/lib/utils";
+import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
+import {
+  colours,
+  filterOutAllZerosPerStrideParameters,
+  groupPerStrideParametersByWbId,
+} from "@/lib/utils";
 import { PerStrideParameters, Record } from "@/types/parameters";
 import { faCircle, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Label } from "@radix-ui/react-label";
 import { Select, SelectValue } from "@radix-ui/react-select";
 import { useState } from "react";
+import SwapAxes from "../shared/swap-axes";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -23,8 +28,12 @@ export default function StrideComparisonRadarChart({
   allPerStrideParameters,
   setModalMessage,
 }: Props) {
-  const groupedPerStrideParameters = groupPerStrideParametersByWbId(
+  const filteredPerStrideParameters = filterOutAllZerosPerStrideParameters(
     allPerStrideParameters
+  );
+
+  const groupedPerStrideParameters = groupPerStrideParametersByWbId(
+    filteredPerStrideParameters
   );
   const allWbIds = Array.from(groupedPerStrideParameters.keys());
 
@@ -38,7 +47,10 @@ export default function StrideComparisonRadarChart({
   const [key1, setKey1] = useState(1);
   const [key2, setKey2] = useState(0);
 
-  const validStrides = allPerStrideParameters
+  const [currentAxes, setCurrentAxes] =
+    useState<string[]>(perStrideParamFields);
+
+  const validStrides = filteredPerStrideParameters
     // only strides that don't have an index in strides
     .filter((_, index) => !strides.includes(index))
     // only strides of the selected walking bout
@@ -46,7 +58,7 @@ export default function StrideComparisonRadarChart({
 
   return (
     <>
-      <div className="flex gap-4 items-end">
+      <div className="flex gap-3 items-end">
         <Select
           key={key1}
           onValueChange={(val: string) => {
@@ -116,12 +128,12 @@ export default function StrideComparisonRadarChart({
                 return;
               }
 
-              const newStride = allPerStrideParameters.find(
+              const newStride = filteredPerStrideParameters.find(
                 (stride) =>
                   stride.s_id === selectedStride && stride.wb_id === selectedWb
               );
               if (newStride !== undefined) {
-                const index = allPerStrideParameters.indexOf(newStride);
+                const index = filteredPerStrideParameters.indexOf(newStride);
                 setStrides((prev) => [...prev, index]);
               } else {
                 setModalMessage(
@@ -142,7 +154,7 @@ export default function StrideComparisonRadarChart({
         <div>
           <ul className="flex gap-6">
             {strides.map((stride, i) => {
-              const strideData = allPerStrideParameters[stride];
+              const strideData = filteredPerStrideParameters[stride];
 
               return (
                 <li
@@ -166,14 +178,20 @@ export default function StrideComparisonRadarChart({
           </ul>
         </div>
       </div>
+      <SwapAxes
+        dataFields={perStrideParamFields}
+        currentAxes={currentAxes}
+        setCurrentAxes={setCurrentAxes}
+      />
       <RadarChart
         height={500}
         width={1000}
         radius={300}
         margin={{ left: 50, right: 50, bottom: 100, top: 100 }}
-        data={allPerStrideParameters as unknown as Record[]}
+        data={filteredPerStrideParameters as unknown as Record[]}
         recordsToPlot={strides}
-        axes={perStrideParamFields}
+        axes={currentAxes}
+        axesNameMapper={refinedParamNames}
         className="self-center"
       />
     </>

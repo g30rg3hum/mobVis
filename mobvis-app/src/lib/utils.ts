@@ -15,7 +15,13 @@ export function cn(...inputs: ClassValue[]) {
 export const mandatoryErrorMsg = "Please fill in this field";
 
 export function getAndParseStorageItem(item: string) {
-  return JSON.parse(localStorage.getItem(item) ?? "");
+  const localStorageItem = localStorage.getItem(item);
+
+  if (!localStorageItem) {
+    return null;
+  } else {
+    return JSON.parse(localStorageItem);
+  }
 }
 
 export function convertHoursToMinutesAndTrunc(hours: number) {

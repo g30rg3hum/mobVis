@@ -283,8 +283,10 @@ export default function StrideAnalysis() {
       </div>
     );
   } else {
-    <div className="flex justify-center mt-20">
-      <LookingForData />
-    </div>;
+    return (
+      <div className="flex justify-center mt-20">
+        <LookingForData />
+      </div>
+    );
   }
 }

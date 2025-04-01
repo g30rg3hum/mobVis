@@ -15,6 +15,7 @@ interface Props {
   // indices of records to plot shapes for
   recordsToPlot: number[];
   axes: string[];
+  axesNameMapper?: Map<string, string>;
   className?: string;
 }
 export default function RadarChart({
@@ -25,6 +26,7 @@ export default function RadarChart({
   data,
   recordsToPlot,
   axes,
+  axesNameMapper,
   className,
 }: Props) {
   const ref = useRef(null);
@@ -153,7 +155,9 @@ export default function RadarChart({
           .style("font-weight", 600)
           .style("font-size", "0.8rem")
           .attr("transform", `translate(0, ${radius + 20}) rotate(${-angle})`)
-          .text(axis);
+          .text(
+            (axis) => axesNameMapper?.get(axis as string) ?? (axis as string)
+          );
 
         if (i === 1 && axes.length === 4) {
           ticksTexts.attr("transform", "");

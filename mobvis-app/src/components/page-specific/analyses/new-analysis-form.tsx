@@ -401,13 +401,16 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
             Extract & Save
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogContent>
+            <DialogContent className="p-10">
               <DialogHeader>
-                <DialogTitle>
+                <DialogTitle className="font-semibold">
                   {success ? "Successful! ✅" : "Something went wrong! ❌"}
                 </DialogTitle>
+                <DialogDescription className="text-sm text-slate-600">
+                  {success ? "Everything was fine." : "Please fix the errors."}
+                </DialogDescription>
               </DialogHeader>
-              <DialogDescription>
+              <p>
                 <span> {dialogMessage}</span>
                 {possibleError && (
                   <>
@@ -419,7 +422,7 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
                     </span>
                   </>
                 )}
-              </DialogDescription>
+              </p>
             </DialogContent>
           </Dialog>
         </form>

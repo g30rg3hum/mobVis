@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { Margin } from "@/types/viz";
 import { Record } from "@/types/parameters";
 import { colours } from "@/lib/utils";
+import { Label } from "@/components/shadcn-components/label";
+import { Input } from "@/components/shadcn-components/input";
 
 interface Props {
   width: number;
@@ -14,6 +16,7 @@ interface Props {
   data: Record[][];
   // a subset of the fields from data to plot for as dimensions.
   axes: string[];
+  identifyingField?: string;
   axesLabelMap?: Map<string, string>;
 }
 
@@ -30,15 +33,38 @@ export default function ParallelCoordinatesPlot({
   className,
   data,
   axes,
+  identifyingField,
   axesLabelMap,
 }: Props) {
+  const [currentColor, setCurrentColor] = useState("#9B29FF");
+
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
   const totalWidth = width + margin.left + margin.right;
 
   useEffect(() => {
     draw();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    data,
+    axes,
+    identifyingField,
+    axesLabelMap,
+    width,
+    height,
+    margin,
+    className,
+  ]);
+
+  // separate effect on colour change
+  useEffect(() => {
+    const svg = d3.select(ref.current);
+    if (currentColor) {
+      svg.selectAll("path").on("click", (event) => {
+        d3.select(event.currentTarget).attr("stroke", currentColor);
+      });
+    }
+  }, [currentColor]);
 
   function draw() {
     const svg = d3.select(ref.current);
@@ -115,8 +141,19 @@ export default function ParallelCoordinatesPlot({
       return d3.line()(coordinates);
     };
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
     data.forEach((group, i) => {
-      plot
+      const lines = plot
         .selectAll("polyline")
         .data(group)
         .enter()
@@ -125,10 +162,34 @@ export default function ParallelCoordinatesPlot({
         .style("fill", "none")
         .style("opacity", 0.5)
         .attr("stroke", colours[i])
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 3);
+
+      if (identifyingField) {
+        lines
+          .on("mouseover", (event, d) => {
+            const identifier = d[identifyingField];
+            tooltip
+              .html(`${identifier}`)
+              .style("display", "block")
+              .style("left", event.pageX + 10 + "px")
+              .style("top", event.pageY - 20 + "px");
+            d3.select(event.currentTarget).style("cursor", "pointer");
+          })
+          .on("mouseout", () => tooltip.style("display", "none"));
+      }
     });
   }
   return (
-    <svg width={width} height={height} ref={ref} className={className}></svg>
+    <>
+      <div className="w-[100px]">
+        <Label>Pick a colour</Label>
+        <Input
+          type="color"
+          value={currentColor}
+          onChange={(e) => setCurrentColor(e.target.value)}
+        />
+      </div>
+      <svg width={width} height={height} ref={ref} className={className}></svg>
+    </>
   );
 }

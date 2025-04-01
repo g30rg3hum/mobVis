@@ -29,6 +29,13 @@ export function roundToNDpIfNeeded(num: number, n: number) {
   return Number(roundTo5Dp);
 }
 
+export function NAIfZeroElseRoundTo5Dp(num: number) {
+  if (num === 0) {
+    return "NA";
+  }
+  return roundToNDpIfNeeded(num, 5);
+}
+
 export function divideThenRoundUpToInt(num: number, denom: number) {
   return Math.ceil(num / denom);
 }

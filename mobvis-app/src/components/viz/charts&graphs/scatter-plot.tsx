@@ -155,25 +155,26 @@ export default function ScatterPlot({
         .select("body")
         .append("div")
         .style("position", "absolute")
-        .style("visibility", "visible")
+        .style("display", "none")
         .html(
           `
             <div class="bg-black text-white p-2 rounded-md">
               <b>Pearson correlation coefficient:</b> 
               ${roundToNDpIfNeeded(result.pearsonCorrelation, 5)}
-            </div>`
+            </div>
+          `
         )
         .style("font-size", 50);
 
       plottedLOB
         .on("mouseover", (event) =>
           tooltipCorrelationCoefficient
-            .style("visibility", "visible")
+            .style("display", "block")
             .style("left", event.pageX + "px")
             .style("top", event.pageY + 20 + "px")
         )
         .on("mouseout", () =>
-          tooltipCorrelationCoefficient.style("visibility", "hidden")
+          tooltipCorrelationCoefficient.style("display", "none")
         );
     }
 

@@ -51,6 +51,7 @@ export default function ParamProgressionScatterPlot({
           state={step}
           setState={setStep}
           inputId="v1StepCheckbox"
+          label="Step?"
         />
       </div>
       <ScatterPlot

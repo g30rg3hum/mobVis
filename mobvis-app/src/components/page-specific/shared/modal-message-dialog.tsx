@@ -19,10 +19,12 @@ export default function ModalMessageDialog({
       open={modalMessage !== undefined}
       onOpenChange={() => setModalMessage(undefined)}
     >
-      <DialogContent data-testid="inputs-dialog">
+      <DialogContent data-testid="inputs-dialog" className="p-10">
         <DialogHeader>
           <DialogTitle className="font-semibold">Attention! 🚨</DialogTitle>
-          <DialogDescription></DialogDescription>
+          <DialogDescription className="text-slate-500 text-sm">
+            This is important!
+          </DialogDescription>
         </DialogHeader>
         <p>{modalMessage}</p>
       </DialogContent>

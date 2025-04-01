@@ -59,9 +59,9 @@ export default function ParamProgressionBarChart({
       </div>
 
       <BarChart
-        height={400}
+        height={520}
         width={500}
-        margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
+        margin={{ left: 70, right: 20, bottom: 50, top: 10 }}
         data={
           createDataset(
             getWbProperty(
@@ -75,6 +75,22 @@ export default function ParamProgressionBarChart({
                 ? sortWbsByProperty(allPerWbParameters, "duration_s")
                 : allPerWbParameters,
               focusParam as keyof PerWbParameter
+            )
+          ) as [string, number][]
+        }
+        additionalData={
+          createDataset(
+            getWbProperty(
+              ascDuration
+                ? sortWbsByProperty(allPerWbParameters, "duration_s")
+                : allPerWbParameters,
+              "wb_id"
+            ),
+            getWbProperty(
+              ascDuration
+                ? sortWbsByProperty(allPerWbParameters, "duration_s")
+                : allPerWbParameters,
+              "duration_s"
             )
           ) as [string, number][]
         }

@@ -10,6 +10,7 @@ interface Props {
   margin: Margin;
   className: string;
   data: [string, number][];
+  additionalData?: [string, number][];
   xLabel: string;
   yLabel: string;
   tiltXLabels?: boolean;
@@ -21,6 +22,7 @@ export default function BarChart({
   margin,
   className,
   data,
+  additionalData,
   xLabel,
   yLabel,
   tiltXLabels = false,
@@ -88,6 +90,17 @@ export default function BarChart({
       .text(yLabel)
       .attr("font-weight", 700);
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
     // add the bars
     const bars = plot
       .selectAll("bar")
@@ -98,6 +111,24 @@ export default function BarChart({
       .attr("y", (d) => y(d[1])!)
       .attr("width", x.bandwidth())
       .attr("height", (d) => height - y(d[1]));
+
+    if (additionalData) {
+      bars
+        .on("mouseover", (event, d) => {
+          const hoverData = additionalData.find(
+            (additionalD) => additionalD[0] === d[0]
+          );
+          if (hoverData) {
+            tooltip
+              .html(`${hoverData[1]}`)
+              .style("display", "block")
+              .style("left", event.pageX + 10 + "px")
+              .style("top", event.pageY - 20 + "px");
+          }
+        })
+        .on("mouseout", () => tooltip.style("display", "none"));
+    }
+
     if (differentColours) {
       bars.style("fill", (bar, i) => {
         for (let j = 0; j < differentColours.length; j++) {

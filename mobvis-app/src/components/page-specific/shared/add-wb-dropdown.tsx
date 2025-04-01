@@ -1,4 +1,5 @@
 import { Button } from "@/components/shadcn-components/button";
+import { Label } from "@/components/shadcn-components/label";
 import {
   Select,
   SelectContent,
@@ -7,7 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn-components/select";
-import { Label } from "@radix-ui/react-label";
 import { SetStateAction, useState } from "react";
 
 interface Props {
@@ -29,7 +29,7 @@ export default function AddWbDropdown({
   const [selectedWb, setSelectedWb] = useState<number | undefined>(undefined);
 
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-3 items-end">
       <Select
         onValueChange={(val: string) => setSelectedWb(Number(val))}
         defaultValue={selectedWb?.toString()}

@@ -11,7 +11,7 @@ import {
 } from "@/components/shadcn-components/table";
 import {
   divideThenRoundUpToInt,
-  roundToNDpIfNeeded,
+  NAIfZeroElseRoundTo5Dp,
   sortWbsByProperty,
 } from "@/lib/utils";
 import {
@@ -193,19 +193,21 @@ export default function TableOfPerWbParameters({ allPerWbParameters }: Props) {
                 onDrop={(e) => handleDrop(e, param.wb_id)}
               >
                 <TableCell>{param.wb_id}</TableCell>
-                <TableCell>{roundToNDpIfNeeded(param.n_strides, 5)}</TableCell>
-                <TableCell>{roundToNDpIfNeeded(param.duration_s, 5)}</TableCell>
+                <TableCell>{NAIfZeroElseRoundTo5Dp(param.n_strides)}</TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(param.stride_duration_s, 5)}
+                  {NAIfZeroElseRoundTo5Dp(param.duration_s)}
                 </TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(param.cadence_spm, 5)}
+                  {NAIfZeroElseRoundTo5Dp(param.stride_duration_s)}
                 </TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(param.stride_length_m, 5)}
+                  {NAIfZeroElseRoundTo5Dp(param.cadence_spm)}
                 </TableCell>
                 <TableCell>
-                  {roundToNDpIfNeeded(param.walking_speed_mps, 5)}
+                  {NAIfZeroElseRoundTo5Dp(param.stride_length_m)}
+                </TableCell>
+                <TableCell>
+                  {NAIfZeroElseRoundTo5Dp(param.walking_speed_mps)}
                 </TableCell>
               </TableRow>
             ))}

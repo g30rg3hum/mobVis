@@ -7,8 +7,9 @@ import {
   groupPerStrideParametersByWbId,
 } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
-import SelectFocusParam from "./select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 import SelectedWbsList from "../shared/selected-wbs-list";
+import { perStrideParamFields } from "@/lib/fields";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -47,6 +48,7 @@ export default function StrideComparisonHeatMap({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perStrideParamFields}
         />
 
         <SelectedWbsList

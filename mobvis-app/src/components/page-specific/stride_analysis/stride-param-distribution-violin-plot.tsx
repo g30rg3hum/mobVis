@@ -5,10 +5,10 @@ import {
 } from "@/lib/utils";
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
 import { useState } from "react";
-import SelectFocusParam from "./select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 import AddWbDropdown from "../shared/add-wb-dropdown";
 import SelectedWbsList from "../shared/selected-wbs-list";
-import { refinedParamNames } from "@/lib/fields";
+import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
 import ViolinBoxPlot from "@/components/viz/charts&graphs/violin-plot";
 import SettingCheckbox from "../shared/setting-checkbox";
 
@@ -50,6 +50,7 @@ export default function StrideParamDistributionViolinPlot({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perStrideParamFields}
         />
 
         <SettingCheckbox

@@ -1,8 +1,8 @@
 import ViolinBoxPlot from "@/components/viz/charts&graphs/violin-plot";
-import SelectFocusParam from "../stride_analysis/select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 import { useState } from "react";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
-import { refinedParamNames } from "@/lib/fields";
+import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import SettingCheckbox from "../shared/setting-checkbox";
 import { filterOutZerosPerWbParameters } from "@/lib/utils";
 
@@ -26,6 +26,7 @@ export default function ParameterDistributionViolinPlot({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perWbParamFields}
         />
 
         <SettingCheckbox

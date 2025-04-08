@@ -7,13 +7,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn-components/select";
-import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
+import { refinedParamNames } from "@/lib/fields";
 
 interface Props {
   setFocusParam: (param: string) => void;
   focusParam: string;
+  paramFields: string[];
 }
-export default function SelectFocusParam({ setFocusParam, focusParam }: Props) {
+export default function SelectFocusParam({
+  setFocusParam,
+  focusParam,
+  paramFields,
+}: Props) {
   return (
     <Select onValueChange={setFocusParam} defaultValue={focusParam}>
       <div className="flex flex-col gap-1">
@@ -24,7 +29,7 @@ export default function SelectFocusParam({ setFocusParam, focusParam }: Props) {
       </div>
       <SelectContent>
         <SelectGroup>
-          {perStrideParamFields.map((param) => (
+          {paramFields.map((param) => (
             <SelectItem value={param} key={param}>
               {refinedParamNames.get(param)}
             </SelectItem>

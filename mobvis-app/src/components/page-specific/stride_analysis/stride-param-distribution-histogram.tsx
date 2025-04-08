@@ -7,9 +7,9 @@ import {
 import { PerStrideParameter, PerStrideParameters } from "@/types/parameters";
 import { useState } from "react";
 import AddWbDropdown from "../shared/add-wb-dropdown";
-import SelectFocusParam from "./select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 import SelectedWbsList from "../shared/selected-wbs-list";
-import { refinedParamNames } from "@/lib/fields";
+import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
 import SettingCheckbox from "../shared/setting-checkbox";
 
 interface Props {
@@ -51,6 +51,7 @@ export default function StrideParamDistributionHistogram({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perStrideParamFields}
         />
 
         <SettingCheckbox

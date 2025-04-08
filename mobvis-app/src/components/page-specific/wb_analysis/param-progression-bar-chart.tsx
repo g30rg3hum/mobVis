@@ -1,14 +1,6 @@
 "use client";
 
 import { Label } from "@/components/shadcn-components/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/shadcn-components/select";
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
 import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import {
@@ -19,6 +11,7 @@ import {
 } from "@/lib/utils";
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
+import SelectFocusParam from "../shared/select-focus-param";
 
 interface Props {
   allPerWbParameters: PerWbParameters;
@@ -37,23 +30,11 @@ export default function ParamProgressionBarChart({
   return (
     <>
       <div className="flex gap-5 items-center">
-        <Select onValueChange={setFocusParam} defaultValue={focusParam}>
-          <div className="flex flex-col gap-1">
-            <Label>Focus parameter</Label>
-            <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Select focus parameter" />
-            </SelectTrigger>
-          </div>
-          <SelectContent>
-            <SelectGroup>
-              {perWbParamFields.map((param) => (
-                <SelectItem value={param} key={param}>
-                  {refinedParamNames.get(param)}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <SelectFocusParam
+          setFocusParam={setFocusParam}
+          focusParam={focusParam}
+          paramFields={perWbParamFields}
+        />
         <div className="flex items-center justify-center gap-2 mt-4">
           <input
             type="checkbox"

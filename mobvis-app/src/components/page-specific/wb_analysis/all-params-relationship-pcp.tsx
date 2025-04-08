@@ -1,9 +1,5 @@
 import ParallelCoordinatesPlot from "@/components/viz/charts&graphs/parallel-coordinates-plot";
-import {
-  perWbDataFields,
-  perWbParamFields,
-  refinedParamNames,
-} from "@/lib/fields";
+import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import { filterOutAllZerosPerWbParameters } from "@/lib/utils";
 import { PerWbParameters } from "@/types/parameters";
 import { useState } from "react";

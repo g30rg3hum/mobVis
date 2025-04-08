@@ -75,6 +75,7 @@ class TestCalculateAggregateParameters:
       # missing duration_s
       "cadence_spm": [2, 3, 8, 1, 2],
       "stride_length_m": [1, 8, 2, 7, 4],
+      "stride_duration_s": [1, 2, 3, 4, 5],
       "walking_speed_mps": [8, 3, 2, 1, 7],
     })
 
@@ -87,13 +88,14 @@ class TestCalculateAggregateParameters:
       "duration_s": [8, 3, 4, 2, 8],
       "cadence_spm": [2, 3, 8, 1, 2],
       "stride_length_m": [1, 8, 2, 7, 4],
+      "stride_duration_s": [1, 2, 3, 4, 5],
       "walking_speed_mps": [8, 3, 2, 1, 7],
     })
 
     result = calculate_aggregate_parameters(per_wb_params)
 
     assert list(result.columns) == ["param", "max", "min", "avg", "var"]
-    assert result.shape[0] == 5 # all five parameters.
+    assert result.shape[0] == 6 # all five parameters.
     
   
 

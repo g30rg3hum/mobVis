@@ -1,8 +1,8 @@
 import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { useState } from "react";
-import SelectFocusParam from "../stride_analysis/select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 import Histogram from "@/components/viz/charts&graphs/histogram";
-import { refinedParamNames } from "@/lib/fields";
+import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import { filterOutZerosPerWbParameters } from "@/lib/utils";
 
 interface Props {
@@ -24,6 +24,7 @@ export default function ParameterDistributionHistogram({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perWbParamFields}
         />
       </div>
 

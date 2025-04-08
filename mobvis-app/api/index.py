@@ -25,7 +25,6 @@ general_error_message = "No gait parameters could be extracted. Please check inp
 @app.post("/api/py/dmo_extraction")
 def dmo_extraction(name: Annotated[str, Form()], description: Annotated[str, Form()], samplingRate: Annotated[int, Form()], sensorHeight: Annotated[float, Form()], patientHeight: Annotated[float, Form()], setting: Annotated[str, Form()], convertToMs: Annotated[bool, Form()], csvFile: UploadFile):
   # validation has been handled in the FE.
-  # TODO: perhaps also do backend validation here.
   try:
     results = extract_dmos(csvFile.file, sensorHeight, patientHeight, setting, samplingRate, convertToMs)
 

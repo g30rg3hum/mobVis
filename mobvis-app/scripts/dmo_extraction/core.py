@@ -10,7 +10,6 @@ from pathlib import Path
 from mobgap.consts import GRAV_MS2
 from mobgap.data import GaitDatasetFromData
 from mobgap.pipeline import MobilisedPipelineImpaired
-# from mobgap.data import get_all_lab_example_data_paths
 
 required_csv_columns = ["samples", "acc_x", "acc_y", "acc_z", "gyr_x", "gyr_y", "gyr_z"]
 cols_error_message = f"Please input a CSV file with all of these columns: {required_csv_columns}."
@@ -64,7 +63,6 @@ def create_dataset_from_dataframe(data: pd.DataFrame, sensor_height_m: float, he
 
   return dataset
 
-# TODO: once created entities, can pass in as argument rather than individual attributes.
 # CSV must have columns: samples, acc_x, acc_y_ acc_z, gyr_x_ gyr_y, gyr_z (according to the explained mobgap coord. system)
 def extract_dmos(file: Union[Path,  SpooledTemporaryFile], sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz: int, convertAccFromGToMs: bool = False) -> MobilisedPipelineImpaired:
   # check that measurement condition is one of two types
@@ -98,6 +96,7 @@ def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
   duration_s_list = per_wb_params["duration_s"].tolist()
   cadence_spm_list = per_wb_params["cadence_spm"].tolist()
   stride_length_m_list = per_wb_params["stride_length_m"].tolist()
+  stride_duration_s_list = per_wb_params["stride_duration_s"].tolist()
   walking_speed_mps_list = per_wb_params["walking_speed_mps"].tolist()
 
   data = [
@@ -105,33 +104,10 @@ def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
     calculate_aggregates("duration_s", duration_s_list),
     calculate_aggregates("cadence_spm", cadence_spm_list),
     calculate_aggregates("stride_length_m", stride_length_m_list),
+    calculate_aggregates("stride_duration_s", stride_duration_s_list),
     calculate_aggregates("walking_speed_mps", walking_speed_mps_list)
   ]
 
   dataframe = pd.DataFrame(data, columns=["param", "max", "min", "avg", "var"])
 
   return dataframe
-
-# if __name__ == "__main__":
-  # print the whole dataframe
-  # pd.set_option('display.max_columns', None)
-  # pd.set_option('display.max_rows', None)
-
-  # paths = get_all_lab_example_data_paths()
-  # example_data_path = paths[("MS", "001")] / "TimeMeasure1_Test11_Trial1.csv"
-
-  # TODO: our provided sample CSV data doesn't work with the pipeline, doesn't detect any initial contacts with the impaired pipeline. Need to make adjustments to the implementation to return these errors and show in the FE.
-  # extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/sample_data/MobD CVS_MS data example 2/imu_data.csv"), 1.13, 1.77, "free_living", 100, True)
-  # print(extracted_dmos.per_wb_parameters_)
-
-  # extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/sample_data/TimeMeasure1_Test11_Trial1 (1).csv"), 0.975, 1.68, "laboratory", 100, True)
-  # print(extracted_dmos.per_wb_parameters_)
-  # print(extracted_dmos.per_wb_parameters_.columns.values)
-
-  # print("---------")
-
-  # aggregates = calculate_aggregate_parameters(extracted_dmos.per_wb_parameters_)
-  # print(aggregates)
-  # print(aggregates.T)
-
-  # print("test")

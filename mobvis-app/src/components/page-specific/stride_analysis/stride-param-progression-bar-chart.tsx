@@ -1,7 +1,7 @@
 "use client";
 
 import BarChart from "@/components/viz/charts&graphs/bar-chart";
-import { refinedParamNames } from "@/lib/fields";
+import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
 import {
   colours,
   createDataset,
@@ -15,7 +15,7 @@ import { useState } from "react";
 import SwitchWb from "./switch-wb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-import SelectFocusParam from "./select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -47,6 +47,7 @@ export default function StrideParamProgressionBarChart({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perStrideParamFields}
         />
       </div>
 

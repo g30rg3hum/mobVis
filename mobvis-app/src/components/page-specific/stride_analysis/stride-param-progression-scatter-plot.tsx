@@ -1,5 +1,5 @@
 import ScatterPlot from "@/components/viz/charts&graphs/scatter-plot";
-import { refinedParamNames } from "@/lib/fields";
+import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
 import {
   colours,
   createDataset,
@@ -13,7 +13,7 @@ import { useState } from "react";
 import SwitchWb from "./switch-wb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-import SelectFocusParam from "./select-focus-param";
+import SelectFocusParam from "../shared/select-focus-param";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -46,6 +46,7 @@ export default function StrideParamProgressionScatterPlot({
         <SelectFocusParam
           setFocusParam={setFocusParam}
           focusParam={focusParam}
+          paramFields={perStrideParamFields}
         />
 
         <div className="flex items-center justify-center gap-2 mt-5">

@@ -24,11 +24,6 @@ async function fillForm(values: NewAnalysisFormValues) {
   const patientHeightInput = screen.getByLabelText(/patient height/i);
   await userEvent.type(patientHeightInput, values.patientHeight.toString());
 
-  if (values.public) {
-    const publicCheckbox = screen.getByLabelText(/public/i);
-    await userEvent.click(publicCheckbox);
-  }
-
   const csvInput = screen.getByLabelText(/csv/i);
   await userEvent.upload(csvInput, values.csvFile);
 
@@ -87,7 +82,6 @@ describe("NewAnalysisForm", () => {
       sensorHeight: 1.69,
       patientHeight: 1.8,
       setting: "laboratory",
-      public: true,
       csvFile: new File([""], "test.csv", { type: "text/csv" }),
       convertToMs: false,
     };

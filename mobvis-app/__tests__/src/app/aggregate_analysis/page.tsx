@@ -8,9 +8,12 @@ import {
   sampleTotalWalkingDuration,
 } from "../../../../test_helpers/sample_data";
 import { convertHoursToMinutesAndTrunc, roundToNDpIfNeeded } from "@/lib/utils";
+import { MotionGlobalConfig } from "framer-motion";
 
 describe("AggregateAnalysis", () => {
   beforeAll(() => {
+    MotionGlobalConfig.skipAnimations = true;
+
     global.localStorage = new LocalStorageMock();
     // set the local storage items required
     localStorage.setItem("inputs", JSON.stringify(sampleInputs));

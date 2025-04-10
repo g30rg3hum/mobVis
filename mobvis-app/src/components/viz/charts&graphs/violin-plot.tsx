@@ -14,6 +14,7 @@ interface Props {
   yLabel: string;
   className?: string;
   box?: boolean;
+  binSize: number;
 }
 
 export default function ViolinBoxPlot({
@@ -25,6 +26,7 @@ export default function ViolinBoxPlot({
   yLabel,
   className,
   box = false,
+  binSize,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
@@ -84,7 +86,7 @@ export default function ViolinBoxPlot({
       .bin()
       .value((d: number) => d)
       .domain(y.domain() as [number, number])
-      .thresholds(y.ticks(20));
+      .thresholds(y.ticks(binSize));
 
     // group our data by x value.
     // [{x: string, data }]

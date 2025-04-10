@@ -73,10 +73,9 @@ export default function AggregateAnalysis() {
           <p>
             Visualisations for aggregate gait parameters extracted from{" "}
             <span className="font-semibold">&apos;{inputs.name}&apos;</span>.
-            This is the highest level of analysis you can do, focused on summary
-            metrics (e.g. mean, median) of the values of each gait parameter
-            across all identified walking bouts from the recording you
-            submitted.
+            This is the highest level of analysis you can do, focused on
+            summarising the values of each gait parameter across all identified
+            walking bouts from the recording you submitted.
           </p>
           <InputsDialog
             inputs={inputs}
@@ -112,7 +111,7 @@ export default function AggregateAnalysis() {
                       "Table view of the exact figures of the aggregate values (average, maximum, minimum and variance) for each gait parameter."
                     }
                     descriptions={[
-                      "You can reorder the rows to move them closer and compare specific parameters.",
+                      "You can reorder the rows to move them closer and compare specific parameters more directly.",
                     ]}
                     exampleAnalysis="what is the precise walking speed that the patient walks at on average?"
                   />
@@ -135,7 +134,9 @@ export default function AggregateAnalysis() {
                     <VizCardDescription
                       subheading="A visualisation that is convertible between violin and box plot. The violin plot shows the distribution of values by the area of the density curves. Wider areas of the curve represent a higher density/frequency of values. Meanwhile, the box plot shows the key distribution points. The highest, middle and lowest horizontal lines represent the max, median and min respectively. The box area represents the interquartile range, where the middle 50% of the data lies, thus representing spread of central data."
                       descriptions={[
-                        "The focus is on the distribution of values for a focus gait parameter across all identified walking bouts. You can change the focus parameter using the dropdown and switch between box and violin plot using the checkbox.",
+                        "The attention is on the distribution of values for a focus gait parameter across all identified walking bouts.",
+                        "You can change the focus parameter using the dropdown and switch between a box and violin plot using the checkbox.",
+                        "The slider is selecting the number of bins, i.e. the number of intervals to divide the data into. The more intervals, the more detail and precision you obtain in the distribution curves. And vice versa. This is relevant to the violin plot, but not the box plot.",
                       ]}
                       exampleAnalysis="how much does this patient’s stride length vary across all the walking bouts?"
                     />
@@ -158,6 +159,7 @@ export default function AggregateAnalysis() {
                       subheading="This histogram shows the frequency of each value interval for a given focus gait parameter over all identified walking bouts. This visualises distribution like the violin/box plot on the left, but here it is possible to determine the precise frequencies of each value range. This is tough to do with the smoothed curves of the violin plot."
                       descriptions={[
                         "The histogram is isolated to a single, focus gait parameter. You can change this using the dropdown below.",
+                        "There is also a slider for selecting the number of bins, as with the violin plot on the left. The more bins, the more intervals to divide the data into, resulting in thinner individual bars. And vice versa.",
                       ]}
                       exampleAnalysis="what is the most frequent value range for cadence? How does this differ from the mean cadence? How is this compared to the frequency of other value ranges?"
                     />

@@ -83,7 +83,6 @@ export default function StrideParamDistributionHistogram({
         )}
         xLabel={refinedParamNames.get(focusParam)!}
         yLabel="Frequency"
-        sortBinnedData={splitLR}
       />
     </>
   );

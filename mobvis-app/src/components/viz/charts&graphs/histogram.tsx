@@ -13,7 +13,7 @@ interface Props {
   xLabel: string;
   yLabel: string;
   className?: string;
-  sortBinnedData?: boolean;
+  binSize: number;
 }
 export default function Histogram({
   width,
@@ -23,7 +23,7 @@ export default function Histogram({
   xLabel,
   yLabel,
   className,
-  sortBinnedData = false,
+  binSize,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;
@@ -47,13 +47,17 @@ export default function Histogram({
 
     // add the X axis -> these are the values of the variable.
     const maxY = Math.max(...yValues);
-    const x = d3.scaleLinear().domain([0, maxY]).range([0, width]);
+    const x = d3
+      .scaleLinear()
+      .domain([0, maxY + maxY * 0.25])
+      .range([0, width]);
     const xAxis = d3.axisBottom(x);
     plot
       .append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
+    // X axis label.
     plot
       .append("text")
       .attr("y", height + 45)
@@ -67,18 +71,14 @@ export default function Histogram({
       .bin()
       .value((d: number) => d)
       .domain(x.domain() as [number, number])
-      .thresholds(x.ticks(50));
+      .thresholds(x.ticks(binSize));
 
     const groupedData = d3.group(data, (d) => d[0]);
-
     const binnedData = Array.from(groupedData, ([x, dataUnderX]) => {
       const values = dataUnderX.map((v) => v[1]);
       const binnedValues = bins(values);
       return { x, binnedValues };
     });
-
-    if (sortBinnedData) binnedData.sort((a, b) => d3.ascending(a.x, b.x));
-    // console.log(binnedData);
 
     // create the y axis
     const y = d3.scaleLinear().range([height, 0]);
@@ -88,7 +88,6 @@ export default function Histogram({
       d3.max(binnedData, (data) =>
         d3.max(data.binnedValues, (binnedValues) => binnedValues.length)
       ) ?? 0;
-
     y.domain([0, maxBinLength]);
     const yAxis = d3.axisLeft(y);
     // frequency are just integers.
@@ -96,11 +95,12 @@ export default function Histogram({
     yAxis.tickValues(integralTicks).tickFormat(d3.format("d"));
     plot.append("g").call(yAxis);
 
+    // label the y axis
     plot
       .append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", "-" + height / 2)
-      .attr("y", "-45")
+      .attr("y", "-40")
       .style("text-anchor", "middle")
       .text(yLabel)
       .attr("font-weight", 700);
@@ -128,7 +128,7 @@ export default function Histogram({
       .attr("width", (d) => x(d.x1!) - x(d.x0!) - 1)
       // height from top of the bar to the bottom of the chart.
       .attr("height", (d) => height - y(d.length))
-      .attr("opacity", 0.75);
+      .attr("opacity", 0.65);
   }
 
   return (

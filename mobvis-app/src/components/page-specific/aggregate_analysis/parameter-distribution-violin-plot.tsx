@@ -5,6 +5,7 @@ import { PerWbParameter, PerWbParameters } from "@/types/parameters";
 import { perWbParamFields, refinedParamNames } from "@/lib/fields";
 import SettingCheckbox from "../shared/setting-checkbox";
 import { filterOutZerosPerWbParameters } from "@/lib/utils";
+import BinSlider from "../shared/bin-slider";
 
 interface Props {
   allPerWbParameters: PerWbParameters;
@@ -14,6 +15,7 @@ export default function ParameterDistributionViolinPlot({
 }: Props) {
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [box, setBox] = useState(false);
+  const [binSize, setBinSize] = useState(20);
 
   const filteredAllPerWbParameters = filterOutZerosPerWbParameters(
     allPerWbParameters,
@@ -22,18 +24,28 @@ export default function ParameterDistributionViolinPlot({
 
   return (
     <>
-      <div className="flex items-center gap-5">
-        <SelectFocusParam
-          setFocusParam={setFocusParam}
-          focusParam={focusParam}
-          paramFields={perWbParamFields}
-        />
+      <div className="flex flex-col gap-5">
+        <div className="flex items-center gap-5">
+          <SelectFocusParam
+            setFocusParam={setFocusParam}
+            focusParam={focusParam}
+            paramFields={perWbParamFields}
+          />
 
-        <SettingCheckbox
-          state={box}
-          setState={setBox}
-          inputId="violinBoxCheckbox"
-          label="Box?"
+          <SettingCheckbox
+            state={box}
+            setState={setBox}
+            inputId="violinBoxCheckbox"
+            label="Box?"
+          />
+        </div>
+
+        <BinSlider
+          binSize={binSize}
+          setBinSize={setBinSize}
+          max={50}
+          min={10}
+          step={5}
         />
       </div>
 
@@ -49,6 +61,7 @@ export default function ParameterDistributionViolinPlot({
         ])}
         className="self-center"
         box={box}
+        binSize={binSize}
       />
     </>
   );

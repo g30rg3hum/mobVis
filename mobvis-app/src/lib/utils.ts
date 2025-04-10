@@ -24,8 +24,26 @@ export function getAndParseStorageItem(item: string) {
   }
 }
 
-export function convertHoursToMinutesAndTrunc(hours: number) {
-  return roundToNDpIfNeeded(hours * 60, 3);
+export function convertHoursToReadableForm(hours: number): string {
+  let currentNumber = hours;
+  let currentUnit = "hour";
+  if (currentNumber < 1) {
+    // convert into minutes
+    currentUnit = "min";
+    currentNumber *= 60;
+  }
+
+  // if the current number is still less than 1, convert into seconds
+  if (currentNumber < 1) {
+    currentUnit = "sec";
+    currentNumber *= 60;
+  }
+
+  // round the result to nearest int
+  currentNumber = Math.round(currentNumber);
+  if (currentNumber > 1) currentUnit += "s";
+
+  return currentNumber + " " + currentUnit;
 }
 
 export function roundToNDpIfNeeded(num: number, n: number) {

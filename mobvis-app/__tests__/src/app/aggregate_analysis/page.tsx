@@ -7,7 +7,7 @@ import {
   samplePerWbParameters,
   sampleTotalWalkingDuration,
 } from "../../../../test_helpers/sample_data";
-import { convertHoursToMinutesAndTrunc, roundToNDpIfNeeded } from "@/lib/utils";
+import { convertHoursToReadableForm, roundToNDpIfNeeded } from "@/lib/utils";
 import { MotionGlobalConfig } from "framer-motion";
 
 describe("AggregateAnalysis", () => {
@@ -50,11 +50,11 @@ describe("AggregateAnalysis", () => {
     expect(value).toBeInTheDocument();
   });
 
-  it("shows the total walking duration in minutes", () => {
+  it("shows the total walking duration", () => {
     const header = screen.getByText(/total walking duration/i);
     expect(header).toBeInTheDocument();
-    const value = convertHoursToMinutesAndTrunc(sampleTotalWalkingDuration);
-    const valueElement = screen.getByText(`${value} mins`);
+    const value = convertHoursToReadableForm(sampleTotalWalkingDuration);
+    const valueElement = screen.getByText(`${value}`);
     expect(valueElement).toBeInTheDocument();
   });
 

@@ -16,7 +16,7 @@ import StatCard from "@/components/viz/stat-card";
 import VizCardDescription from "@/components/viz/viz-card-description";
 import VizCardTitle from "@/components/viz/viz-card-title";
 import {
-  convertHoursToMinutesAndTrunc,
+  convertHoursToReadableForm,
   getAndParseStorageItem,
 } from "@/lib/utils";
 import {
@@ -33,8 +33,8 @@ export default function AggregateAnalysis() {
     useState<AggregateParameters | null>(null);
   const [perWbParameters, setPerWbParameters] =
     useState<PerWbParameters | null>(null);
-  const [totalWalkingDurationMins, setTotalWalkingDurationMins] = useState<
-    number | null
+  const [totalWalkingDuration, setTotalWalkingDuration] = useState<
+    string | null
   >(null);
 
   // inputs dialog state.
@@ -44,8 +44,8 @@ export default function AggregateAnalysis() {
     setInputs(getAndParseStorageItem("inputs"));
     setAggregateParameters(getAndParseStorageItem("aggregate_parameters"));
     setPerWbParameters(getAndParseStorageItem("per_wb_parameters"));
-    setTotalWalkingDurationMins(
-      convertHoursToMinutesAndTrunc(
+    setTotalWalkingDuration(
+      convertHoursToReadableForm(
         Number(localStorage.getItem("total_walking_duration"))
       )
     );
@@ -55,7 +55,7 @@ export default function AggregateAnalysis() {
     inputs &&
     aggregateParameters &&
     perWbParameters &&
-    totalWalkingDurationMins !== null
+    totalWalkingDuration !== null
   ) {
     return (
       <div className="flex justify-center flex-col items-center">
@@ -75,7 +75,8 @@ export default function AggregateAnalysis() {
             <span className="font-semibold">&apos;{inputs.name}&apos;</span>.
             This is the highest level of analysis you can do, focused on summary
             metrics (e.g. mean, median) of the values of each gait parameter
-            under each identified walking bout from the recording you submitted.
+            across all identified walking bouts from the recording you
+            submitted.
           </p>
           <InputsDialog
             inputs={inputs}
@@ -96,12 +97,8 @@ export default function AggregateAnalysis() {
               <FadeInScroll className="w-1/2">
                 <StatCard
                   name="Total walking duration"
-                  description="over all detected walking bouts, rounded to nearest min"
-                  value={
-                    totalWalkingDurationMins +
-                    " min" +
-                    (totalWalkingDurationMins > 1 ? "s" : "")
-                  }
+                  description="over all detected walking bouts (rounded to nearest sec/min/hr)"
+                  value={totalWalkingDuration}
                 />
               </FadeInScroll>
             </div>

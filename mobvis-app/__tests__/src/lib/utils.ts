@@ -1,4 +1,5 @@
 import {
+  convertHoursToReadableForm,
   createDatasetOfKeyAndValTuples,
   createPerStrideDatasetForHeatmap,
   createPerStrideDatasetWithDesiredWbIds,
@@ -12,6 +13,23 @@ import {
   samplePerWbParameters,
 } from "../../../test_helpers/sample_data";
 import { PerStrideParameters } from "@/types/parameters";
+
+describe("convertHoursToReadableForm", () => {
+  it("stays at hours if it is larger than 1", () => {
+    const result = convertHoursToReadableForm(2.78);
+    expect(result).toBe("3 hours");
+  });
+
+  it("converts to minutes if the number of hours is less than 1", () => {
+    const result = convertHoursToReadableForm(0.46);
+    expect(result).toBe("28 mins");
+  });
+
+  it("converts to seconds if the number of minutes is less than 1", () => {
+    const result = convertHoursToReadableForm(0.01305555556);
+    expect(result).toBe("47 secs");
+  });
+});
 
 describe("sortWbsByProperty", () => {
   it("sorts the wbs by the n_strides correctly (asc)", () => {

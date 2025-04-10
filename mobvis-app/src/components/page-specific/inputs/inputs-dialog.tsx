@@ -32,7 +32,7 @@ export default function InputsDialog({
         <ul className="space-y-3">
           {Object.keys(inputs).map((input) => (
             <li key={input}>
-              <span className="font-medium">
+              <span className="font-semibold">
                 {refinedInputFieldNames.get(input)}:{" "}
               </span>
               {inputs[input as keyof InputsJson].toString()}

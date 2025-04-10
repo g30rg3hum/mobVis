@@ -16,7 +16,6 @@ interface Props {
   box?: boolean;
 }
 
-// TODO: clean out all the commented code.
 export default function ViolinBoxPlot({
   width,
   height,
@@ -88,14 +87,13 @@ export default function ViolinBoxPlot({
       .thresholds(y.ticks(20));
 
     // group our data by x value.
-    // [{x: string, binnedValues: }]
+    // [{x: string, data }]
     const groupedData = d3.group(data, (d) => d[0]);
 
     const boxDataBasic = Array.from(groupedData, ([x, dataUnderX]) => {
       const allValues = dataUnderX.map((d) => d[1]);
       return { x, allValues };
     });
-    // console.log(boxData);
 
     // update box data with additional required fields for plotting the boxplot
     const boxDataWhole = boxDataBasic.map((xGroup) => {
@@ -120,13 +118,7 @@ export default function ViolinBoxPlot({
       };
     });
 
-    // console.log(groupedData);
-    // console.log("groupedData", groupedData);
-    // console.log("groupedData[1]", groupedData.get("1"));
-
     // FOR VIOLIN PLOT
-    // array of {x, binnedValues}
-    // x being the group
     const binnedData = Array.from(groupedData, ([x, dataUnderX]) => {
       const yValues = dataUnderX.map((v) => v[1]);
       // all the y values put into bins
@@ -134,33 +126,15 @@ export default function ViolinBoxPlot({
       // x0 and x1 are the LB and UB of the bin, cutpoints.
       const binnedValues = bins(yValues);
 
-      // console.log(binnedValues);
-      // console.log(binnedValues.map((d) => d.length));
-      // const binnedValuesIntervals = binnedValues.map(
-      //   (d) => [d.x0!, d.x1!] as [number, number]
-      // );
-      // const binnedValuesRaw = binnedValues.map((d) => d.slice());
-      // // these are to be plotted with the area
-      // const binnedValuesX0X1 = binnedValues.map((d) => {
-      //   // get the number of raw values in the bin.
-      //   const length = d.slice().length;
-      //   return [xScale(-length), xScale(length)] as [number, number];
-      // });
-      // console.log("binnedValues:", binnedValues);
-      // console.log("binnedValues actual values", binnedValues[0].slice());
-      // console.log("binnedValues x0:", binnedValues[0].x0);
-      // console.log("binnedValues x1:", binnedValues[0].x1);
       return { x, binnedValues };
     });
-    // console.log("groupedData", groupedData);
-    // console.log("binnedData", binnedData);
-    // console.log(binnedData);
 
     // use the max bin length for the domain
     const maxBinLength =
       d3.max(binnedData, (data) =>
         d3.max(data.binnedValues, (binnedValues) => binnedValues.length)
       ) ?? 0;
+
     // scale for each violin
     const xScale = d3
       .scaleLinear()
@@ -183,16 +157,20 @@ export default function ViolinBoxPlot({
         .datum((d) => d.binnedValues)
         .style("stroke", "none")
         .attr(
-          "d",
+          "d", // draw
           d3
             .area<d3.Bin<number, number>>()
             .x0((d) => xScale(-d.length))
             .x1((d) => xScale(d.length))
-            // plot in the middle of the bin, because its in the middle of the bin, not necessarily at the max/min value.
+            // plot for the middle of the bin.
             .y((d) => y((d.x0! + d.x1!) / 2))
             .curve(d3.curveCatmullRom)
         );
     }
+
+    // The reason why the max and min of the box + violin plot don't align.
+    // is because the box plot is precisely the max and min.
+    // whereas the violin plot plots for the middle of the bin.
 
     // FOR BOX PLOT
     if (box) {
@@ -225,7 +203,7 @@ export default function ViolinBoxPlot({
           "transform",
           (d) => "translate(" + (x(d.x)! + x.bandwidth() / 2) + ", 0)"
         )
-        // because already at the center, need to go bakcwrads.
+        // because already at the center, need to go backwards.
         .attr("x", -boxWidth / 2)
         .attr("y", (d) => y(d.q3))
         .attr("height", (d) => y(d.q1) - y(d.q3))
@@ -236,7 +214,7 @@ export default function ViolinBoxPlot({
 
       // draw the max
       plot
-        .selectAll("boxHorizontalLine")
+        .selectAll("boxMaxLine")
         .data(boxDataWhole)
         .enter()
         .append("line")
@@ -253,7 +231,7 @@ export default function ViolinBoxPlot({
 
       // draw the min
       plot
-        .selectAll("boxHorizontalLine")
+        .selectAll("boxMinLine")
         .data(boxDataWhole)
         .enter()
         .append("line")
@@ -270,7 +248,7 @@ export default function ViolinBoxPlot({
 
       // draw the median
       plot
-        .selectAll("boxHorizontalLine")
+        .selectAll("boxMedianLine")
         .data(boxDataWhole)
         .enter()
         .append("line")

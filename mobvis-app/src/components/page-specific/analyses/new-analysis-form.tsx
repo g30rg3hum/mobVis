@@ -34,6 +34,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InformationTooltip from "@/components/custom/information-tooltip";
 import InputRequirementsDialog from "../shared/input-requirements-dialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const settingOptions = ["laboratory", "free_living"];
 const formSchema = z.object({
@@ -393,13 +395,24 @@ export default function NewAnalysisForm({ submissionHandler }: Props) {
               )}
             />
           </div>
-          <Button
-            type="submit"
-            className="w-full disabled:bg-black"
-            disabled={isSubmitting}
-          >
-            Extract & Save
-          </Button>
+          <div className="flex flex-col gap-1">
+            {isSubmitting && (
+              <div className="w-full text-center text-sm text-slate-600">
+                <FontAwesomeIcon icon={faSpinner} spin />
+                <span className="ml-2">
+                  Processing your data and extracting parameters...
+                </span>
+              </div>
+            )}
+            <Button
+              type="submit"
+              className="w-full disabled:bg-black"
+              disabled={isSubmitting}
+            >
+              Extract & Save
+            </Button>
+          </div>
+
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="p-10">
               <DialogHeader>

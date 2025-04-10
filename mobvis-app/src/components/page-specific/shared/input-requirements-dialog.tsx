@@ -35,7 +35,8 @@ export default function InputRequirementsDialog({
             </span>
           </DialogDescription>
         </DialogHeader>
-        <ul className="list-disc list-inside space-y-3">
+        <ul className="list-disc list-outside space-y-3 px-3">
+          <li>The file should not be larger than 5GB.</li>
           <li>
             The values should be collected by an{" "}
             <b>IMU sensor device worn on the lower back by a person with MS</b>.
@@ -70,8 +71,15 @@ export default function InputRequirementsDialog({
             <HyperLink url="sample_file.csv" download>
               Download this sample file
             </HyperLink>{" "}
-            to get an idea of the expected format (acceleration values are in
-            g).
+            (provided by{" "}
+            <HyperLink
+              url="https://github.com/mobilise-d/mobgap/blob/main/example_data/data_csv/MS/001/TimeMeasure1_Test11_Trial1.csv"
+              newTab
+            >
+              mobgap
+            </HyperLink>
+            ) to get an idea of the expected format (acceleration values are in
+            g). You can also see the generated visualisations from this data.
           </li>
         </ul>
         <div className="flex-col flex items-center justify-center mt-2">

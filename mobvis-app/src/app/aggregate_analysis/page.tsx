@@ -55,7 +55,7 @@ export default function AggregateAnalysis() {
     inputs &&
     aggregateParameters &&
     perWbParameters &&
-    totalWalkingDurationMins
+    totalWalkingDurationMins !== null
   ) {
     return (
       <div className="flex justify-center flex-col items-center">

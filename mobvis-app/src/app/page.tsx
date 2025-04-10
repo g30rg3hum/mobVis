@@ -7,7 +7,7 @@ import NewAnalysisForm from "@/components/page-specific/analyses/new-analysis-fo
 
 export default function Home() {
   return (
-    <div className="flex flex-row justify-center items-center my-16 gap-5 ">
+    <div className="flex flex-row justify-center items-center my-16 gap-5">
       <FadeInScroll>
         <div className="w-[600px] border border-black rounded-lg p-5 bg-white space-y-5 text-justify flex flex-col justify-center h-max">
           <div className="space-y-1">
@@ -48,7 +48,7 @@ export default function Home() {
                 2
               </HyperLink>
               ] recommended for multiple sclerosis, implemented in Python by{" "}
-              <HyperLink url="https://github.com/mobilise-d/mobgap/">
+              <HyperLink url="https://github.com/mobilise-d/mobgap/" newTab>
                 mobgap
               </HyperLink>
               .
@@ -57,17 +57,18 @@ export default function Home() {
             <p className="pt-1">
               <span className="text-red-500">IMPORTANT: </span> if you submit
               walking data of subjects who are not impaired by MS, the extracted
-              gait parameters will likely be invalid/unsound.
+              gait parameters will likely be invalid or not make sense.
             </p>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-bold flex">How do I use this?</h1>
             <p>
               Simply fill in the form on the right and click &quot;Extract and
-              Save&quot;. Analysis can be done on three levels, from most to
-              least granular: <b>overview/summary</b>, <b>each walking-bout</b>{" "}
-              (since the patient might not always be walking throughout the
-              entire recording) and <b>each stride</b> (of each walking bout).
+              Save&quot;. Afterwards, analysis can be done on three levels, from
+              most to least granular: <b>overview/summary</b>,{" "}
+              <b>each identified walking-bout</b> (since the patient might not
+              always be walking throughout the entire recording) and{" "}
+              <b>each stride</b> (of each walking bout).
             </p>
             <p className="pt-1">
               Simply navigate to the respective page by clicking on the top

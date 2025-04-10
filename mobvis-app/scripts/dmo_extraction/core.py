@@ -111,3 +111,17 @@ def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
   dataframe = pd.DataFrame(data, columns=["param", "max", "min", "avg", "var"])
 
   return dataframe
+
+# if __name__ == "__main__":
+#   pd.set_option('display.max_columns', None)
+#   pd.set_option('display.max_rows', None)
+
+#   extracted_dmos = extract_dmos(Path("/Users/georgehum/Documents/universitynotes/year 3/dissertation/app/TimeMeasure1_Test5_Trial2.csv"), 1.5, 1.77, "free_living", 100, True)
+  
+#   print("per wb parameters")
+#   print(extracted_dmos.per_wb_parameters_)
+
+  # print("------")
+
+  # aggregates = calculate_aggregate_parameters(extracted_dmos.per_wb_parameters_, )
+  # print(aggregates.T)

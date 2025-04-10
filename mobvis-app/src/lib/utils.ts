@@ -25,7 +25,7 @@ export function getAndParseStorageItem(item: string) {
 }
 
 export function convertHoursToMinutesAndTrunc(hours: number) {
-  return Math.trunc(hours * 60);
+  return roundToNDpIfNeeded(hours * 60, 3);
 }
 
 export function roundToNDpIfNeeded(num: number, n: number) {

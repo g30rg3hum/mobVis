@@ -3,7 +3,7 @@
 import { Margin } from "@/types/viz";
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { colours } from "@/lib/utils";
+import { colours, roundToNDpIfNeeded } from "@/lib/utils";
 
 interface Props {
   width: number;
@@ -101,12 +101,12 @@ export default function ViolinBoxPlot({
     const boxDataWhole = boxDataBasic.map((xGroup) => {
       const x = xGroup.x;
       const allValuesSorted = xGroup.allValues.sort(d3.ascending);
-      const q1 = d3.quantile(allValuesSorted, 0.25)!;
-      const median = d3.quantile(allValuesSorted, 0.5)!;
-      const q3 = d3.quantile(allValuesSorted, 0.75)!;
+      const q1 = roundToNDpIfNeeded(d3.quantile(allValuesSorted, 0.25)!, 3);
+      const median = roundToNDpIfNeeded(d3.quantile(allValuesSorted, 0.5)!, 3);
+      const q3 = roundToNDpIfNeeded(d3.quantile(allValuesSorted, 0.75)!, 3);
       const interquartileRange = q3 - q1;
-      const minWhisker = Math.min(...allValuesSorted);
-      const maxWhisker = Math.max(...allValuesSorted);
+      const minWhisker = roundToNDpIfNeeded(Math.min(...allValuesSorted), 3);
+      const maxWhisker = roundToNDpIfNeeded(Math.max(...allValuesSorted), 3);
 
       return {
         x,
@@ -174,6 +174,17 @@ export default function ViolinBoxPlot({
     // is because the box plot is precisely the max and min.
     // whereas the violin plot plots for the middle of the bin.
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
     // FOR BOX PLOT
     if (box) {
       // drawing the main vertical line
@@ -229,7 +240,17 @@ export default function ViolinBoxPlot({
         .attr("y1", (d) => y(d.maxWhisker))
         .attr("y2", (d) => y(d.maxWhisker))
         .attr("stroke", "black")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 2)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`${d.maxWhisker}`)
+            .style("display", "block")
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 20 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("display", "none");
+        });
 
       // draw the min
       plot
@@ -246,7 +267,17 @@ export default function ViolinBoxPlot({
         .attr("y1", (d) => y(d.minWhisker))
         .attr("y2", (d) => y(d.minWhisker))
         .attr("stroke", "black")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 2)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`${d.minWhisker}`)
+            .style("display", "block")
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 20 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("display", "none");
+        });
 
       // draw the median
       plot
@@ -263,7 +294,71 @@ export default function ViolinBoxPlot({
         .attr("y1", (d) => y(d.median))
         .attr("y2", (d) => y(d.median))
         .attr("stroke", "black")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 2)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`${d.median}`)
+            .style("display", "block")
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 20 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("display", "none");
+        });
+
+      // draw the q1
+      plot
+        .selectAll("boxMedianLine")
+        .data(boxDataWhole)
+        .enter()
+        .append("line")
+        .attr(
+          "transform",
+          (d) => "translate(" + (x(d.x)! + x.bandwidth() / 2) + ", 0)"
+        )
+        .attr("x1", -boxWidth / 2)
+        .attr("x2", boxWidth / 2)
+        .attr("y1", (d) => y(d.q1))
+        .attr("y2", (d) => y(d.q1))
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`${d.q1}`)
+            .style("display", "block")
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 20 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("display", "none");
+        });
+
+      // draw the q3
+      plot
+        .selectAll("boxMedianLine")
+        .data(boxDataWhole)
+        .enter()
+        .append("line")
+        .attr(
+          "transform",
+          (d) => "translate(" + (x(d.x)! + x.bandwidth() / 2) + ", 0)"
+        )
+        .attr("x1", -boxWidth / 2)
+        .attr("x2", boxWidth / 2)
+        .attr("y1", (d) => y(d.q3))
+        .attr("y2", (d) => y(d.q3))
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`${d.q3}`)
+            .style("display", "block")
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 20 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("display", "none");
+        });
     }
   }
 

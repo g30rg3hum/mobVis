@@ -105,6 +105,17 @@ export default function Histogram({
       .text(yLabel)
       .attr("font-weight", 700);
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
     // draw the bars
     plot
       .selectAll("histogramGroup")
@@ -128,7 +139,17 @@ export default function Histogram({
       .attr("width", (d) => x(d.x1!) - x(d.x0!) - 1)
       // height from top of the bar to the bottom of the chart.
       .attr("height", (d) => height - y(d.length))
-      .attr("opacity", 0.65);
+      .attr("opacity", 0.65)
+      .on("mouseover", (event, d) => {
+        tooltip
+          .html(`${d.x0} - ${d.x1}: ${d.length}`)
+          .style("display", "block")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 20 + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
   }
 
   return (

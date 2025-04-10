@@ -137,6 +137,7 @@ export default function AggregateAnalysis() {
                         "The attention is on the distribution of values for a focus gait parameter across all identified walking bouts.",
                         "You can change the focus parameter using the dropdown and switch between a box and violin plot using the checkbox.",
                         "The slider is selecting the number of bins, i.e. the number of intervals to divide the data into. The more intervals, the more detail and precision you obtain in the distribution curves. And vice versa. This is relevant to the violin plot, but not the box plot.",
+                        "You can also hover over the horizontal lines of the box plot to see the exact values.",
                       ]}
                       exampleAnalysis="how much does this patient’s stride length vary across all the walking bouts?"
                     />
@@ -160,6 +161,7 @@ export default function AggregateAnalysis() {
                       descriptions={[
                         "The histogram is isolated to a single, focus gait parameter. You can change this using the dropdown below.",
                         "There is also a slider for selecting the number of bins, as with the violin plot on the left. The more bins, the more intervals to divide the data into, resulting in thinner individual bars. And vice versa.",
+                        "You can also hover over the bars to see the exact interval range, and corresponding frequency.",
                       ]}
                       exampleAnalysis="what is the most frequent value range for cadence? How does this differ from the mean cadence? How is this compared to the frequency of other value ranges?"
                     />

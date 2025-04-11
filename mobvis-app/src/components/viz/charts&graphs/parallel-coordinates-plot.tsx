@@ -171,7 +171,7 @@ export default function ParallelCoordinatesPlot({
               (identifyingField) => d[identifyingField]
             );
             tooltip
-              .html(`${identifiers.join(",")}`)
+              .html(`(${identifiers.join(", ")})`)
               .style("display", "block")
               .style("left", event.pageX + 10 + "px")
               .style("top", event.pageY - 20 + "px");

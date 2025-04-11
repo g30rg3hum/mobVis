@@ -13,7 +13,7 @@ interface Props {
   xLabel: string;
   yLabel: string;
   className?: string;
-  binSize: number;
+  binSize?: number;
 }
 export default function Histogram({
   width,
@@ -23,7 +23,7 @@ export default function Histogram({
   xLabel,
   yLabel,
   className,
-  binSize,
+  binSize = 20,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;

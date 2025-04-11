@@ -2,6 +2,7 @@
 import { Margin } from "@/types/viz";
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import { roundToNDpIfNeeded } from "@/lib/utils";
 
 export type HeatMapRecord = { x: string; y: string; value: number };
 
@@ -84,6 +85,17 @@ export default function HeatMap({
     // create colour scale
     const color = d3.scaleSequential([0, maxValue], ["white", "#9B29FF"]);
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
     plot
       .selectAll("cell")
       .data(data)
@@ -93,7 +105,17 @@ export default function HeatMap({
       .attr("y", (d) => y(d.y)!)
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .style("fill", (d) => (d.value === 0 ? "blank" : color(d.value)));
+      .style("fill", (d) => (d.value === 0 ? "blank" : color(d.value)))
+      .on("mouseover", (event, d) => {
+        tooltip
+          .html(`${roundToNDpIfNeeded(d.value, 3)}`)
+          .style("display", "block")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 20 + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
 
     // create the gradient def
     const grad = plot

@@ -14,7 +14,7 @@ interface Props {
   yLabel: string;
   className?: string;
   box?: boolean;
-  binSize: number;
+  binSize?: number;
 }
 
 export default function ViolinBoxPlot({
@@ -26,7 +26,7 @@ export default function ViolinBoxPlot({
   yLabel,
   className,
   box = false,
-  binSize,
+  binSize = 20,
 }: Props) {
   const ref = useRef(null);
   const totalHeight = height + margin.top + margin.bottom;

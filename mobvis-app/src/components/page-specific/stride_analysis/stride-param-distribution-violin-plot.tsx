@@ -11,6 +11,7 @@ import SelectedWbsList from "../shared/selected-wbs-list";
 import { perStrideParamFields, refinedParamNames } from "@/lib/fields";
 import ViolinBoxPlot from "@/components/viz/charts&graphs/violin-plot";
 import SettingCheckbox from "../shared/setting-checkbox";
+import BinSlider from "../shared/bin-slider";
 
 interface Props {
   allPerStrideParameters: PerStrideParameters;
@@ -23,6 +24,7 @@ export default function StrideParamDistributionViolinPlot({
   const [focusParam, setFocusParam] = useState<string>("walking_speed_mps");
   const [currentWbIds, setCurrentWbIds] = useState<number[]>([0]);
   const [box, setBox] = useState(false);
+  const [binSize, setBinSize] = useState<number>(20);
 
   const filteredPerStrideParameters = filterOutZerosPerStrideParameters(
     allPerStrideParameters,
@@ -36,35 +38,46 @@ export default function StrideParamDistributionViolinPlot({
 
   return (
     <>
-      <div className="flex items-end gap-5 ">
-        <AddWbDropdown
-          currentWbIds={currentWbIds}
-          allWbIds={allWbIds}
-          maxWbs={5}
-          setCurrentWbIds={setCurrentWbIds}
-          maxHit={() =>
-            setModalMessage("You can only plot up to 5 walking bouts.")
-          }
-        />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-end gap-5 ">
+          <AddWbDropdown
+            currentWbIds={currentWbIds}
+            allWbIds={allWbIds}
+            maxWbs={5}
+            setCurrentWbIds={setCurrentWbIds}
+            maxHit={() =>
+              setModalMessage("You can only plot up to 5 walking bouts.")
+            }
+          />
 
-        <SelectFocusParam
-          setFocusParam={setFocusParam}
-          focusParam={focusParam}
-          paramFields={perStrideParamFields}
-        />
+          <SelectFocusParam
+            setFocusParam={setFocusParam}
+            focusParam={focusParam}
+            paramFields={perStrideParamFields}
+          />
 
-        <SettingCheckbox
-          state={box}
-          setState={setBox}
-          inputId="violinBoxCheckbox"
-          label="Box?"
-        />
+          <SettingCheckbox
+            state={box}
+            setState={setBox}
+            inputId="violinBoxCheckbox"
+            label="Box?"
+          />
 
-        <SelectedWbsList
-          wbs={currentWbIds}
-          setWbs={setCurrentWbIds}
-          horizontal
-        />
+          <SelectedWbsList
+            wbs={currentWbIds}
+            setWbs={setCurrentWbIds}
+            horizontal
+          />
+        </div>
+        <div className="w-1/2">
+          <BinSlider
+            binSize={binSize}
+            setBinSize={setBinSize}
+            max={50}
+            min={10}
+            step={5}
+          />
+        </div>
       </div>
 
       <ViolinBoxPlot
@@ -80,6 +93,7 @@ export default function StrideParamDistributionViolinPlot({
           groupedPerStrideParameters
         )}
         box={box}
+        binSize={binSize}
       />
     </>
   );

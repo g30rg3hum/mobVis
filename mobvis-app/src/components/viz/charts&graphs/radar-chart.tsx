@@ -1,6 +1,6 @@
 "use client";
 
-import { colours } from "@/lib/utils";
+import { colours, roundToNDpIfNeeded } from "@/lib/utils";
 import { Record } from "@/types/parameters";
 import { Margin } from "@/types/viz";
 import * as d3 from "d3";
@@ -71,52 +71,6 @@ export default function RadarChart({
       .attr("r", radius)
       .attr("opacity", 0.1);
 
-    // plot the shapes for selected records
-    recordsToPlot.forEach((index, order) => {
-      const colour = colours[order % colours.length];
-      const record = data[index];
-
-      // compute the coordinates for each point on the axis
-      // for this record.
-      const coordinates = axes.map((axis, i) => {
-        const correspondingAxis = y[axis];
-        const recordAxisValue = record[axis];
-        const pointOnAxis = correspondingAxis(recordAxisValue);
-        const angleInDeg = (360 / axes.length) * i;
-        const angleInRad = (angleInDeg * Math.PI) / 180;
-
-        // rotate the pointOnaxis by angleInRad
-        const newX: number =
-          -1 * pointOnAxis * Math.sin(angleInRad) + width / 2;
-        const newY: number = pointOnAxis * Math.cos(angleInRad) + height / 2;
-        return [newX, newY];
-      });
-
-      // duplicate first coordinate to close shape
-      coordinates.push(coordinates[0]);
-
-      // connect dots and plot shape
-      plot
-        .append("path")
-        .datum(coordinates)
-        .attr("stroke", colour)
-        .attr("stroke-width", 2)
-        .attr("fill", colour)
-        .attr("opacity", 0.4)
-        .attr("d", d3.line());
-
-      // plot the points
-      plot
-        .selectAll("shapePoint")
-        .data(coordinates)
-        .enter()
-        .append("circle")
-        .attr("cx", (d) => d[0])
-        .attr("cy", (d) => d[1])
-        .attr("r", 3)
-        .style("fill", colour);
-    });
-
     // draw the axes
     plot
       .selectAll("axis")
@@ -180,6 +134,87 @@ export default function RadarChart({
         const angle = (360 / axes.length) * i;
         return `translate(${width / 2}, ${height / 2}) rotate(${angle})`;
       });
+
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
+    // compute the coordinates;
+    const coordinates: [number, number, string][][] = [];
+
+    // plot the shapes for selected records FIRST
+    recordsToPlot.forEach((indexOfRecord, order) => {
+      const colour = colours[order % colours.length];
+      const record = data[indexOfRecord];
+
+      // compute the coordinates for each point on the axis
+      // for this record.
+      const coordinatesForRecord: [number, number, string][] = axes.map(
+        (axis, i) => {
+          const correspondingAxis = y[axis];
+          const recordAxisValue = record[axis];
+          const pointOnAxis = correspondingAxis(recordAxisValue);
+          const angleInDeg = (360 / axes.length) * i;
+          const angleInRad = (angleInDeg * Math.PI) / 180;
+
+          // rotate the pointOnaxis by angleInRad
+          const newX: number =
+            -1 * pointOnAxis * Math.sin(angleInRad) + width / 2;
+          const newY: number = pointOnAxis * Math.cos(angleInRad) + height / 2;
+          return [newX, newY, axis];
+        }
+      );
+
+      // duplicate first coordinate to close shape
+      coordinatesForRecord.push(coordinatesForRecord[0]);
+      // push for all coordinates.
+      coordinates.push(coordinatesForRecord);
+
+      // connect dots and plot shape
+      plot
+        .append("path")
+        .datum(coordinatesForRecord)
+        .attr("stroke", colour)
+        .attr("stroke-width", 2)
+        .attr("fill", colour)
+        .attr("opacity", 0.4)
+        .attr("d", d3.line());
+    });
+
+    // plot the points afterwards so hoverable.
+    recordsToPlot.forEach((indexOfRecord, order) => {
+      const colour = colours[order % colours.length];
+      const record = data[indexOfRecord];
+
+      const currentCoordinates = coordinates[order];
+
+      plot
+        .selectAll("shapePoint")
+        .data(currentCoordinates)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => d[0])
+        .attr("cy", (d) => d[1])
+        .attr("r", 3)
+        .style("fill", colour)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .html(`${roundToNDpIfNeeded(record[d[2]], 3)}`)
+            .style("display", "block")
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 20 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("display", "none");
+        });
+    });
   }
 
   return (

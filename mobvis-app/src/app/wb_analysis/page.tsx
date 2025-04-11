@@ -200,6 +200,7 @@ export default function WbAnalysis() {
                     subheading="A radar chart with an axis for each gait parameter. Each 'radar' represents an identified walking bout from the recording you submitted. Representing walking bouts as shapes provides straightforward insights about how the walking bouts compare across each dimension (gait parameter)."
                     descriptions={[
                       "Select walking bouts to plot by using the dropdown. You can plot up to three walking bouts, to avoid the chart getting too cluttered.",
+                      "Hover over the points on the axes to see the corresponding values for the gait parameters.",
                     ]}
                     exampleAnalysis="for which parameters does a given walking bout have higher values for, compared against another walking bout?"
                   />

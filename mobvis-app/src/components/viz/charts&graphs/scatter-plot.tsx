@@ -160,7 +160,7 @@ export default function ScatterPlot({
           `
             <div class="bg-black text-white p-2 rounded-md">
               <b>Pearson correlation coefficient:</b> 
-              ${roundToNDpIfNeeded(result.pearsonCorrelation, 5)}
+              ${roundToNDpIfNeeded(result.pearsonCorrelation, 3)}
             </div>
           `
         )
@@ -201,7 +201,9 @@ export default function ScatterPlot({
       .attr("r", 4)
       .on("mouseover", (event, d) => {
         tooltip
-          .html(`${roundToNDpIfNeeded(d[1], 3)}`)
+          .html(
+            `(${roundToNDpIfNeeded(d[0], 3)}, ${roundToNDpIfNeeded(d[1], 3)})`
+          )
           .style("display", "block")
           .style("left", event.pageX + 10 + "px")
           .style("top", event.pageY - 20 + "px");

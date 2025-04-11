@@ -152,11 +152,12 @@ export default function WbAnalysis() {
                     coordinates plot)
                   </VizCardTitle>
                   <VizCardDescription
-                    subheading="A parallel coordinates plot with an axis for each gait parameter. Each walking bout is a data line through these axes. The patterns of how these data lines cross, converge and cluster through these axes reveal relationships between the many gait parameters. Lots of different analyses conclusions can be done from this plot: from identifying outliers (lines that deviate from the rest) to identifying correlations (positive - parallel lines between, negative - crossing lines between, none - mix of parallel and crossing)."
+                    subheading="A parallel coordinates plot with an axis for each gait parameter. Each walking bout is a data line through these axes. The patterns of how these data lines converge and cluster through and between these axes reveal relationships between the many gait parameters. Lots of different analytical conclusions can be done from this plot: from identifying outliers (lines that deviate from the rest) to identifying correlations (positive - parallel lines between axes, negative - crossing lines between, none - mix of parallel and crossing)."
                     descriptions={[
-                      "The axes can be reordered by selecting an axis and the new position to swap it with. You can also hover over data lines to identifying the associated walking bout ID, and click on them to highlight selected lines with your chosen colour.",
+                      "The axes can be reordered using the dropdwons by selecting an axis and the new position to swap it with.",
+                      "You can also hover over data lines to identifying the associated walking bout ID, and click on them to highlight selected lines with your chosen colour.",
                     ]}
-                    exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a correlation between the gait parameters?"
+                    exampleAnalysis="are the data lines between two axes mostly parallel, i.e. indicating a positive correlation between the gait parameters?"
                   />
                 </CardHeader>
                 <CardContent className="flex flex-col justify-center gap-2">
@@ -174,9 +175,10 @@ export default function WbAnalysis() {
                     Relationship between two gait parameters (scatter plot)
                   </VizCardTitle>
                   <VizCardDescription
-                    subheading="A regular scatter plot showing the level of correlation between two gait parameters. A trendline is plotted with an indicated correlation coefficient to quantify the level of correlation.This offers a more isolated and clearer view of correlation between two specific gait parameters, in addition to the parallel coordinates plot above."
+                    subheading="A regular scatter plot showing the level of correlation between two gait parameters. This offers the opportunity to dive deeper into any correlation-related findings between two gait parameters from the parallel coordinates plot above. A trendline is plotted with an indicated correlation coefficient to concretely quantify the level of correlation."
                     descriptions={[
                       "Use the dropdowns to select the gait parameters for the x and y axes respectively.",
+                      "As with the other scatter plots, hover over the individual points to see the corresponding values for the two gait parameters.",
                       "Hover over the trend line to also see the correlation coefficient. This trendline has been calculated and plotted using the least squares regression formula.",
                     ]}
                     exampleAnalysis="does longer stride length correlate to faster gait speeds?"

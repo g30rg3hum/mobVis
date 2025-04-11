@@ -75,7 +75,7 @@ export default function TwoParamsRelationshipScatter({
       <ScatterPlot
         height={500}
         width={1000}
-        margin={{ left: 100, right: 50, bottom: 65, top: 20 }}
+        margin={{ left: 85, right: 50, bottom: 65, top: 20 }}
         data={
           createDataset(
             filteredAllPerWbParameters.map(

@@ -108,7 +108,7 @@ export default function WbAnalysis() {
                         "The plot can be displayed as a either connected scatter plot or step plot by ticking the checkbox.",
                         "Hover over the individual points to see the corresponding value for the focus parameter.",
                       ]}
-                      exampleAnalysis="do later walking bouts involve slower gait speeds? Or is the speed consistent throughout the whole assessment?"
+                      exampleAnalysis="do later walking bouts involve slower walking speeds? Or is the speed consistent throughout the whole assessment?"
                     />
                   </CardHeader>
                   <CardContent className="flex flex-col justify-center gap-10">
@@ -129,10 +129,9 @@ export default function WbAnalysis() {
                     <VizCardDescription
                       subheading="Similar to the scatter plot on the left, except represented in perhaps a more familiar bar chart form. The 'bar' structure offers a different, and perhaps more simple representation and comparison of value."
                       descriptions={[
-                        "There is also an additional checkbox setting to sort the walking bouts in increasing order of walking bout duration to see if there is any relationship between increasing walking bout duration and the focus gait parameter.",
-                        "Hover over the individual bars to also see the (value of the gait parameter, respective walking bout duration).",
+                        "Hover over the individual bars to also see the value of the gait parameter.",
                       ]}
-                      exampleAnalysis="do longer walking bouts correlate to shorter gait speeds?"
+                      exampleAnalysis="how does walking speed vary across the walking bouts?"
                     />
                   </CardHeader>
                   <CardContent className="flex flex-col justify-center gap-10">

@@ -74,13 +74,13 @@ export default function WbAnalysis() {
                     Table of all gait parameters under each walking bout
                   </VizCardTitle>
                   <VizCardDescription
-                    subheading="Table view of the exact figures of each gait parameter for each identified walking bout in the CSV recording data you uploaded."
+                    subheading="Table view of the exact figures of each gait parameter for each identified walking bout in the CSV recording data you uploaded. WB Duration, stride duration, cadence, stride length and walking speed values are all averages over its corresponding values for each stride in the walking bout."
                     descriptions={[
                       "Use this table to view exact values for the gait parameters, and also assist your decision in picking what walking bouts to visualise for, in the other visualisations below.",
                       "Drag rows around to compare select records side by side.",
                       "Sort the records by ascending/descending order of a given gait parameter by clicking on the button in the column header.",
                       "There is also a field in which you can set the number of walking bout records in each group to view. Switch between groups by clicking on the number buttons at the bottom.",
-                      "Please note that if a value is N/A, it means that the value could not be calculated.",
+                      "Please note that if a value is N/A, it means that the gait parameter could not be calculated.",
                     ]}
                     exampleAnalysis="what is the precise walking speed that the patient was walking at in the initial walking bout?"
                   />
@@ -102,10 +102,11 @@ export default function WbAnalysis() {
                       plot)
                     </VizCardTitle>
                     <VizCardDescription
-                      subheading="A standard plot that is switchable between a scatter plot and step plot. This is plotted for a focus gait parameter against the identified walking bouts. The walking bouts are ordered chronologically to highlight the gait parameter's values over time."
+                      subheading="A standard visualisation that is switchable between a scatter plot and step plot. This is plotted for a focus gait parameter against the identified walking bouts. The walking bouts are ordered chronologically to highlight how the gait parameter's values progress over time."
                       descriptions={[
-                        "The focus gait parameter can be changed with the dropdown below",
-                        "The plot can be displayed as a either connected scatter plot or step plot by checking the checkbox.",
+                        "The focus gait parameter can be changed with the dropdown below.",
+                        "The plot can be displayed as a either connected scatter plot or step plot by ticking the checkbox.",
+                        "Hover over the individual points to see the corresponding value for the focus parameter.",
                       ]}
                       exampleAnalysis="do later walking bouts involve slower gait speeds? Or is the speed consistent throughout the whole assessment?"
                     />
@@ -126,10 +127,10 @@ export default function WbAnalysis() {
                       duration) (bar chart)
                     </VizCardTitle>
                     <VizCardDescription
-                      subheading="Similar to the scatter plot on the left, except represented in typical bar chart form. The 'bar' form offers a different, and perhaps more simple representation and comparison of value."
+                      subheading="Similar to the scatter plot on the left, except represented in perhaps a more familiar bar chart form. The 'bar' structure offers a different, and perhaps more simple representation and comparison of value."
                       descriptions={[
-                        "There is also an additional checkbox setting to sort the walking bouts in increasing order of walking bout duration to see if there is any relationship between WB duration and the focus gait parameter.",
-                        "Hover over the individual bars to also see the respective walking bout duration.",
+                        "There is also an additional checkbox setting to sort the walking bouts in increasing order of walking bout duration to see if there is any relationship between increasing walking bout duration and the focus gait parameter.",
+                        "Hover over the individual bars to also see the (value of the gait parameter, respective walking bout duration).",
                       ]}
                       exampleAnalysis="do longer walking bouts correlate to shorter gait speeds?"
                     />

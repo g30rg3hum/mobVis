@@ -178,6 +178,17 @@ export default function ScatterPlot({
         );
     }
 
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("background", "black")
+      .style("color", "white")
+      .style("padding", "6px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "20px");
+
     // plot the data
     const dataPoints = plot
       .append("g")
@@ -187,7 +198,17 @@ export default function ScatterPlot({
       .append("circle")
       .attr("cx", (d) => x(d[0]))
       .attr("cy", (d) => y(d[1]))
-      .attr("r", 4);
+      .attr("r", 4)
+      .on("mouseover", (event, d) => {
+        tooltip
+          .html(`${roundToNDpIfNeeded(d[1], 3)}`)
+          .style("display", "block")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 20 + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
 
     if (differentColours) {
       dataPoints.style("fill", (point, i) => {

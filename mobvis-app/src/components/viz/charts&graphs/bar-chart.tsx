@@ -2,7 +2,7 @@
 import { Margin } from "@/types/viz";
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { colours } from "@/lib/utils";
+import { colours, roundToNDpIfNeeded } from "@/lib/utils";
 
 interface Props {
   width: number;
@@ -110,7 +110,17 @@ export default function BarChart({
       .attr("x", (d) => x(d[0])!)
       .attr("y", (d) => y(d[1])!)
       .attr("width", x.bandwidth())
-      .attr("height", (d) => height - y(d[1]));
+      .attr("height", (d) => height - y(d[1]))
+      .on("mouseover", (event, d) => {
+        tooltip
+          .html(`${roundToNDpIfNeeded(d[1], 3)}`)
+          .style("display", "block")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 20 + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
 
     if (additionalData) {
       bars
@@ -120,7 +130,12 @@ export default function BarChart({
           );
           if (hoverData) {
             tooltip
-              .html(`${hoverData[1]}`)
+              .html(
+                `${roundToNDpIfNeeded(d[1], 3)}, ${roundToNDpIfNeeded(
+                  hoverData[1],
+                  3
+                )}`
+              )
               .style("display", "block")
               .style("left", event.pageX + 10 + "px")
               .style("top", event.pageY - 20 + "px");

@@ -99,56 +99,54 @@ export default function StrideAnalysis() {
               </Card>
             </FadeInScroll>
 
-            <div className="flex gap-5 items-stretch">
-              <FadeInScroll className="w-1/2">
-                <Card className="h-full">
-                  <CardHeader>
-                    <VizCardTitle>
-                      Progression of a gait parameter over time (scatter/step
-                      plot)
-                    </VizCardTitle>
-                    <VizCardDescription
-                      subheading="A plot that is switchable between a scatter plot and step plot. Values for a focus gait parameter is plotted for each chronological stride of a given selected walking bout. By ordering the strides chronologically, you can determine how the focus gait parameter evolves over time with each step."
-                      descriptions={[
-                        "Alternate between a connected and a step plot by clicking on the checkbox below.",
-                        "Choose the current walking bout to visualise using the left and right buttons.",
-                        "Change the focus parameter by using the dropdown.",
-                        "Hover over the points to see the corresponding gait parameter values.",
-                      ]}
-                      exampleAnalysis="as more strides are taken, does the stride length decrease? Are there frequent dips in walking speed every time it's a left stride, indicating there is something wrong with the left leg?"
-                    />
-                  </CardHeader>
-                  <CardContent className="flex flex-col justify-center gap-10">
-                    <StrideParamProgressionScatterPlot
-                      allPerStrideParameters={perStrideParameters}
-                    />
-                  </CardContent>
-                </Card>
-              </FadeInScroll>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Progression of a gait parameter over time (scatter/step
+                    plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A plot that is switchable between a scatter plot and step plot. Values for a focus gait parameter is plotted for each chronological stride of a given selected walking bout. By ordering the strides chronologically, you can determine how the focus gait parameter evolves over time with each step."
+                    descriptions={[
+                      "Alternate between a connected and a step plot by clicking on the checkbox below.",
+                      "Choose the current walking bout to visualise using the left and right buttons.",
+                      "Change the focus parameter by using the dropdown.",
+                      "Hover over the points to see the corresponding gait parameter values.",
+                    ]}
+                    exampleAnalysis="as more strides are taken, does the stride length decrease? Are there frequent dips in walking speed every time it's a left stride, indicating there is something wrong with the left leg?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <StrideParamProgressionScatterPlot
+                    allPerStrideParameters={perStrideParameters}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
-              <FadeInScroll className="w-1/2">
-                <Card className="flex flex-col justify-start h-full">
-                  <CardHeader>
-                    <VizCardTitle>
-                      Progression of a gait parameter (over time) (bar chart)
-                    </VizCardTitle>
-                    <VizCardDescription
-                      subheading="A bar chart that is similar to the scatter plot on the left. The focus gait parameter is plotted for each chronological stride of a given selected walking bout. With the chronological order of strides and the more intuitive visual comparison provided by the bar structure, you can easily interpret and compare how the focus gait parameter evolves over time with each step. "
-                      descriptions={[
-                        "Pick the walking bout to plot the strides of using the left and right buttons.",
-                        "Pick the focus gait parameter using the dropdown.",
-                      ]}
-                      exampleAnalysis="do the bars of each chronological stride decrease steadily for gait speed and if so, by how much each time?"
-                    />
-                  </CardHeader>
-                  <CardContent className="flex flex-col justify-center gap-10">
-                    <StrideParamProgressionBarChart
-                      allPerStrideParameters={perStrideParameters}
-                    />
-                  </CardContent>
-                </Card>
-              </FadeInScroll>
-            </div>
+            <FadeInScroll>
+              <Card className="flex flex-col justify-start h-full">
+                <CardHeader>
+                  <VizCardTitle>
+                    Progression of a gait parameter (over time) (bar chart)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A bar chart that is similar to the scatter plot on the left. The focus gait parameter is plotted for each chronological stride of a given selected walking bout. With the chronological order of strides and the more intuitive visual comparison provided by the bar structure, you can easily interpret and compare how the focus gait parameter evolves over time with each step. "
+                    descriptions={[
+                      "Pick the walking bout to plot the strides of using the left and right buttons.",
+                      "Pick the focus gait parameter using the dropdown.",
+                    ]}
+                    exampleAnalysis="do the bars of each chronological stride decrease steadily for gait speed and if so, by how much each time?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <StrideParamProgressionBarChart
+                    allPerStrideParameters={perStrideParameters}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
             <FadeInScroll>
               <Card>

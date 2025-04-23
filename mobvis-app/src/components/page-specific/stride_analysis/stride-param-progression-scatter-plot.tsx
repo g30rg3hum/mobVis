@@ -84,7 +84,7 @@ export default function StrideParamProgressionScatterPlot({
 
       <ScatterPlot
         height={500}
-        width={450}
+        width={1150}
         margin={{ left: 60, right: 20, bottom: 50, top: 10 }}
         data={
           createDataset(
@@ -100,7 +100,6 @@ export default function StrideParamProgressionScatterPlot({
         xLabel="Stride ID"
         yLabel={refinedParamNames.get(focusParam) as string}
         type={step ? "step" : "connected"}
-        integralX
         className="self-center"
         differentColours={splitPerStrideParametersIntoLAndRIndicesArray(
           currentPerStrideParameters

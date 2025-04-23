@@ -14,7 +14,6 @@ interface Props {
   xLabel: string;
   yLabel: string;
   type: "connected" | "step" | "correlation";
-  integralX?: boolean;
   className?: string;
   // groups of indexes that should have the same colour
   differentColours?: number[][];
@@ -27,7 +26,6 @@ export default function ScatterPlot({
   xLabel,
   yLabel,
   type = "connected",
-  integralX = false,
   className,
   differentColours,
 }: Props) {
@@ -55,15 +53,8 @@ export default function ScatterPlot({
 
     // add the X axis
     const maxX = Math.max(...xValues);
-    const endX = maxX + maxX * 0.1;
-    const integralTicks = d3.range(0, maxX + 1, 1);
-    const x = d3.scaleLinear().domain([0, endX]).range([0, width]);
-
+    const x = d3.scaleLinear().domain([0, maxX]).range([0, width]);
     const xAxis = d3.axisBottom(x);
-
-    if (integralX) {
-      xAxis.tickValues(integralTicks).tickFormat(d3.format("d"));
-    }
 
     // push it all the way down
     plot
@@ -75,7 +66,7 @@ export default function ScatterPlot({
     const maxY = Math.max(...yValues);
     const y = d3
       .scaleLinear()
-      .domain([0, maxY + maxY * 0.25])
+      .domain([0, maxY + maxY * 0.1])
       .range([height, 0]);
     plot.append("g").call(d3.axisLeft(y));
 
@@ -134,7 +125,7 @@ export default function ScatterPlot({
         result.slope * x + result.yIntercept;
       const lineOfBestFitPoints: [number, number][] = [
         [0, lineOfBestFit(0)],
-        [endX, lineOfBestFit(endX)],
+        [maxX, lineOfBestFit(maxX)],
       ];
       const plottedLOB = plot
         .append("path")

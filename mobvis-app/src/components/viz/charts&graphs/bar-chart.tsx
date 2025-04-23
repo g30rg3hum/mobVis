@@ -10,7 +10,6 @@ interface Props {
   margin: Margin;
   className: string;
   data: [string, number][];
-  additionalData?: [string, number][];
   xLabel: string;
   yLabel: string;
   tiltXLabels?: boolean;
@@ -22,16 +21,19 @@ export default function BarChart({
   margin,
   className,
   data,
-  additionalData,
   xLabel,
   yLabel,
   tiltXLabels = false,
   differentColours,
 }: Props) {
-  const ref = useRef(null);
+  const ref = useRef(null); // reference to SVG HTML element
+
+  // set dimensions of graph
   const totalHeight = height + margin.top + margin.bottom;
   const totalWidth = width + margin.left + margin.right;
-  // const xValues = data.map((d) => d[0]);
+
+  // split up x and y values.
+  const xValues = data.map((d) => d[0]);
   const yValues = data.map((d) => d[1]);
 
   useEffect(() => {
@@ -39,48 +41,58 @@ export default function BarChart({
   });
 
   function draw() {
+    // get svg element and clear canvas
     const svg = d3.select(ref.current);
     svg.select("*").remove();
 
+    // template for the main plot
     const plot = svg
       .attr("width", totalWidth)
       .attr("height", totalHeight)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // add the X axis
+    // create the x axis
     const x = d3
       .scaleBand()
       .range([0, width])
       .domain(data.map((datapoint) => datapoint[0]))
-      .padding(0.3);
+      .padding(0.3); // spacing between bars
     const xAxis = d3.axisBottom(x);
-    const plotXAxis = plot
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text");
-    if (tiltXLabels) {
-      plotXAxis.attr("transform", "translate(2,5)rotate(25)");
+
+    // limit x labels if there are too many
+    if (xValues.length > 30) {
+      xAxis.tickValues(x.domain().filter((_, i) => i % 5 === 0));
     }
 
-    // add Y axis
+    // draw the x axis
+    const plottedXAxis = plot
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+    if (tiltXLabels) {
+      plottedXAxis
+        .selectAll("text")
+        .attr("transform", "translate(12,20)rotate(90)");
+    }
+
+    // create and draw the y axis
     const maxY = Math.max(...yValues);
     const y = d3
       .scaleLinear()
-      .domain([0, maxY + maxY * 0.25])
+      .domain([0, maxY + maxY * 0.1])
       .range([height, 0]);
     const yAxis = d3.axisLeft(y);
     plot.append("g").call(yAxis);
 
+    // add the x and y axis labels
     plot
       .append("text")
-      .attr("y", height + 45)
+      .attr("y", height + 55)
       .attr("x", width / 2)
       .style("text-anchor", "middle")
       .attr("font-weight", 700)
       .text(xLabel);
-
     plot
       .append("text")
       .attr("transform", "rotate(-90)")
@@ -90,6 +102,7 @@ export default function BarChart({
       .text(yLabel)
       .attr("font-weight", 700);
 
+    // define the tooltip to show when hovering over a bar
     const tooltip = d3
       .select("body")
       .append("div")
@@ -101,7 +114,7 @@ export default function BarChart({
       .style("border-radius", "6px")
       .style("font-size", "20px");
 
-    // add the bars
+    // add the bars for each data point
     const bars = plot
       .selectAll("bar")
       .data(data)
@@ -111,9 +124,10 @@ export default function BarChart({
       .attr("y", (d) => y(d[1])!)
       .attr("width", x.bandwidth())
       .attr("height", (d) => height - y(d[1]))
+      // hover data display functionality
       .on("mouseover", (event, d) => {
         tooltip
-          .html(`${roundToNDpIfNeeded(d[1], 3)}`)
+          .html(`(${d[0]}, ${roundToNDpIfNeeded(d[1], 3)})`)
           .style("display", "block")
           .style("left", event.pageX + 10 + "px")
           .style("top", event.pageY - 20 + "px");
@@ -122,28 +136,7 @@ export default function BarChart({
         tooltip.style("display", "none");
       });
 
-    if (additionalData) {
-      bars
-        .on("mouseover", (event, d) => {
-          const hoverData = additionalData.find(
-            (additionalD) => additionalD[0] === d[0]
-          );
-          if (hoverData) {
-            tooltip
-              .html(
-                `${roundToNDpIfNeeded(d[1], 3)}, ${roundToNDpIfNeeded(
-                  hoverData[1],
-                  3
-                )}`
-              )
-              .style("display", "block")
-              .style("left", event.pageX + 10 + "px")
-              .style("top", event.pageY - 20 + "px");
-          }
-        })
-        .on("mouseout", () => tooltip.style("display", "none"));
-    }
-
+    // set the different colorus for bars if specified
     if (differentColours) {
       bars.style("fill", (bar, i) => {
         for (let j = 0; j < differentColours.length; j++) {

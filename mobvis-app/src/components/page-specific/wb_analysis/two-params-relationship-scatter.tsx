@@ -74,7 +74,7 @@ export default function TwoParamsRelationshipScatter({
       </div>
       <ScatterPlot
         height={500}
-        width={1000}
+        width={1150}
         margin={{ left: 85, right: 50, bottom: 65, top: 20 }}
         data={
           createDataset(

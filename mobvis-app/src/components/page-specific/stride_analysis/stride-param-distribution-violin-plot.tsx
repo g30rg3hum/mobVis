@@ -82,9 +82,9 @@ export default function StrideParamDistributionViolinPlot({
 
       <ViolinBoxPlot
         className="self-center"
-        width={1050}
+        width={1150}
         height={500}
-        margin={{ left: 70, right: 30, top: 30, bottom: 70 }}
+        margin={{ left: 80, right: 30, top: 30, bottom: 70 }}
         xLabel="WB ID"
         yLabel={refinedParamNames.get(focusParam)!}
         data={createDatasetOfKeyAndValTuples(

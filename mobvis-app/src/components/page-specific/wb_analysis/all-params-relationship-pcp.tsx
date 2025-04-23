@@ -28,8 +28,8 @@ export default function AllParamsRelationshipPcp({
       </div>
       <ParallelCoordinatesPlot
         height={400}
-        width={1000}
-        margin={{ left: 100, right: 100, bottom: 50, top: 20 }}
+        width={1100}
+        margin={{ left: 120, right: 100, bottom: 50, top: 20 }}
         data={[filteredAllPerWbParameters]}
         axes={currentAxes}
         className="self-center"

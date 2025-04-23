@@ -35,9 +35,9 @@ export default function ParamProgressionBarChart({
       </div>
 
       <BarChart
-        height={625}
-        width={500}
-        margin={{ left: 70, right: 20, bottom: 50, top: 10 }}
+        height={650}
+        width={1150}
+        margin={{ left: 70, right: 20, bottom: 70, top: 10 }}
         data={
           createDataset(
             getWbProperty(filteredAllPerWbParameters, "wb_id"),
@@ -50,6 +50,7 @@ export default function ParamProgressionBarChart({
         xLabel="Walking bout ID"
         yLabel={refinedParamNames.get(focusParam) as string}
         className="self-center"
+        tiltXLabels
       />
     </>
   );

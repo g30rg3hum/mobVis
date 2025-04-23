@@ -74,8 +74,8 @@ export default function StrideParamProgressionBarChart({
 
       <BarChart
         height={590}
-        width={450}
-        margin={{ left: 60, right: 15, bottom: 50, top: 10 }}
+        width={1150}
+        margin={{ left: 60, right: 15, bottom: 60, top: 10 }}
         data={
           createDataset(
             getStrideProperty(currentPerStrideParameters, "s_id").map((id) =>

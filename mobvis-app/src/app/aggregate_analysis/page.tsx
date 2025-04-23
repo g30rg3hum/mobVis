@@ -61,7 +61,7 @@ export default function AggregateAnalysis() {
       <div className="flex justify-center flex-col items-center">
         <div className="text-black max-w-[1300px] my-10">
           <h1 className="text-4xl font-black mb-2">
-            📦 Summary-level analysis
+            📦 Summary level analysis
           </h1>
           <p className="mb-5 text-slate-600 font-semibold">
             <HyperLink url="" onClick={() => setIsInputDialogOpen(true)}>

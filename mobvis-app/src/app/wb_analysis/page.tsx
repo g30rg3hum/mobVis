@@ -65,6 +65,7 @@ export default function WbAnalysis() {
             setIsInputDialogOpen={setIsInputDialogOpen}
           />
         </div>
+
         <div className="flex justify-center mb-10">
           <div className="flex flex-col gap-5 w-full max-w-[1300px] min-w-[1150px] mx-6">
             <FadeInScroll>
@@ -93,55 +94,52 @@ export default function WbAnalysis() {
               </Card>
             </FadeInScroll>
 
-            <div className="flex gap-5">
-              <FadeInScroll className="w-1/2 h-full">
-                <Card className="h-full">
-                  <CardHeader>
-                    <VizCardTitle>
-                      Progression of a gait parameter over time (scatter/step
-                      plot)
-                    </VizCardTitle>
-                    <VizCardDescription
-                      subheading="A standard visualisation that is switchable between a scatter plot and step plot. This is plotted for a focus gait parameter against the identified walking bouts. The walking bouts are ordered chronologically to highlight how the gait parameter's values progress over time."
-                      descriptions={[
-                        "The focus gait parameter can be changed with the dropdown below.",
-                        "The plot can be displayed as a either connected scatter plot or step plot by ticking the checkbox.",
-                        "Hover over the individual points to see the corresponding value for the focus parameter.",
-                      ]}
-                      exampleAnalysis="do later walking bouts involve slower walking speeds? Or is the speed consistent throughout the whole assessment?"
-                    />
-                  </CardHeader>
-                  <CardContent className="flex flex-col justify-center gap-10">
-                    <ParamProgressionScatterPlot
-                      allPerWbParameters={perWbParameters}
-                    />
-                  </CardContent>
-                </Card>
-              </FadeInScroll>
+            <FadeInScroll>
+              <Card>
+                <CardHeader>
+                  <VizCardTitle>
+                    Progression of a gait parameter over time (scatter/step
+                    plot)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="A standard visualisation that is switchable between a scatter plot and step plot. This is plotted for a focus gait parameter against the identified walking bouts. The walking bouts are ordered chronologically to highlight how the gait parameter's values progress over time."
+                    descriptions={[
+                      "The focus gait parameter can be changed with the dropdown below.",
+                      "The plot can be displayed as a either connected scatter plot or step plot by ticking the checkbox.",
+                      "Hover over the individual points to see the corresponding value for the focus parameter.",
+                    ]}
+                    exampleAnalysis="do later walking bouts involve slower walking speeds? Or is the speed consistent throughout the whole assessment?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <ParamProgressionScatterPlot
+                    allPerWbParameters={perWbParameters}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
-              <FadeInScroll className="w-1/2 h-full">
-                <Card className="flex flex-col justify-between h-full">
-                  <CardHeader>
-                    <VizCardTitle>
-                      Progression of a gait parameter (over time/ascending
-                      duration) (bar chart)
-                    </VizCardTitle>
-                    <VizCardDescription
-                      subheading="Similar to the scatter plot on the left, except represented in perhaps a more familiar bar chart form. The 'bar' structure offers a different, and perhaps more simple representation and comparison of value."
-                      descriptions={[
-                        "Hover over the individual bars to also see the value of the gait parameter.",
-                      ]}
-                      exampleAnalysis="how does walking speed vary across the walking bouts?"
-                    />
-                  </CardHeader>
-                  <CardContent className="flex flex-col justify-center gap-10">
-                    <ParamProgressionBarChart
-                      allPerWbParameters={perWbParameters}
-                    />
-                  </CardContent>
-                </Card>
-              </FadeInScroll>
-            </div>
+            <FadeInScroll>
+              <Card className="flex flex-col justify-between h-full">
+                <CardHeader>
+                  <VizCardTitle>
+                    Progression of a gait parameter over time (bar chart)
+                  </VizCardTitle>
+                  <VizCardDescription
+                    subheading="Similar to the scatter plot on the left, except represented in perhaps a more familiar bar chart form. The 'bar' structure offers a different, and perhaps more simple representation and comparison of value."
+                    descriptions={[
+                      "Hover over the individual bars to also see the value of the gait parameter and corresponding walking bout ID.",
+                    ]}
+                    exampleAnalysis="how does walking speed vary across the walking bouts?"
+                  />
+                </CardHeader>
+                <CardContent className="flex flex-col justify-center gap-10">
+                  <ParamProgressionBarChart
+                    allPerWbParameters={perWbParameters}
+                  />
+                </CardContent>
+              </Card>
+            </FadeInScroll>
 
             <FadeInScroll>
               <Card>

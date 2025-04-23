@@ -34,7 +34,10 @@ export default async function Header() {
 
   return (
     <header className="bg-background-dark py-4 px-6 m-3 rounded-lg flex items-center justify-between text-foreground-dark">
-      <Logo size="2x" textSize="3xl" gap="gap-4" />
+      <Link href="/">
+        <Logo size="2x" textSize="3xl" gap="gap-4" />
+      </Link>
+
       <div className="flex gap-8">
         {links.map((link) => (
           <div

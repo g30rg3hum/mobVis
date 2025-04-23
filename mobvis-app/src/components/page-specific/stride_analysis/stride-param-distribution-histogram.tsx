@@ -86,7 +86,7 @@ export default function StrideParamDistributionHistogram({
       <Histogram
         className="self-center"
         height={500}
-        width={1050}
+        width={1150}
         margin={{ left: 70, right: 30, top: 30, bottom: 70 }}
         data={createDatasetOfKeyAndValTuples(
           currentWbIds,

@@ -213,7 +213,10 @@ export default function TableOfPerWbParameters({ allPerWbParameters }: Props) {
             ))}
         </TableBody>
       </Table>
-      <div className="space-x-2">
+      <div
+        className="grid gap-2"
+        style={{ gridTemplateColumns: "repeat(28, minmax(0, 1fr))" }}
+      >
         {[
           ...Array(
             divideThenRoundUpToInt(

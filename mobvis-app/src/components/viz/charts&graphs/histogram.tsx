@@ -90,9 +90,7 @@ export default function Histogram({
       ) ?? 0;
     y.domain([0, maxBinLength]);
     const yAxis = d3.axisLeft(y);
-    // frequency are just integers.
-    const integralTicks = d3.range(0, maxBinLength + 1, 1);
-    yAxis.tickValues(integralTicks).tickFormat(d3.format("d"));
+    yAxis.tickValues(y.ticks().filter((t) => Number.isInteger(t)));
     plot.append("g").call(yAxis);
 
     // label the y axis

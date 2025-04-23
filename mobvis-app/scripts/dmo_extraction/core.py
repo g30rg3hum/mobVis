@@ -19,6 +19,7 @@ def is_valid_measurement_condition(measurement_condition: str):
   if (measurement_condition not in ["laboratory", "free_living"]):
     raise ValueError(setting_error_message)
 
+# CSV must have columns: samples, acc_x, acc_y_ acc_z, gyr_x_ gyr_y, gyr_z (according to the explained mobgap coord. system)
 def load_csv(file: Union[Path,SpooledTemporaryFile], convertAccFromGToMs: bool = False) -> pd.DataFrame:
   data = pd.read_csv(file)
 
@@ -63,32 +64,33 @@ def create_dataset_from_dataframe(data: pd.DataFrame, sensor_height_m: float, he
 
   return dataset
 
-# CSV must have columns: samples, acc_x, acc_y_ acc_z, gyr_x_ gyr_y, gyr_z (according to the explained mobgap coord. system)
 def extract_dmos(file: Union[Path,  SpooledTemporaryFile], sensor_height_m: float, height_m: float, measurement_condition: str, sampling_rate_hz: int, convertAccFromGToMs: bool = False) -> MobilisedPipelineImpaired:
   # check that measurement condition is one of two types
   is_valid_measurement_condition(measurement_condition)
 
+  print("Beginning DMO extraction process...")
+
   # load data, convert to m/s^2 if needed
   data = load_csv(file, convertAccFromGToMs)
-  print("data loaded successfully!")
+  print("Data from CSV file has been loaded successfully.")
 
   # create dataset from dataframe
   dataset = create_dataset_from_dataframe(data, sensor_height_m, height_m, measurement_condition, sampling_rate_hz)  
-  print ("gait dataset created successfully!")
+  print ("Gait dataset required for the pipeline has been created successfully.")
 
   # run the single record through the pipeline
   record = dataset[0]
   pipeline = MobilisedPipelineImpaired().run(record)
-  print("ran pipeline successfully!")
+  print("Pipeline has been executed successfully.")
   
-  return pipeline # pipeline object with attributes for gait parameters.
+  # pipeline object with attributes for gait parameters.
+  return pipeline 
 
 # calculate the max, min, average and variance
 def calculate_aggregates(param_name: str, values: list) -> list:
   return [param_name, max(values), min(values), np.mean(values), np.var(values)]
 
 def calculate_aggregate_parameters(per_wb_params: pd.DataFrame) -> pd.DataFrame:
-
   # for each parameter, calculating average, max, min, variance
 
   # get the lists of values for each parameter.

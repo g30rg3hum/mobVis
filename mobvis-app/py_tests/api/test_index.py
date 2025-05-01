@@ -53,7 +53,7 @@ class TestDmoExtraction():
       "name": "Test extraction",
       "description": "Test description",
       "public": True,
-      "samplingRate": 1, # invalid
+      "samplingRate": 1, # invalid sampling rate.
       "sensorHeight": 1.65,
       "patientHeight": 1.80,
       "setting": "laboratory",

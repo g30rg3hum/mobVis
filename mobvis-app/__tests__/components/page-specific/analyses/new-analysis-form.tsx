@@ -45,7 +45,7 @@ describe("NewAnalysisForm", () => {
   it("validates presence for the required fields with empty/undefined default values", async () => {
     await submitForm();
     const msgs = screen.getAllByText(/please fill in/i);
-    // name, description and CSV upload
+    // name, description and CSV upload fields
     expect(msgs).toHaveLength(3);
   });
 
@@ -74,7 +74,7 @@ describe("NewAnalysisForm", () => {
     expect(error).toBeInTheDocument();
   });
 
-  it("returns the correct submitted data", async () => {
+  it("calls submission handler with the correct data", async () => {
     const values = {
       name: "Testing analysis",
       description: "This is the best analysis",
@@ -86,8 +86,7 @@ describe("NewAnalysisForm", () => {
       convertToMs: false,
     };
 
-    cleanup(); // get rid of the previous render.
-
+    cleanup(); // get rid of the previous render to render our component with mock handler.
     const submissionHandler = jest.fn();
     render(<NewAnalysisForm submissionHandler={submissionHandler} />);
 

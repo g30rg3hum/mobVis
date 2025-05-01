@@ -38,6 +38,7 @@ class TestLoadCsv:
 
 class TestCreateDatasetFromDataframe:
   def test_returns_valid_gait_dataset_with_data(self):
+    # create data/parameters to pass in
     data = pd.DataFrame({
       "samples": [0, 1, 2],
       "acc_x": [0.2834, 0.234, 0.234],
@@ -52,10 +53,11 @@ class TestCreateDatasetFromDataframe:
     measurement_condition = "laboratory"
     sampling_rate_hz = 100
 
+    # get the result of the function
     dataset = create_dataset_from_dataframe(data, sensor_height_m, height_m, measurement_condition, sampling_rate_hz)
 
     assert isinstance(dataset, GaitDatasetFromData)
-    # check the single record
+    # check the single record matches our data
     single_record = dataset[0]
     assert single_record.data_ss.equals(data) == True
 

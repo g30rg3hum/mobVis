@@ -3,7 +3,7 @@
 1. Clone this repository into your system.
 2. Open terminal.
 3. `cd` into your local repository folder, then `cd mobvis-app`. This is where the actual Next.js project lies.
-4. Run `npm run dev` in your terminal and a local server running the project should show in the terminal. (see image below)
+4. Run `npm run dev` in your terminal and a local server running the project should show in the terminal. (see image below) It is usually running on https://localhost:3000.
    <br />
    ![URL in terminal to access the app](resources/url_screenshot.png)
    <br />

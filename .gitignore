@@ -2,6 +2,7 @@
 .ipynb_checkpoints/
 scripts/__pycache__/
 notes/
+misc/
 
 # env
 mobvis-app/.env

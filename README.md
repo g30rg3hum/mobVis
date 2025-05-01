@@ -1,5 +1,7 @@
 # How to run mobVis
 
+Since this project has not been deployed to the web, you must run and host it locally on your system.
+
 1. `git clone` this repository into your system.
 2. Open the terminal / your command line.
 3. `cd` into your local repository folder, then `cd mobvis-app`. This is where the actual Next.js project lies.

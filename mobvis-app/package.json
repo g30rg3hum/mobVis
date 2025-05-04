@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "next-dev": "next dev --turbopack",
+    "next-dev": "next dev",
     "build": "prisma generate && next build",
     "next-start": "next start",
     "start": "concurrently \"npm run next-start\" \"npm run py-start\"",

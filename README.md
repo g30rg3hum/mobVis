@@ -5,10 +5,11 @@ Since this project has not been deployed to the web, you must run and host it lo
 1. `git clone` this repository into your system.
 2. Open the terminal / your command line.
 3. `cd` into your local repository folder, then `cd mobvis-app`. This is where the actual Next.js project lies.
-4. Run `npm install` to install all the required dependencies.
-5. Run `npm run dev` in your terminal and a local server running the project should show in the terminal. (see image below) It is usually running on https://localhost:3000.
+4. Ensure you have `npm` (see guide [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)) and Python/`pip` installed (see [here](https://www.python.org/downloads/)).
+5. Run `npm install` to install all the required dependencies.
+6. Run `npm run dev` in your terminal and a local server running the project should show in the terminal. (see image below) It is usually running on https://localhost:3000.
    <br />
    ![URL in terminal to access the app](resources/url_screenshot.png)
    <br />
-6. Enter the URL into your preferred browser and start using mobVis.
-7. There are test CSV files with associated metadata that you can test the interface with. A larger recording file can be found [here](https://drive.google.com/file/d/1jAkQli0QtsLrlVSY6r_Uh5ow4U-jhsBG/view?usp=sharing), and a smaller recording file [here](https://drive.google.com/file/d/1jGn1Zm9KASzCb_steYBibl-GjlGZWgYb/view?usp=sharing). The metadata can be found in the `resources` folder.
+7. Enter the URL into your preferred browser and start using mobVis.
+8. There are test CSV files with associated metadata that you can test the interface with. A larger recording file can be found [here](https://drive.google.com/file/d/1jAkQli0QtsLrlVSY6r_Uh5ow4U-jhsBG/view?usp=sharing), and a smaller recording file [here](https://drive.google.com/file/d/1jGn1Zm9KASzCb_steYBibl-GjlGZWgYb/view?usp=sharing). The metadata can be found in the `resources` folder.

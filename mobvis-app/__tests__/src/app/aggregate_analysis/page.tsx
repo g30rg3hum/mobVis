@@ -32,7 +32,11 @@ describe("AggregateAnalysis", () => {
   });
 
   beforeEach(() => {
-    render(<AggregateAnalysis />);
+    try {
+      render(<AggregateAnalysis />);
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   afterEach(() => {

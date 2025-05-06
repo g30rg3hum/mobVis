@@ -22,7 +22,7 @@ Since this project has not been deployed to the web, you must run and host it lo
 
 ## Possible problems
 
-### "'Failed to proxy http://127.0.0.1:8000/api/py/dmo_extraction' when trying to submit inputs in the form"
+### 'Failed to proxy http://127.0.0.1:8000/api/py/dmo_extraction' when trying to submit inputs in the form
 
 This is likely due to not having installed the required Python packages in `requirements.txt` properly. Please make sure you correctly follow steps 4-6 above. If you run the system with `npm run dev` afterwards and it still doesn't work, try to do `npm run py-dev`, exit once done running (using CTRL+C), before running `npm run dev` again, to specifically command the installation of the Python packages before running the app again.
 

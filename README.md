@@ -14,7 +14,7 @@ The final dissertation report can be found [here.](./FINAL_DISSERTATION_REPORT.p
 - **Intuitive application flow and beautiful UI:** a user-friendly interface backed by a natural use-path, implemented using Next.js and React.js.
 - **Persistence of uploaded data:** data uploaded/generated from recent analyses are stored in the user browser client's local storage.
 
-A more detailed documentation of implemented features can be found in [sub-section 5.2 of the dissertation report.](./FINAL_DISSERTATION_REPORT.pdf#page=73)
+A more detailed documentation of implemented features can be found in sub-section 5.2 (beginning page 73) of the [dissertation report.](./FINAL_DISSERTATION_REPORT.pdf#page=73)
 
 ## Who is this made for and why?
 

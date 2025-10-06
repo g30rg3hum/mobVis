@@ -4,7 +4,7 @@ This is my university dissertation project on developing a visualisation interfa
 
 The final dissertation report can be found [here.](./FINAL_DISSERTATION_REPORT.pdf)
 
-<!-- TODO: insert GIF demonstration -->
+![GIF demonstration](/./resources/demo.gif)
 
 ## Features
 
